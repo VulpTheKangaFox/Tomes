@@ -1,0 +1,10 @@
+{
+  "itemGroup.tomes": "Tomes",
+
+  "item.tomes.archaic_tome": "Archaic Tome",
+  "item.tomes.living_tome": "Living Tome",
+  "item.tomes.cursed_tome": "Cursed Tome",
+  "item.tomes.enchanted_archaic_tome": "Enchanted Archaic Tome",
+  "item.tomes.enchanted_living_tome": "Enchanted Living Tome",
+  "item.tomes.enchanted_cursed_tome": "Enchanted Cursed Tome"
+}
