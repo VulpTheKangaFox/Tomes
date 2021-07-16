@@ -1,5 +1,6 @@
 package com.vulp.tomes;
 
+import com.vulp.tomes.client.renderer.tileentity.TomeTileEntityRenderer;
 import com.vulp.tomes.init.EnchantmentInit;
 import com.vulp.tomes.init.ItemInit;
 import com.vulp.tomes.items.TomeItem;

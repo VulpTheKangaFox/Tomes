@@ -1,6 +1,7 @@
 package com.vulp.tomes.items;
 
 import com.vulp.tomes.Tomes;
+import com.vulp.tomes.client.renderer.tileentity.TomeTileEntityRenderer;
 import com.vulp.tomes.enchantments.TomeEnchantment;
 import com.vulp.tomes.spells.SpellIndex;
 import com.vulp.tomes.spells.active.ActiveSpell;
@@ -17,6 +18,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
@@ -98,6 +100,7 @@ public class TomeItem extends Item {
         CompoundNBT nbt = stack.getOrCreateTag();
         nbt.putInt("cooldown", ticks);
         nbt.putInt("cooldownTotal", ticks);
+        nbt.putInt("pixels", 16);
     }
 
     public static int getCooldown(ItemStack stack) {
@@ -117,8 +120,18 @@ public class TomeItem extends Item {
     private static void reduceCooldown(ItemStack stack, int ticks) {
         CompoundNBT nbt = stack.getOrCreateTag();
         if (nbt.contains("cooldown")) {
-            nbt.putInt("cooldown", nbt.getInt("cooldown") - ticks);
+            if (nbt.getInt("cooldown") > 0) {
+                nbt.putInt("cooldown", nbt.getInt("cooldown") - ticks);
+            }
         }
+        int max = getCooldownMax(stack);
+        int i = getCooldown(stack);
+        int j = -1;
+        if (max > 0) {
+            j = (int) (((float) i / (float)max) * 16);
+        }
+        Tomes.LOGGER.debug(i + " / " + max + " || " + j);
+        nbt.putInt("pixels", j);
     }
 
     private static boolean onCooldown(ItemStack stack) {
@@ -128,6 +141,15 @@ public class TomeItem extends Item {
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
         return false;
+    }
+
+    @Override
+    public boolean hasEffect(ItemStack stack) {
+        CompoundNBT nbt = stack.getOrCreateTag();
+        if (nbt.getInt("pixels") > 0) {
+            return false;
+        }
+        return super.hasEffect(stack);
     }
 
     @Override

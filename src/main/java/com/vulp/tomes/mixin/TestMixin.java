@@ -1,4 +1,4 @@
-package com.vulp.tomes.mixins;
+package com.vulp.tomes.mixin;
 
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.util.DamageSource;

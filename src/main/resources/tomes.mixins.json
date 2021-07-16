@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.vulp.tomes.mixins",
+  "package": "com.vulp.tomes.mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "tomes.refmap.json",
   "mixins": [

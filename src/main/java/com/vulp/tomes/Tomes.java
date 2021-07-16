@@ -1,5 +1,6 @@
 package com.vulp.tomes;
 
+import com.vulp.tomes.client.renderer.RenderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
@@ -26,6 +27,7 @@ public class Tomes {
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
+        RenderRegistry.renderSetup();
         LOGGER.info("Client setup event complete!");
     }
 
