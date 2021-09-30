@@ -33,8 +33,8 @@ public class ForestAffinitySpell extends PassiveSpell {
         if (entity instanceof LivingEntity) {
             if (this.toggle) {
                 LivingEntity user = (LivingEntity) entity;
-                user.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 100, 0));
-                user.addPotionEffect(new EffectInstance(Effects.REGENERATION, 100, 0));
+                user.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 120, 0, true, false));
+                user.addPotionEffect(new EffectInstance(Effects.REGENERATION, 120, 0, true, false));
             }
             Biome currentBiome = world.getBiome(entity.getPosition());
             if (this.lastBiome != null && this.lastBiome != currentBiome) {

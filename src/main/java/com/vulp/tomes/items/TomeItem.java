@@ -36,7 +36,7 @@ public class TomeItem extends Item {
 
     @Override
     public int getItemEnchantability() {
-        return 25;
+        return 40;
     }
 
     @Override
@@ -46,11 +46,6 @@ public class TomeItem extends Item {
             return super.canApplyAtEnchantingTable(stack, enchantment);
         }
         return false;
-    }
-
-    @Override
-    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
-        return super.isBookEnchantable(stack, book);
     }
 
     @Nullable

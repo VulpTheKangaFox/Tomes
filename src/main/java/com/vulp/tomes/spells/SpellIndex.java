@@ -4,6 +4,9 @@ import com.vulp.tomes.init.EnchantmentInit;
 import com.vulp.tomes.init.SpellInit;
 import net.minecraft.enchantment.Enchantment;
 
+import java.util.Collections;
+import java.util.List;
+
 public enum SpellIndex {
 
     SELF_PROPULSION(SpellInit.self_propulsion, EnchantmentInit.self_propulsion), // Implemented.
@@ -87,7 +90,5 @@ public enum SpellIndex {
     public Enchantment getEnchantment() {
         return this.enchantment;
     }
-
-
 
 }

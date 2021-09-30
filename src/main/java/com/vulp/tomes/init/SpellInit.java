@@ -27,8 +27,8 @@ public class SpellInit {
     public static Spell mind_bender = new MindBenderSpell(Enchantment.Rarity.UNCOMMON, true, false);
     public static Spell ghostly_steed = new GhostlySteedSpell(Enchantment.Rarity.UNCOMMON, true, false);
     public static Spell withering_stench = new WitheringStenchSpell(Enchantment.Rarity.UNCOMMON, true, false);
-    public static Spell rotten_heart = new WitheringStenchSpell(Enchantment.Rarity.UNCOMMON, true, false); // PLACEHOLDER TO NOT NULL
-    public static Spell nocturnal = new WitheringStenchSpell(Enchantment.Rarity.UNCOMMON, true, false); // PLACEHOLDER TO NOT NULL
+    public static Spell rotten_heart = new RottenHeartSpell(Enchantment.Rarity.COMMON, false, false);
+    public static Spell nocturnal = new NocturnalSpell(Enchantment.Rarity.COMMON, false, false);
     public static Spell covens_rule = new CovensRuleSpell(Enchantment.Rarity.COMMON, false, false);
     public static Spell dark_age = new DarkAgeSpell(Enchantment.Rarity.RARE, true, true);
 

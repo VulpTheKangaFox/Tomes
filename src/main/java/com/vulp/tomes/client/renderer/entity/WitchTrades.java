@@ -1,7 +1,6 @@
 package com.vulp.tomes.client.renderer.entity;
 
 import com.google.common.collect.ImmutableMap;
-import com.mojang.datafixers.schemas.Schema;
 import com.vulp.tomes.init.EnchantmentInit;
 import com.vulp.tomes.spells.SpellIndex;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -23,8 +22,6 @@ import java.util.Random;
 
 public class WitchTrades extends VillagerTrades {
 
-    private static final List<Enchantment> TREASURE_SPELL_ENCHANTS = Arrays.asList(EnchantmentInit.dark_age, EnchantmentInit.wings_of_night, EnchantmentInit.everchanging_skies);
-
     public static final Int2ObjectMap<VillagerTrades.ITrade[]> WITCH_TRADES = gatAsIntMap(ImmutableMap.of(
             1,
             new VillagerTrades.ITrade[]{
@@ -36,8 +33,8 @@ public class WitchTrades extends VillagerTrades {
                     new VillagerTrades.ItemsForEmeraldsTrade(Items.EXPERIENCE_BOTTLE, 7, 1, 2147483647, 6)},
             3,
             new VillagerTrades.ITrade[]{
-                    new VillagerTrades.ItemsForEmeraldsTrade(Items.BLAZE_ROD, 5, 2147483647, 8),
-                    new ItemWithPotionEffectForEmeralds(Items.GLASS_BOTTLE, Potions.REGENERATION, 5, 2147483647, 8)},
+                    new VillagerTrades.ItemsForEmeraldsTrade(Items.BLAZE_ROD, 5, 1,2147483647, 8),
+                    new ItemWithPotionEffectForEmeralds(Items.POTION, Potions.REGENERATION, 5, 2147483647, 8)},
             4,
             new VillagerTrades.ITrade[]{
                     new VillagerTrades.ItemsForEmeraldsTrade(Items.TOTEM_OF_UNDYING, 50, 1, 1, 24),
@@ -56,45 +53,35 @@ public class WitchTrades extends VillagerTrades {
         }
 
         public MerchantOffer getOffer(Entity trader, Random rand) {
-            Enchantment enchantment = TREASURE_SPELL_ENCHANTS.get(rand.nextInt(TREASURE_SPELL_ENCHANTS.size()));
+            Enchantment enchantment = EnchantmentInit.TREASURE_TOME_ENCHANTS.get(rand.nextInt(EnchantmentInit.TREASURE_TOME_ENCHANTS.size()));
             ItemStack itemstack = EnchantedBookItem.getEnchantedItemStack(new EnchantmentData(enchantment, 1));
             return new MerchantOffer(new ItemStack(Items.EMERALD, rand.nextInt(25) + 20), new ItemStack(Items.BOOK), itemstack, 1, this.xpValue, 0.2F);
         }
     }
 
     static class ItemWithPotionEffectForEmeralds implements VillagerTrades.ITrade {
-        private final ItemStack sellingItem;
+        private final Item potionTypeItem;
         private final Potion potion;
         private final int emeraldCount;
-        private final int sellingItemCount;
         private final int maxUses;
         private final int xpValue;
         private final float priceMultiplier;
 
-        public ItemWithPotionEffectForEmeralds(Item sellingItem, Potion potion, int emeraldCount, int sellingItemCount, int xpValue) {
-            this(new ItemStack(sellingItem), potion, emeraldCount, sellingItemCount, 12, xpValue);
+        public ItemWithPotionEffectForEmeralds(Item potionTypeItem, Potion potion, int emeraldCount, int maxUses, int xpValue) {
+            this(potionTypeItem, potion,  emeraldCount, maxUses, xpValue, 0.05F);
         }
 
-        public ItemWithPotionEffectForEmeralds(Item sellingItem, Potion potion, int emeraldCount, int sellingItemCount, int maxUses, int xpValue) {
-            this(new ItemStack(sellingItem), potion,  emeraldCount, sellingItemCount, maxUses, xpValue);
-        }
-
-        public ItemWithPotionEffectForEmeralds(ItemStack sellingItem, Potion potion, int emeraldCount, int sellingItemCount, int maxUses, int xpValue) {
-            this(sellingItem, potion,  emeraldCount, sellingItemCount, maxUses, xpValue, 0.05F);
-        }
-
-        public ItemWithPotionEffectForEmeralds(ItemStack sellingItem, Potion potion, int emeraldCount, int sellingItemCount, int maxUses, int xpValue, float priceMultiplier) {
-            this.sellingItem = sellingItem;
+        public ItemWithPotionEffectForEmeralds(Item potionTypeItem, Potion potion, int emeraldCount, int maxUses, int xpValue, float priceMultiplier) {
+            this.potionTypeItem = potionTypeItem;
             this.potion = potion;
             this.emeraldCount = emeraldCount;
-            this.sellingItemCount = sellingItemCount;
             this.maxUses = maxUses;
             this.xpValue = xpValue;
             this.priceMultiplier = priceMultiplier;
         }
 
         public MerchantOffer getOffer(Entity trader, Random rand) {
-            return new MerchantOffer(new ItemStack(Items.EMERALD, this.emeraldCount), PotionUtils.addPotionToItemStack(new ItemStack(this.sellingItem.getItem(), this.sellingItemCount), this.potion), this.maxUses, this.xpValue, this.priceMultiplier);
+            return new MerchantOffer(new ItemStack(Items.EMERALD, this.emeraldCount), new ItemStack(Items.GLASS_BOTTLE), PotionUtils.addPotionToItemStack(new ItemStack(this.potionTypeItem), this.potion), this.maxUses, this.xpValue, this.priceMultiplier);
         }
     }
 

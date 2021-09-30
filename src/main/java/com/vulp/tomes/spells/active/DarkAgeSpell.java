@@ -5,6 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 
 public class DarkAgeSpell extends ActiveSpell {
 
@@ -14,17 +15,21 @@ public class DarkAgeSpell extends ActiveSpell {
 
     @Override
     public int getSpellCost() {
-        return 0;
+        return 70;
     }
 
     @Override
     public boolean onCast(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        if (!worldIn.isRemote && !worldIn.isNightTime()) {
+            ((ServerWorld)worldIn).setDayTime(13000L);
+            return true;
+        }
         return false;
     }
 
     @Override
     public int getCooldown() {
-        return 0;
+        return 6000;
     }
 
     @Override

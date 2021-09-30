@@ -37,7 +37,17 @@ public class TomeEnchantment extends Enchantment {
     public int getMinEnchantability(int enchantmentLevel) {
         if (this.isActive()) {
             return 30;
-        } else return 0;
+        } else return 3;
+    }
+
+    @Override
+    public int getMaxEnchantability(int enchantmentLevel) {
+        return this.getMinEnchantability(enchantmentLevel) + 50;
+    }
+
+    @Override
+    public int getMaxLevel() {
+        return 1;
     }
 
     @Override
@@ -51,8 +61,8 @@ public class TomeEnchantment extends Enchantment {
     }
 
     @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack) {
-        return !isRare() && super.canApplyAtEnchantingTable(stack);
+    public boolean canApply(ItemStack stack) {
+        return super.canApply(stack);
     }
 
     @Override

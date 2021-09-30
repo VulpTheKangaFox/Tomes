@@ -1,5 +1,6 @@
 package com.vulp.tomes.events;
 
+import com.google.common.collect.ImmutableSet;
 import com.vulp.tomes.Tomes;
 import com.vulp.tomes.init.EffectInit;
 import com.vulp.tomes.init.EnchantmentInit;
@@ -10,25 +11,22 @@ import com.vulp.tomes.util.SpellEnchantUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropsBlock;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.WitchEntity;
+import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.DamagingProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
-import net.minecraft.inventory.container.MerchantContainer;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.MerchantOffer;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.EntityRayTraceResult;
@@ -39,13 +37,15 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.HashSet;
 import java.util.OptionalInt;
 import java.util.Random;
 
@@ -55,11 +55,26 @@ public class EntityEvents {
     @SubscribeEvent
     public static void onLivingSetAttackTarget(LivingSetAttackTargetEvent event) {
         Entity player = event.getTarget();
-        Entity witch = event.getEntity();
-        if (event.getTarget() instanceof PlayerEntity && event.getEntity() instanceof WitchEntity) {
-            if (SpellEnchantUtil.hasEnchant((PlayerEntity) player, EnchantmentInit.covens_rule)) {
-                ((WitchEntity)witch).setAttackTarget(null);
+        Entity aggressor = event.getEntity();
+        if (event.getTarget() instanceof PlayerEntity) {
+            if (event.getEntity() instanceof WitchEntity) {
+                if (SpellEnchantUtil.hasEnchant((PlayerEntity) player, EnchantmentInit.covens_rule)) {
+                    ((WitchEntity) aggressor).setAttackTarget(null);
+                }
             }
+            if (aggressor instanceof SpiderEntity || aggressor instanceof CreeperEntity || aggressor instanceof ZombieEntity || aggressor instanceof SkeletonEntity) {
+                if (SpellEnchantUtil.hasEnchant((PlayerEntity) player, EnchantmentInit.rotten_heart)) {
+                    ((MobEntity)aggressor).setAttackTarget(null);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLivingDespawnEvent(LivingSpawnEvent.AllowDespawn event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof WitchEntity && entity.getPersistentData().contains("Offers")) {
+            event.setResult(Event.Result.DENY);
         }
     }
 
@@ -81,30 +96,23 @@ public class EntityEvents {
                     item.onItemRightClick(world, player, hand);
                 }
             } else if (entity instanceof WitchEntity) {
-                // TODO: Create MerchantOffers and an Inventory and store them into the witch. Refer to their code instead of variables since we can't use those, maybe make some methods to handle most of the work?
-                if (!world.isRemote) {
+                // TODO: Set the data handling to work on one side, so that the randomization doesn't desync???
+                MerchantOffers offers = WitchMerchantContainer.getMerchantOffers(entity);
+
+                if (player.getActiveHand() == Hand.MAIN_HAND) {
+                    player.addStat(Stats.TALKED_TO_VILLAGER);
+                }
+
+                if (!world.isRemote && !offers.isEmpty()) {
                     CompoundNBT nbt = entity.getPersistentData();
-                    CompoundNBT nbtOffers = nbt.getCompound("Offers");
-                    boolean flag = true;
-                    if (nbt.hasUniqueId("Customer")) {
-                        if (nbt.getUniqueId("Customer") != player.getUniqueID()) {
-                            flag = false;
-                        }
-                    } else {
-                        nbt.putUniqueId("Customer", player.getUniqueID());
-                    }
-                    if (flag) {
-                        final WitchMerchantContainer[] container = new WitchMerchantContainer[1];
-                        OptionalInt optionalint = player.openContainer(new SimpleNamedContainerProvider((id, playerInventory, player2) -> {
-                            container[0] = new WitchMerchantContainer(id, playerInventory, (WitchEntity) entity);
-                            return container[0];
-                        }, entity.getDisplayName()));
-                        if (optionalint.isPresent()) {
-                            container[0].getOffers();
-                            MerchantOffers offers = new MerchantOffers(nbtOffers);
-                            if (!offers.isEmpty()) {
-                                player.openMerchantContainer(optionalint.getAsInt(), offers, 0, 0, false, false);
-                            }
+                    nbt.putUniqueId("Customer", player.getUniqueID());
+                    OptionalInt optionalint = player.openContainer(new SimpleNamedContainerProvider((id, playerInventory, player2) -> {
+                        return new WitchMerchantContainer(id, playerInventory, (WitchEntity) entity);
+                    }, entity.getDisplayName()));
+                    if (optionalint.isPresent()) {
+                        MerchantOffers merchantoffers = WitchMerchantContainer.getMerchantOffers(entity);
+                        if (!merchantoffers.isEmpty()) {
+                            player.openMerchantContainer(optionalint.getAsInt(), merchantoffers, 0, 0, false, false);
                         }
                     }
                 }

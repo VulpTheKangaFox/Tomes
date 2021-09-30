@@ -10,6 +10,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MerchantOffer;
+import net.minecraft.item.MerchantOffers;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.stats.Stats;
 
 import java.util.Random;
@@ -67,17 +69,20 @@ public class WitchMerchantResultSlot extends Slot {
 
     public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack) {
         this.onCrafting(stack);
-        MerchantOffer merchantoffer = this.witchInventory.func_214025_g();
-        if (merchantoffer != null) {
+        CompoundNBT nbt = this.witch.getPersistentData();
+        MerchantOffers merchantoffers = new MerchantOffers(nbt.getCompound("Offers"));
+        MerchantOffer offer = merchantoffers.get(this.witchInventory.getOfferNumber());
+        if (offer != null) {
             ItemStack itemstack = this.witchInventory.getStackInSlot(0);
             ItemStack itemstack1 = this.witchInventory.getStackInSlot(1);
-            if (merchantoffer.doTransaction(itemstack, itemstack1) || merchantoffer.doTransaction(itemstack1, itemstack)) {
-                this.onTrade(merchantoffer);
+            if (offer.doTransaction(itemstack, itemstack1) || offer.doTransaction(itemstack1, itemstack)) {
+                this.onTrade(offer);
                 thePlayer.addStat(Stats.TRADED_WITH_VILLAGER);
                 this.witchInventory.setInventorySlotContents(0, itemstack);
                 this.witchInventory.setInventorySlotContents(1, itemstack1);
             }
         }
+        nbt.put("Offers", merchantoffers.write());
         return stack;
     }
 

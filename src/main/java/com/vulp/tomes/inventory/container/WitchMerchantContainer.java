@@ -12,7 +12,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.MerchantContainer;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -124,7 +123,7 @@ public class WitchMerchantContainer extends MerchantContainer {
     }
 
     public void func_217046_g(int p_217046_1_) {
-        if (this.getOffers().size() > p_217046_1_) {
+        if (getMerchantOffers(this.witch).size() > p_217046_1_) {
             ItemStack itemstack = this.witchInventory.getStackInSlot(0);
             if (!itemstack.isEmpty()) {
                 if (!this.mergeItemStack(itemstack, 3, 39, true)) {
@@ -144,9 +143,9 @@ public class WitchMerchantContainer extends MerchantContainer {
             }
 
             if (this.witchInventory.getStackInSlot(0).isEmpty() && this.witchInventory.getStackInSlot(1).isEmpty()) {
-                ItemStack itemstack2 = this.getOffers().get(p_217046_1_).getDiscountedBuyingStackFirst();
+                ItemStack itemstack2 = getMerchantOffers(this.witch).get(p_217046_1_).getDiscountedBuyingStackFirst();
                 this.func_217053_c(0, itemstack2);
-                ItemStack itemstack3 = this.getOffers().get(p_217046_1_).getBuyingStackSecond();
+                ItemStack itemstack3 = getMerchantOffers(this.witch).get(p_217046_1_).getBuyingStackSecond();
                 this.func_217053_c(1, itemstack3);
             }
         }
@@ -179,51 +178,50 @@ public class WitchMerchantContainer extends MerchantContainer {
 
     @OnlyIn(Dist.CLIENT)
     public void setClientSideOffers(MerchantOffers offers) {
+        this.witch.getPersistentData().put("Offers", offers.write());
     }
 
-    public MerchantOffers getOffers() {
-        CompoundNBT nbt = this.witch.getPersistentData();
+    public static MerchantOffers getMerchantOffers(Entity entity) {
+        MerchantOffers offers = new MerchantOffers();
+        CompoundNBT nbt = entity.getPersistentData();
         if (!nbt.contains("Offers")) {
-            nbt.put("Offers", new CompoundNBT());
-            this.populateTradeData();
+            populateTradeData((WitchEntity) entity, offers);
+            nbt.put("Offers", offers.write());
+        } else {
+            offers = new MerchantOffers(nbt.getCompound("Offers"));
         }
-        return new MerchantOffers(nbt.getCompound("Offers"));
+        return offers;
     }
 
     // TODO: THIS!
-    protected void populateTradeData() {
+    public static void populateTradeData(WitchEntity witch, MerchantOffers offers) {
         Int2ObjectMap<VillagerTrades.ITrade[]> int2objectmap = WitchTrades.WITCH_TRADES;
         if (!int2objectmap.isEmpty()) {
             for (int i = 0; i < 3; i++) {
                 VillagerTrades.ITrade[] avillagertrades$itrade = int2objectmap.get(i + 1);
                 if (avillagertrades$itrade != null) {
-                    MerchantOffers merchantoffers = this.getOffers();
-                    this.setTrades(i, merchantoffers, avillagertrades$itrade);
+                    addTrades(offers, avillagertrades$itrade, witch);
                 }
             }
             if (new Random().nextBoolean()) {
                 VillagerTrades.ITrade[] avillagertrades$itrade = int2objectmap.get(4);
                 if (avillagertrades$itrade != null) {
-                    MerchantOffers merchantoffers = this.getOffers();
-                    this.setTrades(3, merchantoffers, avillagertrades$itrade);
+                    addTrades(offers, avillagertrades$itrade, witch);
                 }
             }
         }
     }
 
-    protected void setTrades(int index, MerchantOffers givenMerchantOffers, VillagerTrades.ITrade[] newTrades) {
+    protected static void addTrades(MerchantOffers givenMerchantOffers, VillagerTrades.ITrade[] newTrades, WitchEntity witch) {
         Random rand = new Random();
         Set<Integer> set = Sets.newHashSet();
         set.add(rand.nextInt(newTrades.length));
         for(Integer integer : set) {
             VillagerTrades.ITrade villagertrades$itrade = newTrades[integer];
-            MerchantOffer merchantoffer = villagertrades$itrade.getOffer(this.witch, rand);
+            MerchantOffer merchantoffer = villagertrades$itrade.getOffer(witch, rand);
             if (merchantoffer != null) {
-                if (givenMerchantOffers.size() < index || givenMerchantOffers.size() == 0) {
-                    givenMerchantOffers.add(merchantoffer);
-                } else {
-                    givenMerchantOffers.set(index, merchantoffer);
-                }
+                givenMerchantOffers.add(merchantoffer);
+
             }
         }
     }

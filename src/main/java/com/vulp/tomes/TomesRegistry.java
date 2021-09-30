@@ -70,6 +70,7 @@ public class TomesRegistry {
                 EnchantmentInit.strike_from_above.setRegistryName(location("strike_from_above")),
                 EnchantmentInit.airy_protection.setRegistryName(location("airy_protection")),
                 EnchantmentInit.force_of_wind.setRegistryName(location("force_of_wind")),
+                EnchantmentInit.everchanging_skies.setRegistryName(location("everchanging_skies")),
 
                 EnchantmentInit.lifebringer.setRegistryName(location("lifebringer")),
                 EnchantmentInit.beast_tamer.setRegistryName(location("beast_tamer")),
@@ -77,11 +78,15 @@ public class TomesRegistry {
                 EnchantmentInit.nurturing_roots.setRegistryName(location("nurturing_roots")),
                 EnchantmentInit.advantageous_growth.setRegistryName(location("advantageous_growth")),
                 EnchantmentInit.forest_affinity.setRegistryName(location("forest_affinity")),
+                EnchantmentInit.wings_of_night.setRegistryName(location("wings_of_night")),
 
                 EnchantmentInit.mind_bender.setRegistryName(location("mind_bender")),
                 EnchantmentInit.ghostly_steed.setRegistryName(location("ghostly_steed")),
                 EnchantmentInit.withering_stench.setRegistryName(location("withering_stench")),
-                EnchantmentInit.covens_rule.setRegistryName(location("covens_rule"))
+                EnchantmentInit.covens_rule.setRegistryName(location("covens_rule")),
+                EnchantmentInit.rotten_heart.setRegistryName(location("rotten_heart")),
+                EnchantmentInit.nocturnal.setRegistryName(location("nocturnal")),
+                EnchantmentInit.dark_age.setRegistryName(location("dark_age"))
         );
 
         Tomes.LOGGER.info("Enchantments Registered!");

@@ -46,7 +46,6 @@ public class BeastTamerSpell extends ActiveSpell {
         return 60;
     }
 
-    // TODO: DON'T FORGET TO SET UP SPIDER TAMING!
     @Override
     public boolean onCast(World worldIn, PlayerEntity playerIn, Hand handIn) {
         LivingEntity target = (LivingEntity) this.getTarget();

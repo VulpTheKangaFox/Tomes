@@ -10,9 +10,12 @@ import net.minecraft.item.MerchantOffers;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvents;
 
+import javax.annotation.Nullable;
+
 public class WitchMerchantInventory extends MerchantInventory {
 
     private final WitchEntity witch;
+    private int offerNumber;
 
     public WitchMerchantInventory(WitchEntity witch) {
         super(null);
@@ -29,7 +32,7 @@ public class WitchMerchantInventory extends MerchantInventory {
     }
 
     public void resetRecipeAndSlots() {
-        this.field_214026_c = null;
+        this.offerNumber = -1;
         ItemStack itemstack;
         ItemStack itemstack1;
         if (this.slots.get(0).isEmpty()) {
@@ -52,20 +55,32 @@ public class WitchMerchantInventory extends MerchantInventory {
             if (!merchantoffers.isEmpty()) {
                 MerchantOffer merchantoffer = merchantoffers.func_222197_a(itemstack, itemstack1, this.currentRecipeIndex);
                 if (merchantoffer == null || merchantoffer.hasNoUsesLeft()) {
-                    this.field_214026_c = merchantoffer;
+                    this.offerNumber = getOfferNumber(merchantoffers, merchantoffer);
                     merchantoffer = merchantoffers.func_222197_a(itemstack1, itemstack, this.currentRecipeIndex);
                 }
 
                 if (merchantoffer != null && !merchantoffer.hasNoUsesLeft()) {
-                    this.field_214026_c = merchantoffer;
+                    this.offerNumber = getOfferNumber(merchantoffers, merchantoffer);
                     this.setInventorySlotContents(2, merchantoffer.getCopyOfSellingStack());
                 } else {
                     this.setInventorySlotContents(2, ItemStack.EMPTY);
                 }
             }
-
             this.verifySellingItem();
         }
+    }
+
+    protected static int getOfferNumber(MerchantOffers list, MerchantOffer offer) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) == offer) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int getOfferNumber() {
+        return this.offerNumber;
     }
 
     public void verifySellingItem() {
