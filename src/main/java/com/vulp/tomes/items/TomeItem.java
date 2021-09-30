@@ -1,30 +1,32 @@
 package com.vulp.tomes.items;
 
-import com.vulp.tomes.Tomes;
-import com.vulp.tomes.client.renderer.tileentity.TomeTileEntityRenderer;
+import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.enchantments.TomeEnchantment;
+import com.vulp.tomes.init.ItemInit;
+import com.vulp.tomes.network.TomesPacketHandler;
+import com.vulp.tomes.network.messages.ServerActiveSpellMessage;
 import com.vulp.tomes.spells.SpellIndex;
 import com.vulp.tomes.spells.active.ActiveSpell;
-import com.vulp.tomes.spells.passive.PassiveSpell;
-import net.minecraft.client.renderer.ItemRenderer;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
-import net.minecraft.enchantment.Enchantments;
+import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class TomeItem extends Item {
 
@@ -34,14 +36,21 @@ public class TomeItem extends Item {
 
     @Override
     public int getItemEnchantability() {
-        return 15;
+        return 25;
     }
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        if (enchantment != Enchantments.UNBREAKING) {
+        EnchantmentType type = enchantment.type;
+        if (type != EnchantmentType.BREAKABLE) {
             return super.canApplyAtEnchantingTable(stack, enchantment);
-        } else return false;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isBookEnchantable(ItemStack stack, ItemStack book) {
+        return super.isBookEnchantable(stack, book);
     }
 
     @Nullable
@@ -80,7 +89,7 @@ public class TomeItem extends Item {
         return stack.getMaxDamage() - stack.getDamage();
     }
 
-    private boolean canCast(ItemStack stack) {
+    private static boolean canCast(ItemStack stack) {
         SpellIndex activeSpellIndex = getActiveSpell(stack);
         if (activeSpellIndex != null) {
             ActiveSpell spell = (ActiveSpell) activeSpellIndex.getSpell();
@@ -88,19 +97,18 @@ public class TomeItem extends Item {
         } else return false;
     }
 
-    private void castActiveSpell(World worldIn, ItemStack stack, PlayerEntity playerIn, Hand handIn) {
+    private static boolean castActiveSpell(World worldIn, ItemStack stack, PlayerEntity playerIn, Hand handIn) {
         SpellIndex activeSpellIndex = getActiveSpell(stack);
         if (activeSpellIndex != null) {
             ActiveSpell spell = (ActiveSpell) activeSpellIndex.getSpell();
-            spell.onCast(worldIn, playerIn, handIn);
-        }
+            return spell.onCast(worldIn, playerIn, handIn);
+        } else return false;
     }
 
     private static void setCooldown(ItemStack stack, int ticks) {
         CompoundNBT nbt = stack.getOrCreateTag();
         nbt.putInt("cooldown", ticks);
         nbt.putInt("cooldownTotal", ticks);
-        nbt.putInt("pixels", 16);
     }
 
     public static int getCooldown(ItemStack stack) {
@@ -124,14 +132,6 @@ public class TomeItem extends Item {
                 nbt.putInt("cooldown", nbt.getInt("cooldown") - ticks);
             }
         }
-        int max = getCooldownMax(stack);
-        int i = getCooldown(stack);
-        int j = -1;
-        if (max > 0) {
-            j = (int) (((float) i / (float)max) * 16);
-        }
-        Tomes.LOGGER.debug(i + " / " + max + " || " + j);
-        nbt.putInt("pixels", j);
     }
 
     private static boolean onCooldown(ItemStack stack) {
@@ -144,12 +144,13 @@ public class TomeItem extends Item {
     }
 
     @Override
-    public boolean hasEffect(ItemStack stack) {
-        CompoundNBT nbt = stack.getOrCreateTag();
-        if (nbt.getInt("pixels") > 0) {
-            return false;
+    public ActionResultType itemInteractionForEntity(ItemStack stack, PlayerEntity playerIn, LivingEntity target, Hand handIn) {
+        SpellIndex activeSpellIndex = getActiveSpell(stack);
+        if (activeSpellIndex != null) {
+            ActiveSpell spell = (ActiveSpell) activeSpellIndex.getSpell();
+            spell.setTarget(target);
         }
-        return super.hasEffect(stack);
+        return super.itemInteractionForEntity(stack, playerIn, target, handIn);
     }
 
     @Override
@@ -158,14 +159,33 @@ public class TomeItem extends Item {
         SpellIndex activeSpellIndex = getActiveSpell(stack[0]);
         if (activeSpellIndex != null && !onCooldown(stack[0])) {
             ActiveSpell spell = (ActiveSpell) activeSpellIndex.getSpell();
-            if (spell != null && this.canCast(stack[0])) {
-                this.castActiveSpell(worldIn, stack[0], playerIn, handIn);
-                stack[0].damageItem(spell.getSpellCost(), playerIn, playerEntity -> stack[0] = new ItemStack(stack[0].getItem()));
-                setCooldown(stack[0], spell.getCooldown());
-                return ActionResult.resultSuccess(stack[0]);
+            if (!worldIn.isRemote && spell != null && canCast(stack[0])) {
+                boolean flag = false;
+                if (castActiveSpell(worldIn, stack[0], playerIn, handIn)) {
+                    stack[0].damageItem(spell.getSpellCost(), playerIn, playerEntity -> stack[0] = new ItemStack(stack[0].getItem()));
+                    setCooldown(stack[0], spell.getCooldown());
+                    flag = true;
+                }
+                TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerActiveSpellMessage(stack[0], handIn == Hand.MAIN_HAND));
+                if (flag) {
+                    return ActionResult.resultSuccess(stack[0]);
+                }
             }
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);
+    }
+
+    public static void clientCastActiveSpell(World worldIn, PlayerEntity playerIn, ItemStack[] stack, Hand handIn) {
+        SpellIndex activeSpellIndex = getActiveSpell(stack[0]);
+        if (activeSpellIndex != null) {
+            ActiveSpell spell = (ActiveSpell) activeSpellIndex.getSpell();
+            if (spell != null) {
+                if (castActiveSpell(worldIn, stack[0], playerIn, handIn)) {
+                    stack[0].damageItem(spell.getSpellCost(), playerIn, playerEntity -> stack[0] = new ItemStack(stack[0].getItem()));
+                    setCooldown(stack[0], spell.getCooldown());
+                }
+            }
+        }
     }
 
     @Override
@@ -173,7 +193,7 @@ public class TomeItem extends Item {
         SpellIndex[] passiveSpells = getPassiveSpells(stack);
         if (isSelected && passiveSpells != null && passiveSpells.length > 0) {
             for (SpellIndex passiveSpell : passiveSpells) {
-                ((PassiveSpell)passiveSpell.getSpell()).tick();
+                passiveSpell.getSpell().tickEvent(worldIn, entityIn);
             }
         }
 
@@ -198,15 +218,20 @@ public class TomeItem extends Item {
                     passiveList.add(spellIndex);
                 }
             }
+
         }
         if (!passiveList.isEmpty()) {
             SpellIndex[] passiveIndex = new SpellIndex[passiveList.size()];
             passiveList.toArray(passiveIndex);
             setPassiveSpells(stack, passiveIndex);
         } else {
-            if (!hasActiveSpell) {
+            setPassiveSpells(stack, new SpellIndex[]{});
+        }
+        if (hasActiveSpell && activeSpell != null) {
+            activeSpell.tickEvent(worldIn, entityIn);
+        } else {
+            if (passiveList.isEmpty()) {
                 setDamage(stack, 0);
-            } else {
                 setPassiveSpells(stack, new SpellIndex[]{});
             }
         }

@@ -22,7 +22,6 @@ public class ItemRendererMixin {
 
     @Inject(at = @At("HEAD"), method = "renderItemOverlayIntoGUI(Lnet/minecraft/client/gui/FontRenderer;Lnet/minecraft/item/ItemStack;IILjava/lang/String;)V")
     public void renderItemOverlayIntoGUI(FontRenderer fr, ItemStack stack, int xPosition, int yPosition, @Nullable String text, CallbackInfo ci) {
-        Tomes.LOGGER.debug("MIXIN WORKS!");
         if (!stack.isEmpty() && stack.getItem() instanceof TomeItem) {
             int i = TomeItem.getCooldown(stack);
             if (i > 0) {

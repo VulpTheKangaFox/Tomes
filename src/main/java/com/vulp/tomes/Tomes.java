@@ -1,7 +1,11 @@
 package com.vulp.tomes;
 
-import com.vulp.tomes.client.renderer.RenderRegistry;
+import com.vulp.tomes.init.ParticleInit;
+import com.vulp.tomes.init.TagInit;
+import com.vulp.tomes.network.TomesPacketHandler;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -16,19 +20,30 @@ public class Tomes {
     public static final String MODID = "tomes";
 
     public Tomes() {
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+        IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        bus.addListener(this::setup);
+        bus.addListener(this::doClientStuff);
+        bus.addListener(this::doParticleStuff);
 
         MinecraftForge.EVENT_BUS.register(this);
+
+        TagInit.init();
     }
 
     private void setup(final FMLCommonSetupEvent event) {
+        TomesPacketHandler.init();
         LOGGER.info("Common setup event complete!");
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        RenderRegistry.renderSetup();
+        TomesRegistry.registerRenderers(event);
         LOGGER.info("Client setup event complete!");
+    }
+
+    private void doParticleStuff(final ParticleFactoryRegisterEvent event) {
+        ParticleInit.registerFactories();
+        LOGGER.info("Particle setup event complete!");
     }
 
 }

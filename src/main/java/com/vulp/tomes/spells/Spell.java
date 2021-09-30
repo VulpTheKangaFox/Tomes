@@ -2,8 +2,11 @@ package com.vulp.tomes.spells;
 
 import com.vulp.tomes.enchantments.EnchantmentTypes;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
-public class Spell {
+public abstract class Spell {
 
     private final Enchantment.Rarity rarity;
     private final boolean isRare;
@@ -26,5 +29,7 @@ public class Spell {
     public boolean isActive() {
         return this.isActive;
     }
+
+    public abstract void tickEvent(World world, Entity entity);
 
 }

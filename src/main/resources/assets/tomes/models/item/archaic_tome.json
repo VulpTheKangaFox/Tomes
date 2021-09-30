@@ -2,24 +2,5 @@
     "parent": "item/generated",
     "textures": {
         "layer0": "tomes:item/archaic_tome"
-    },
-	"overrides": [
-		{"predicate": {"tomes:cooldown":0}, "model": "tomes:item/archaic_tome_0"},
-		{"predicate": {"tomes:cooldown":1}, "model": "tomes:item/archaic_tome_1"},
-		{"predicate": {"tomes:cooldown":2}, "model": "tomes:item/archaic_tome_2"},
-		{"predicate": {"tomes:cooldown":3}, "model": "tomes:item/archaic_tome_3"},
-		{"predicate": {"tomes:cooldown":4}, "model": "tomes:item/archaic_tome_4"},
-		{"predicate": {"tomes:cooldown":5}, "model": "tomes:item/archaic_tome_5"},
-		{"predicate": {"tomes:cooldown":6}, "model": "tomes:item/archaic_tome_6"},
-		{"predicate": {"tomes:cooldown":7}, "model": "tomes:item/archaic_tome_7"},
-		{"predicate": {"tomes:cooldown":8}, "model": "tomes:item/archaic_tome_8"},
-		{"predicate": {"tomes:cooldown":9}, "model": "tomes:item/archaic_tome_9"},
-		{"predicate": {"tomes:cooldown":10}, "model": "tomes:item/archaic_tome_10"},
-		{"predicate": {"tomes:cooldown":11}, "model": "tomes:item/archaic_tome_11"},
-		{"predicate": {"tomes:cooldown":12}, "model": "tomes:item/archaic_tome_12"},
-		{"predicate": {"tomes:cooldown":13}, "model": "tomes:item/archaic_tome_13"},
-		{"predicate": {"tomes:cooldown":14}, "model": "tomes:item/archaic_tome_14"},
-		{"predicate": {"tomes:cooldown":15}, "model": "tomes:item/archaic_tome_15"},
-		{"predicate": {"tomes:cooldown":16}, "model": "tomes:item/archaic_tome_16"}
-	]
+    }
 }

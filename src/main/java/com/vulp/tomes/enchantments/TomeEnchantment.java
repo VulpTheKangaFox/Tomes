@@ -32,11 +32,12 @@ public class TomeEnchantment extends Enchantment {
         return this.isActive;
     }
 
+    // TODO: Debug and breakpoint to work out why the passive enchants don't wanna show up.
     @Override
     public int getMinEnchantability(int enchantmentLevel) {
-        if (this.isActive) {
+        if (this.isActive()) {
             return 30;
-        } else return super.getMinEnchantability(enchantmentLevel);
+        } else return 0;
     }
 
     @Override
@@ -56,7 +57,7 @@ public class TomeEnchantment extends Enchantment {
 
     @Override
     public boolean isTreasureEnchantment() {
-        return isRare() && super.isTreasureEnchantment();
+        return isRare() || super.isTreasureEnchantment();
     }
 
 }

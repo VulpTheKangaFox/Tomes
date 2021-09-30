@@ -6,5 +6,7 @@
   "item.tomes.cursed_tome": "Cursed Tome",
   "item.tomes.enchanted_archaic_tome": "Enchanted Archaic Tome",
   "item.tomes.enchanted_living_tome": "Enchanted Living Tome",
-  "item.tomes.enchanted_cursed_tome": "Enchanted Cursed Tome"
+  "item.tomes.enchanted_cursed_tome": "Enchanted Cursed Tome",
+
+  "effect.tomes.light_footed": "Light-Footed"
 }
