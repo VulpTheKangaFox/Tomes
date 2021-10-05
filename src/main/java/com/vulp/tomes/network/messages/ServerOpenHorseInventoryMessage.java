@@ -1,33 +1,29 @@
 package com.vulp.tomes.network.messages;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
-public class ServerOpenHorseInventoryPacket implements IMessage<ServerOpenHorseInventoryPacket> {
+public class ServerOpenHorseInventoryMessage implements IMessage<ServerOpenHorseInventoryMessage> {
 
-    public ServerOpenHorseInventoryPacket() {
+    public ServerOpenHorseInventoryMessage() {
     }
 
     @Override
-    public void encode(ServerOpenHorseInventoryPacket message, PacketBuffer buffer) {
+    public void encode(ServerOpenHorseInventoryMessage message, PacketBuffer buffer) {
     }
 
     @Override
-    public ServerOpenHorseInventoryPacket decode(PacketBuffer buffer) {
-        return new ServerOpenHorseInventoryPacket();
+    public ServerOpenHorseInventoryMessage decode(PacketBuffer buffer) {
+        return new ServerOpenHorseInventoryMessage();
     }
 
     @Override
-    public void handle(ServerOpenHorseInventoryPacket message, Supplier<NetworkEvent.Context> supplier) {
+    public void handle(ServerOpenHorseInventoryMessage message, Supplier<NetworkEvent.Context> supplier) {
         supplier.get().enqueueWork(() -> {
             Minecraft mc = Minecraft.getInstance();
             PlayerEntity player = mc.player;

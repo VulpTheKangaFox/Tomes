@@ -2,36 +2,20 @@ package com.vulp.tomes.entities;
 
 import com.vulp.tomes.init.ParticleInit;
 import com.vulp.tomes.network.TomesPacketHandler;
-import com.vulp.tomes.network.messages.ServerOpenHorseInventoryPacket;
-import com.vulp.tomes.network.messages.ServerTameAnimalMessage;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import com.vulp.tomes.network.messages.ServerOpenHorseInventoryMessage;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.horse.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.HorseInventoryContainer;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SOpenHorseWindowPacket;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.util.*;
-import net.minecraft.world.DifficultyInstance;
-import net.minecraft.world.IServerWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
-
-import javax.annotation.Nullable;
 
 public class SpectralSteedEntity extends HorseEntity {
 
@@ -97,7 +81,7 @@ public class SpectralSteedEntity extends HorseEntity {
 
     @Override
     public void openGUI(PlayerEntity player) {
-        TomesPacketHandler.instance.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new ServerOpenHorseInventoryPacket());
+        TomesPacketHandler.instance.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) player), new ServerOpenHorseInventoryMessage());
     }
 
     public void saddleUp() {

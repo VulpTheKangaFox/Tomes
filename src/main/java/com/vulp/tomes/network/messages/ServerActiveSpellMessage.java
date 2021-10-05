@@ -2,7 +2,6 @@ package com.vulp.tomes.network.messages;
 
 import com.vulp.tomes.items.TomeItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;

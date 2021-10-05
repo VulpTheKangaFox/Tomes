@@ -1,26 +1,12 @@
 package com.vulp.tomes.network.messages;
 
-import com.vulp.tomes.enchantments.EnchantClueHolder;
-import com.vulp.tomes.items.TomeItem;
-import javafx.util.Pair;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.EnchantmentContainer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.function.Supplier;
 
 public class ServerEnchantmentClueMessage implements IMessage<ServerEnchantmentClueMessage> {

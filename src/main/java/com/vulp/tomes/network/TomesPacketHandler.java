@@ -24,7 +24,7 @@ public class TomesPacketHandler {
         register(ServerTameAnimalMessage.class, new ServerTameAnimalMessage());
         register(ServerEnchantmentClueMessage.class, new ServerEnchantmentClueMessage());
         register(ServerWitheringStenchParticleMessage.class, new ServerWitheringStenchParticleMessage());
-        register(ServerOpenHorseInventoryPacket.class, new ServerOpenHorseInventoryPacket());
+        register(ServerOpenHorseInventoryMessage.class, new ServerOpenHorseInventoryMessage());
     }
 
     private static <T> void register(Class<T> clazz, IMessage<T> message)

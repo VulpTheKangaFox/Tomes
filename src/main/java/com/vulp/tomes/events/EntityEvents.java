@@ -1,6 +1,5 @@
 package com.vulp.tomes.events;
 
-import com.google.common.collect.ImmutableSet;
 import com.vulp.tomes.Tomes;
 import com.vulp.tomes.init.EffectInit;
 import com.vulp.tomes.init.EnchantmentInit;
@@ -13,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropsBlock;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.item.ItemEntity;
@@ -38,7 +36,10 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -46,7 +47,6 @@ import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.HashSet;
 import java.util.OptionalInt;
 import java.util.Random;
 
@@ -70,16 +70,6 @@ public class EntityEvents {
             }
         }
     }
-
-/*
-    @SubscribeEvent
-    public static void onLivingHealEvent(LivingHealEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof PlayerEntity && ((PlayerEntity) entity).isPotionActive(EffectInit.leaden_veins)) {
-            ((PlayerEntity) entity).heal();
-        }
-    }
-*/
 
     @SubscribeEvent
     public static void onLivingDropsEvent(LivingDropsEvent event) {
