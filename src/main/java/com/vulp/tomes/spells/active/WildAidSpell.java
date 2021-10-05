@@ -1,5 +1,6 @@
 package com.vulp.tomes.spells.active;
 
+import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.entities.WildWolfEntity;
 import com.vulp.tomes.init.EntityInit;
 import net.minecraft.enchantment.Enchantment;
@@ -24,7 +25,7 @@ public class WildAidSpell extends ActiveSpell{
 
     @Override
     public int getSpellCost() {
-        return 20;
+        return TomesConfig.wild_aid_cost.get();
     }
 
     @Override
@@ -48,7 +49,7 @@ public class WildAidSpell extends ActiveSpell{
 
     @Override
     public int getCooldown() {
-        return 80;
+        return TomesConfig.wild_aid_cooldown.get();
     }
 
     @Override

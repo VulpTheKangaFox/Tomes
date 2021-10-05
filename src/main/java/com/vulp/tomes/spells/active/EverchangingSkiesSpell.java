@@ -1,5 +1,6 @@
 package com.vulp.tomes.spells.active;
 
+import com.vulp.tomes.config.TomesConfig;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -18,7 +19,7 @@ public class EverchangingSkiesSpell extends ActiveSpell {
 
     @Override
     public int getSpellCost() {
-        return 70;
+        return TomesConfig.everchanging_skies_cost.get();
     }
 
     @Override
@@ -43,7 +44,7 @@ public class EverchangingSkiesSpell extends ActiveSpell {
 
     @Override
     public int getCooldown() {
-        return 600;
+        return TomesConfig.everchanging_skies_cooldown.get();
     }
 
     @Override

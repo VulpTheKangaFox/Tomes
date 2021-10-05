@@ -30,18 +30,20 @@ public class ForestAffinitySpell extends PassiveSpell {
 
     @Override
     void slowTick(World world, Entity entity) {
-        if (entity instanceof LivingEntity) {
-            if (this.toggle) {
-                LivingEntity user = (LivingEntity) entity;
-                user.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 120, 0, true, false));
-                user.addPotionEffect(new EffectInstance(Effects.REGENERATION, 120, 0, true, false));
+        if (!world.isRemote) {
+            if (entity instanceof LivingEntity) {
+                if (this.toggle) {
+                    LivingEntity user = (LivingEntity) entity;
+                    user.addPotionEffect(new EffectInstance(Effects.RESISTANCE, 120, 0, true, false));
+                    user.addPotionEffect(new EffectInstance(Effects.REGENERATION, 120, 0, true, false));
+                }
+                Biome currentBiome = world.getBiome(entity.getPosition());
+                if (this.lastBiome != null && this.lastBiome != currentBiome) {
+                    ResourceLocation key = currentBiome.getRegistryName();
+                    this.toggle = key != null && BiomeDictionary.hasType(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, key), BiomeDictionary.Type.FOREST);
+                }
+                this.lastBiome = currentBiome;
             }
-            Biome currentBiome = world.getBiome(entity.getPosition());
-            if (this.lastBiome != null && this.lastBiome != currentBiome) {
-                ResourceLocation key = currentBiome.getRegistryName();
-                this.toggle = key != null && BiomeDictionary.hasType(RegistryKey.getOrCreateKey(Registry.BIOME_KEY, key), BiomeDictionary.Type.FOREST);
-            }
-            this.lastBiome = currentBiome;
         }
     }
 

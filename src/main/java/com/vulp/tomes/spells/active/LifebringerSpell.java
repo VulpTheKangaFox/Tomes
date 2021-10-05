@@ -1,5 +1,6 @@
 package com.vulp.tomes.spells.active;
 
+import com.vulp.tomes.config.TomesConfig;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IGrowable;
 import net.minecraft.enchantment.Enchantment;
@@ -25,7 +26,7 @@ public class LifebringerSpell extends ActiveSpell {
 
     @Override
     public int getSpellCost() {
-        return 25;
+        return TomesConfig.lifebringer_cost.get();
     }
 
     // TODO: Hearts show up even when animal is on cooldown!
@@ -57,7 +58,7 @@ public class LifebringerSpell extends ActiveSpell {
 
     @Override
     public int getCooldown() {
-        return 80;
+        return TomesConfig.lifebringer_cooldown.get();
     }
 
     @Override

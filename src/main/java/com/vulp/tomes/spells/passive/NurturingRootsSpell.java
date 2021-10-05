@@ -23,24 +23,23 @@ public class NurturingRootsSpell extends PassiveSpell {
 
     @Override
     void fastTick(World world, Entity entity) {
-        if (entity instanceof PlayerEntity) {
-            if (entity.isOnGround() && isOnGrass(entity.getPosition(), world)) {
-                this.grassTime = 15;
-            } else {
-                this.grassTime--;
-            }
-            FoodStats stats = ((PlayerEntity) entity).getFoodStats();
-            int currentLevel = stats.getFoodLevel();
-            if (this.grassTime > 0 && this.lastFoodValue != -1 && stats.getFoodLevel() < this.lastFoodValue) {
-                if (this.toggle) {
-                    stats.setFoodLevel(this.lastFoodValue);
-                    Tomes.LOGGER.debug("HUNGER RESTORED!");
+        if (!world.isRemote) {
+            if (entity instanceof PlayerEntity) {
+                if (entity.isOnGround() && isOnGrass(entity.getPosition(), world)) {
+                    this.grassTime = 15;
                 } else {
-                    Tomes.LOGGER.debug("HUNGER NOT RESTORED.");
+                    this.grassTime--;
                 }
-                this.toggle = !this.toggle;
+                FoodStats stats = ((PlayerEntity) entity).getFoodStats();
+                int currentLevel = stats.getFoodLevel();
+                if (this.grassTime > 0 && this.lastFoodValue != -1 && stats.getFoodLevel() < this.lastFoodValue) {
+                    if (this.toggle) {
+                        stats.setFoodLevel(this.lastFoodValue);
+                    }
+                    this.toggle = !this.toggle;
+                }
+                this.lastFoodValue = currentLevel;
             }
-            this.lastFoodValue = currentLevel;
         }
     }
 

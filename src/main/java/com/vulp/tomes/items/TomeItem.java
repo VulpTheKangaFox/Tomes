@@ -19,16 +19,14 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-public class TomeItem extends Item {
+public class TomeItem extends HiddenDescriptorItem {
 
     public TomeItem(Properties properties) {
         super(properties);
@@ -36,7 +34,7 @@ public class TomeItem extends Item {
 
     @Override
     public int getItemEnchantability() {
-        return 40;
+        return 30;
     }
 
     @Override
@@ -46,6 +44,11 @@ public class TomeItem extends Item {
             return super.canApplyAtEnchantingTable(stack, enchantment);
         }
         return false;
+    }
+
+    @Override
+    public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
+        return (toRepair.getItem() == ItemInit.ancient_heart && repair.getItem() == ItemInit.archaic_tome) || (toRepair.getItem() == ItemInit.beating_heart && repair.getItem() == ItemInit.living_tome) || (toRepair.getItem() == ItemInit.sweet_heart && repair.getItem() == ItemInit.cursed_tome) || super.getIsRepairable(toRepair, repair);
     }
 
     @Nullable
@@ -185,10 +188,14 @@ public class TomeItem extends Item {
 
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected) {
-        SpellIndex[] passiveSpells = getPassiveSpells(stack);
-        if (isSelected && passiveSpells != null && passiveSpells.length > 0) {
-            for (SpellIndex passiveSpell : passiveSpells) {
-                passiveSpell.getSpell().tickEvent(worldIn, entityIn);
+        SpellIndex[] passiveSpells;
+        for (ItemStack itemStack : entityIn.getHeldEquipment()) {
+            passiveSpells = getPassiveSpells(stack);
+            if (itemStack == stack && passiveSpells != null && passiveSpells.length > 0) {
+                for (SpellIndex passiveSpell : passiveSpells) {
+                    passiveSpell.getSpell().tickEvent(worldIn, entityIn);
+                }
+                break;
             }
         }
 

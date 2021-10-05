@@ -5,6 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectType;
+import net.minecraft.world.World;
 
 import java.util.Random;
 
@@ -18,20 +19,25 @@ public class LightFootedEffect extends TomeEffect {
 
     @Override
     void potionTick(LivingEntity entityLivingBaseIn, int amplifier) {
+        World world = entityLivingBaseIn.world;
         if (entityLivingBaseIn.isOnGround()) {
             if (this.timer <= 0) {
                 this.timer = 5;
-                entityLivingBaseIn.removePotionEffect(this);
+                if (!world.isRemote) {
+                    entityLivingBaseIn.removePotionEffect(this);
+                }
             } else if (this.timer == 5) {
-                Random rand = new Random();
-                PlayerEntity player = Minecraft.getInstance().player;
-                if (player != null) {
-                    for (int i = 0; i < 10; i++) {
-                        player.getEntityWorld().addParticle(ParticleTypes.POOF, player.getPosX(), player.getPosY() + 0.05, player.getPosZ(), (rand.nextFloat() - rand.nextFloat()) * 0.15, (rand.nextFloat() - rand.nextFloat()) * 0.05, (rand.nextFloat() - rand.nextFloat()) * 0.15);
+                if (world.isRemote) {
+                    Random rand = new Random();
+                    PlayerEntity player = Minecraft.getInstance().player;
+                    if (player != null) {
+                        for (int i = 0; i < 10; i++) {
+                            player.getEntityWorld().addParticle(ParticleTypes.POOF, player.getPosX(), player.getPosY() + 0.05, player.getPosZ(), (rand.nextFloat() - rand.nextFloat()) * 0.15, (rand.nextFloat() - rand.nextFloat()) * 0.05, (rand.nextFloat() - rand.nextFloat()) * 0.15);
+                        }
                     }
                 }
                 this.timer--;
-            } else this.timer--;
+            }
         }
     }
 

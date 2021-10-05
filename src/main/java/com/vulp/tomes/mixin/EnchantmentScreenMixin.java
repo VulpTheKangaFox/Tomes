@@ -28,7 +28,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-@OnlyIn(Dist.CLIENT)
 @Mixin(EnchantmentScreen.class)
 public abstract class EnchantmentScreenMixin extends ContainerScreen<EnchantmentContainer> {
 

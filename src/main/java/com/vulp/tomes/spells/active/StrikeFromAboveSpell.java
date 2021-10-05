@@ -1,5 +1,6 @@
 package com.vulp.tomes.spells.active;
 
+import com.vulp.tomes.config.TomesConfig;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -22,7 +23,7 @@ public class StrikeFromAboveSpell extends ActiveSpell {
 
     @Override
     public int getSpellCost() {
-        return 40;
+        return TomesConfig.strike_from_above_cost.get();
     }
 
     @Override
@@ -43,7 +44,7 @@ public class StrikeFromAboveSpell extends ActiveSpell {
 
     @Override
     public int getCooldown() {
-        return 200;
+        return TomesConfig.strike_from_above_cooldown.get();
     }
 
     @Override

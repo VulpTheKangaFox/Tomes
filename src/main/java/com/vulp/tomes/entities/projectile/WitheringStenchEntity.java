@@ -54,8 +54,6 @@ public class WitheringStenchEntity extends ProjectileEntity {
         double d1 = this.getPosY() + vector3d.y;
         double d2 = this.getPosZ() + vector3d.z;
         this.updatePitchAndYaw();
-        float f = 0.99F;
-        float f1 = 0.06F;
         if (this.world.func_234853_a_(this.getBoundingBox()).noneMatch(AbstractBlock.AbstractBlockState::isAir)) {
             this.remove();
         } else if (this.isInWaterOrBubbleColumn()) {

@@ -6,7 +6,6 @@ import net.minecraft.particles.BasicParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-// NOTE: Particle does not show.
 @OnlyIn(Dist.CLIENT)
 public class WitheringStenchParticle extends DeceleratingParticle {
 

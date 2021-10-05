@@ -27,7 +27,7 @@ public class EnchantmentInit {
     public static Enchantment nurturing_roots = createTomeEnchant(SpellIndex.NURTURING_ROOTS, EnchantmentTypes.LIVING_TOME);
     public static Enchantment advantageous_growth = createTomeEnchant(SpellIndex.ADVANTAGEOUS_GROWTH, EnchantmentTypes.LIVING_TOME);
     public static Enchantment forest_affinity = createTomeEnchant(SpellIndex.FOREST_AFFINITY, EnchantmentTypes.LIVING_TOME);
-    public static Enchantment wings_of_night = createTomeEnchant(SpellIndex.WINGS_OF_NIGHT, EnchantmentTypes.LIVING_TOME);
+    public static Enchantment molding_lands = createTomeEnchant(SpellIndex.WINGS_OF_NIGHT, EnchantmentTypes.LIVING_TOME);
 
     public static Enchantment mind_bender = createTomeEnchant(SpellIndex.MIND_BENDER, EnchantmentTypes.CURSED_TOME);
     public static Enchantment ghostly_steed = createTomeEnchant(SpellIndex.GHOSTLY_STEED, EnchantmentTypes.CURSED_TOME);

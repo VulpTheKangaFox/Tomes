@@ -2,6 +2,7 @@ package com.vulp.tomes.spells.active;
 
 import com.google.common.collect.ImmutableSet;
 import com.sun.javafx.geom.Vec3d;
+import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.entities.TamedSpiderEntity;
 import com.vulp.tomes.init.EntityInit;
 import com.vulp.tomes.network.TomesPacketHandler;
@@ -43,7 +44,7 @@ public class BeastTamerSpell extends ActiveSpell {
 
     @Override
     public int getSpellCost() {
-        return 60;
+        return TomesConfig.beast_tamer_cost.get();
     }
 
     @Override
@@ -68,7 +69,7 @@ public class BeastTamerSpell extends ActiveSpell {
                             float yaw = target.rotationYaw;
                             float yawHead = target.rotationYawHead;
                             ITextComponent name = target.getCustomName();
-                            TamedSpiderEntity tamedEntity = EntityInit.tamed_spider.spawn((ServerWorld) worldIn, nbt, name, playerIn, target.getPosition(), SpawnReason.MOB_SUMMONED, false, false);
+                            TamedSpiderEntity tamedEntity = EntityInit.tamed_spider.spawn((ServerWorld) worldIn, nbt, name, playerIn, target.getPosition(), SpawnReason.CONVERSION, false, false);
                             if (tamedEntity != null) {
                                 target.remove();
                                 tamedEntity.rotationPitch = pitch;
@@ -93,7 +94,7 @@ public class BeastTamerSpell extends ActiveSpell {
 
     @Override
     public int getCooldown() {
-        return 60;
+        return TomesConfig.beast_tamer_cooldown.get();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.vulp.tomes.spells.active;
 
+import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.entities.SpectralSteedEntity;
 import com.vulp.tomes.init.EntityInit;
 import net.minecraft.client.Minecraft;
@@ -21,7 +22,7 @@ public class GhostlySteedSpell extends ActiveSpell {
 
     @Override
     public int getSpellCost() {
-        return 35;
+        return TomesConfig.ghostly_steed_cost.get();
     }
 
     @Override
@@ -45,7 +46,7 @@ public class GhostlySteedSpell extends ActiveSpell {
 
     @Override
     public int getCooldown() {
-        return 200;
+        return TomesConfig.ghostly_steed_cooldown.get();
     }
 
     @Override

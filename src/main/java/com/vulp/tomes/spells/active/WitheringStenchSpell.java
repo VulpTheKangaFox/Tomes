@@ -1,5 +1,6 @@
 package com.vulp.tomes.spells.active;
 
+import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.entities.projectile.WitheringStenchEntity;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
@@ -18,28 +19,27 @@ public class WitheringStenchSpell extends ActiveSpell {
 
     @Override
     public int getSpellCost() {
-        return 20;
+        return TomesConfig.withering_stench_cost.get();
     }
 
     @Override
     public boolean onCast(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        for (int i = 0; i < 7; i++) {
-            WitheringStenchEntity proj = new WitheringStenchEntity(worldIn, playerIn);
-            double d0 = playerIn.getLookVec().getX();
-            double d1 = playerIn.getLookVec().getY();
-            double d2 = playerIn.getLookVec().getZ();
-            proj.shoot(d0, d1, d2, 1.0F, 20.0F);
-            worldIn.addEntity(proj);
+        if (!worldIn.isRemote) {
+            for (int i = 0; i < 7; i++) {
+                WitheringStenchEntity proj = new WitheringStenchEntity(worldIn, playerIn);
+                double d0 = playerIn.getLookVec().getX();
+                double d1 = playerIn.getLookVec().getY();
+                double d2 = playerIn.getLookVec().getZ();
+                proj.shoot(d0, d1, d2, 1.0F, 20.0F);
+                worldIn.addEntity(proj);
+            }
         }
-        /*if (!this.isSilent()) {
-            this.worldIn.playSound((PlayerEntity) null, this.getPosX(), this.getPosY(), this.getPosZ(), SoundEvents.ENTITY_LLAMA_SPIT, this.getSoundCategory(), 1.0F, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.2F);
-        }*/
         return true;
     }
 
     @Override
     public int getCooldown() {
-        return 35;
+        return TomesConfig.withering_stench_cooldown.get();
     }
 
     @Override

@@ -20,11 +20,13 @@ public class NocturnalSpell extends PassiveSpell {
 
     @Override
     void slowTick(World world, Entity entity) {
-        if (entity instanceof LivingEntity && world.isNightTime()) {
-            LivingEntity user = (LivingEntity) entity;
-            user.addPotionEffect(new EffectInstance(Effects.STRENGTH, 120, 0, true, false));
-            user.addPotionEffect(new EffectInstance(Effects.SPEED, 120, 0, true, false));
-            user.addPotionEffect(new EffectInstance(Effects.NIGHT_VISION, 280, 0, true, false));
+        if (!world.isRemote) {
+            if (entity instanceof LivingEntity && world.isNightTime()) {
+                LivingEntity user = (LivingEntity) entity;
+                user.addPotionEffect(new EffectInstance(Effects.STRENGTH, 120, 0, true, false));
+                user.addPotionEffect(new EffectInstance(Effects.SPEED, 120, 0, true, false));
+                user.addPotionEffect(new EffectInstance(Effects.NIGHT_VISION, 280, 0, true, false));
+            }
         }
     }
 

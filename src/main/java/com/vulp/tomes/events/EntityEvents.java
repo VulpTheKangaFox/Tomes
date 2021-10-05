@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.vulp.tomes.Tomes;
 import com.vulp.tomes.init.EffectInit;
 import com.vulp.tomes.init.EnchantmentInit;
+import com.vulp.tomes.init.ItemInit;
 import com.vulp.tomes.inventory.container.WitchMerchantContainer;
 import com.vulp.tomes.items.DebugItem;
 import com.vulp.tomes.items.TomeItem;
@@ -15,6 +16,8 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,9 +38,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -66,6 +67,35 @@ public class EntityEvents {
                 if (SpellEnchantUtil.hasEnchant((PlayerEntity) player, EnchantmentInit.rotten_heart)) {
                     ((MobEntity)aggressor).setAttackTarget(null);
                 }
+            }
+        }
+    }
+
+/*
+    @SubscribeEvent
+    public static void onLivingHealEvent(LivingHealEvent event) {
+        Entity entity = event.getEntity();
+        if (entity instanceof PlayerEntity && ((PlayerEntity) entity).isPotionActive(EffectInit.leaden_veins)) {
+            ((PlayerEntity) entity).heal();
+        }
+    }
+*/
+
+    @SubscribeEvent
+    public static void onLivingDropsEvent(LivingDropsEvent event) {
+        Entity entity = event.getEntity();
+        Random rand = new Random();
+        if (entity instanceof WitchEntity) {
+            if (rand.nextInt(2) == 0) {
+                event.getDrops().add(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY() + entity.getYOffset(), entity.getPosZ(), new ItemStack(ItemInit.sweet_heart)));
+            }
+        } else if (entity instanceof VillagerEntity || entity instanceof AbstractIllagerEntity) {
+            if (rand.nextInt(6) == 0) {
+                event.getDrops().add(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY() + entity.getYOffset(), entity.getPosZ(), new ItemStack(ItemInit.beating_heart)));
+            }
+        } else if (entity instanceof ZombieEntity) {
+            if (rand.nextInt(20) == 0) {
+                event.getDrops().add(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY() + entity.getYOffset(), entity.getPosZ(), new ItemStack(ItemInit.ancient_heart)));
             }
         }
     }
@@ -106,9 +136,7 @@ public class EntityEvents {
                 if (!world.isRemote && !offers.isEmpty()) {
                     CompoundNBT nbt = entity.getPersistentData();
                     nbt.putUniqueId("Customer", player.getUniqueID());
-                    OptionalInt optionalint = player.openContainer(new SimpleNamedContainerProvider((id, playerInventory, player2) -> {
-                        return new WitchMerchantContainer(id, playerInventory, (WitchEntity) entity);
-                    }, entity.getDisplayName()));
+                    OptionalInt optionalint = player.openContainer(new SimpleNamedContainerProvider((id, playerInventory, player2) -> new WitchMerchantContainer(id, playerInventory, (WitchEntity) entity), entity.getDisplayName()));
                     if (optionalint.isPresent()) {
                         MerchantOffers merchantoffers = WitchMerchantContainer.getMerchantOffers(entity);
                         if (!merchantoffers.isEmpty()) {

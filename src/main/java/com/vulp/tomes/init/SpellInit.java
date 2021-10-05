@@ -1,6 +1,5 @@
 package com.vulp.tomes.init;
 
-import com.vulp.tomes.enchantments.TomeEnchantment;
 import com.vulp.tomes.spells.Spell;
 import com.vulp.tomes.spells.active.*;
 import com.vulp.tomes.spells.passive.*;
@@ -22,7 +21,7 @@ public class SpellInit {
     public static Spell nurturing_roots = new NurturingRootsSpell(Enchantment.Rarity.COMMON, false, false);
     public static Spell advantageous_growth = new AdvantageousGrowthSpell(Enchantment.Rarity.COMMON, false, false);
     public static Spell forest_affinity = new ForestAffinitySpell(Enchantment.Rarity.COMMON, false, false);
-    public static Spell wings_of_night = new WingsOfNightSpell(Enchantment.Rarity.RARE, true, true);
+    public static Spell molding_lands = new MoldingLandsSpell(Enchantment.Rarity.RARE, true, true);
 
     public static Spell mind_bender = new MindBenderSpell(Enchantment.Rarity.UNCOMMON, true, false);
     public static Spell ghostly_steed = new GhostlySteedSpell(Enchantment.Rarity.UNCOMMON, true, false);

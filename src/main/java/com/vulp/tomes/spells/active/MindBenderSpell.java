@@ -1,5 +1,6 @@
 package com.vulp.tomes.spells.active;
 
+import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.entities.ai.MindBendFollowGoal;
 import com.vulp.tomes.entities.ai.NullifyAttackableTargetGoal;
 import com.vulp.tomes.init.EffectInit;
@@ -20,7 +21,7 @@ public class MindBenderSpell extends ActiveSpell {
 
     @Override
     public int getSpellCost() {
-        return 30;
+        return TomesConfig.mind_bender_cost.get();
     }
 
     @Override
@@ -40,7 +41,7 @@ public class MindBenderSpell extends ActiveSpell {
 
     @Override
     public int getCooldown() {
-        return 50;
+        return TomesConfig.mind_bender_cooldown.get();
     }
 
     @Override

@@ -1,13 +1,15 @@
 package com.vulp.tomes.spells.passive;
 
-import com.vulp.tomes.init.EnchantmentInit;
-import com.vulp.tomes.util.SpellEnchantUtil;
+import com.vulp.tomes.init.EffectInit;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -25,16 +27,10 @@ public class RottenHeartSpell extends PassiveSpell {
 
     }
 
-    // TODO: Making animals run away is incredibly difficult apparently. Perhaps another downside instead? Or not maybe, considering these tomes are meant to be pretty hard to get in the first place.
     @Override
     void slowTick(World world, Entity entity) {
-        if (!world.isRemote) {
-        BlockPos pos = entity.getPosition();
-        List<AnimalEntity> entityList = world.getEntitiesWithinAABB(AnimalEntity.class, new AxisAlignedBB(pos.add(64, 64, 64), pos.add(-64, -64, -64)));
-        for (AnimalEntity animal : entityList) {
-            PrioritizedGoal goal = new PrioritizedGoal(-1, new AvoidEntityGoal<>(animal, PlayerEntity.class, 6.0F, 0.9F, 1.5F));
-            animal.goalSelector.goals.add(goal);
-            }
+        if (!world.isRemote && entity instanceof LivingEntity) {
+            ((LivingEntity) entity).addPotionEffect(new EffectInstance(EffectInit.leaden_veins, 320, 0, true, false));
         }
     }
 

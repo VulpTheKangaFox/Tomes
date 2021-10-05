@@ -3,6 +3,7 @@ package com.vulp.tomes.network.messages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.inventory.InventoryScreen;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
@@ -29,7 +30,7 @@ public class ServerOpenHorseInventoryPacket implements IMessage<ServerOpenHorseI
     public void handle(ServerOpenHorseInventoryPacket message, Supplier<NetworkEvent.Context> supplier) {
         supplier.get().enqueueWork(() -> {
             Minecraft mc = Minecraft.getInstance();
-            ClientPlayerEntity player = mc.player;
+            PlayerEntity player = mc.player;
             if (player != null) {
                 mc.displayGuiScreen(new InventoryScreen(mc.player));
             }

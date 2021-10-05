@@ -4,9 +4,6 @@ import com.vulp.tomes.init.EnchantmentInit;
 import com.vulp.tomes.init.SpellInit;
 import net.minecraft.enchantment.Enchantment;
 
-import java.util.Collections;
-import java.util.List;
-
 public enum SpellIndex {
 
     SELF_PROPULSION(SpellInit.self_propulsion, EnchantmentInit.self_propulsion), // Implemented.
@@ -23,7 +20,7 @@ public enum SpellIndex {
     NURTURING_ROOTS(SpellInit.nurturing_roots, EnchantmentInit.nurturing_roots),
     ADVANTAGEOUS_GROWTH(SpellInit.advantageous_growth, EnchantmentInit.advantageous_growth),
     FOREST_AFFINITY(SpellInit.forest_affinity, EnchantmentInit.forest_affinity),
-    WINGS_OF_NIGHT(SpellInit.wings_of_night, EnchantmentInit.wings_of_night),
+    WINGS_OF_NIGHT(SpellInit.molding_lands, EnchantmentInit.molding_lands),
 
     MIND_BENDER(SpellInit.mind_bender, EnchantmentInit.mind_bender),
     GHOSTLY_STEED(SpellInit.ghostly_steed, EnchantmentInit.ghostly_steed),

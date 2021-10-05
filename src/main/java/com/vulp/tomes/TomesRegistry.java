@@ -4,8 +4,12 @@ import com.vulp.tomes.client.renderer.entity.renderers.SpectralSteedRenderer;
 import com.vulp.tomes.client.renderer.entity.renderers.TamedSpiderRenderer;
 import com.vulp.tomes.client.renderer.entity.renderers.WildWolfRenderer;
 import com.vulp.tomes.client.renderer.entity.renderers.WitheringStenchRenderer;
+import com.vulp.tomes.effects.LeadenVeinsEffect;
+import com.vulp.tomes.effects.LightFootedEffect;
+import com.vulp.tomes.effects.MindBendEffect;
 import com.vulp.tomes.init.*;
 import com.vulp.tomes.items.DebugItem;
+import com.vulp.tomes.items.HiddenDescriptorItem;
 import com.vulp.tomes.items.TomeItem;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.EntityType;
@@ -16,6 +20,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.potion.Effect;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.IFormattableTextComponent;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
@@ -41,11 +48,15 @@ public class TomesRegistry {
                 ItemInit.living_tome = new TomeItem(new Item.Properties().group(TOMES_TAB).maxDamage(1000)).setRegistryName(location("living_tome")),
                 ItemInit.cursed_tome = new TomeItem(new Item.Properties().group(TOMES_TAB).maxDamage(1000)).setRegistryName(location("cursed_tome")),
 
+                ItemInit.ancient_heart = new HiddenDescriptorItem(new Item.Properties().group(TOMES_TAB)).setRegistryName(location("ancient_heart")),
+                ItemInit.beating_heart = new HiddenDescriptorItem(new Item.Properties().group(TOMES_TAB)).setRegistryName(location("beating_heart")),
+                ItemInit.sweet_heart = new HiddenDescriptorItem(new Item.Properties().group(TOMES_TAB)).setRegistryName(location("sweet_heart")),
+
                 ItemInit.archaic_tome_open = new Item(new Item.Properties()).setRegistryName(location("archaic_tome_open")),
                 ItemInit.living_tome_open = new Item(new Item.Properties()).setRegistryName(location("living_tome_open")),
                 ItemInit.cursed_tome_open = new Item(new Item.Properties()).setRegistryName(location("cursed_tome_open")),
 
-                ItemInit.debug_tome = new DebugItem(new Item.Properties().group(TOMES_TAB)).setRegistryName(location("debug_tome"))
+                ItemInit.debug_tome = new DebugItem(new Item.Properties()).setRegistryName(location("debug_tome"))
         );
 
 /*
@@ -78,7 +89,7 @@ public class TomesRegistry {
                 EnchantmentInit.nurturing_roots.setRegistryName(location("nurturing_roots")),
                 EnchantmentInit.advantageous_growth.setRegistryName(location("advantageous_growth")),
                 EnchantmentInit.forest_affinity.setRegistryName(location("forest_affinity")),
-                EnchantmentInit.wings_of_night.setRegistryName(location("wings_of_night")),
+                EnchantmentInit.molding_lands.setRegistryName(location("molding_lands")),
 
                 EnchantmentInit.mind_bender.setRegistryName(location("mind_bender")),
                 EnchantmentInit.ghostly_steed.setRegistryName(location("ghostly_steed")),
@@ -116,7 +127,8 @@ public class TomesRegistry {
     public static void effectRegistryEvent(final RegistryEvent.Register<Effect> event) {
         event.getRegistry().registerAll(
                 EffectInit.light_footed.setRegistryName(location("light_footed")),
-                EffectInit.mind_bend.setRegistryName(location("mind_bend"))
+                EffectInit.mind_bend.setRegistryName(location("mind_bend")),
+                EffectInit.leaden_veins.setRegistryName(location("leaden_veins"))
         );
 
         Tomes.LOGGER.info("Enchantments Registered!");

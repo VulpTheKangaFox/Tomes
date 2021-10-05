@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.EnchantmentContainer;
 import net.minecraft.item.ItemStack;
@@ -49,9 +50,8 @@ public class ServerEnchantmentClueMessage implements IMessage<ServerEnchantmentC
     @Override
     public void handle(ServerEnchantmentClueMessage message, Supplier<NetworkEvent.Context> supplier) {
         supplier.get().enqueueWork(() -> {
-            ClientPlayerEntity player = Minecraft.getInstance().player;
+            PlayerEntity player = Minecraft.getInstance().player;
             if (player != null) {
-                World world = Minecraft.getInstance().player.getEntityWorld();
                 Container container = player.openContainer;
                 if (container.windowId == message.windowID && container instanceof EnchantmentContainer) {
                     ((EnchantmentContainer) container).enchantClue = message.list;

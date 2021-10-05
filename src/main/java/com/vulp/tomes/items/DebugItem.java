@@ -5,9 +5,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MerchantOffers;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
-public class DebugItem extends Item {
+import javax.annotation.Nullable;
+
+public class DebugItem extends HiddenDescriptorItem {
 
     public DebugItem(Properties properties) {
         super(properties);

@@ -5,10 +5,12 @@
   "refmap": "tomes.refmap.json",
   "mixins": [
     "EnchantmentContainerMixin",
-    "EnchantmentScreenMixin",
-    "ItemRendererMixin"
+    "EnchantmentHelperMixin",
+    "FoodStatsMixin"
   ],
   "client": [
+    "EnchantmentScreenMixin",
+    "ItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

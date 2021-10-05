@@ -5,17 +5,19 @@ import com.vulp.tomes.init.ItemInit;
 import com.vulp.tomes.items.TomeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid= Tomes.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid= Tomes.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE, value=Dist.CLIENT)
 public class RenderEvents {
 
     @SubscribeEvent
     public static void onRenderHandEvent(RenderHandEvent event) {
         ItemStack stack = event.getItemStack();
-        if (stack.getItem() instanceof TomeItem) {
+        if (stack.getItem() instanceof TomeItem && stack.isEnchanted()) {
             Minecraft minecraft = Minecraft.getInstance();
             TomeItem tome = (TomeItem) stack.getItem();
             ItemStack newStack = stack.copy();

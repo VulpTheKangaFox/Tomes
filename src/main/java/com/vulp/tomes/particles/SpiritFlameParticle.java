@@ -7,6 +7,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+@OnlyIn(Dist.CLIENT)
 public class SpiritFlameParticle extends DeceleratingParticle {
 
     private SpiritFlameParticle(ClientWorld world, double x, double y, double z, double motionX, double motionY, double motionZ) {
