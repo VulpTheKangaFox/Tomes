@@ -81,7 +81,7 @@ public abstract class EnchantmentContainerMixin extends Container {
                         }
                     }
 
-                    this.rand.setSeed((long)this.xpSeed.get());
+                    this.rand.setSeed(this.xpSeed.get());
 
                     for(int i1 = 0; i1 < 3; ++i1) {
                         this.enchantLevels[i1] = EnchantmentHelper.calcItemStackEnchantability(this.rand, i1, (int)power, itemstack);

@@ -34,6 +34,10 @@ public final class TomesConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> dark_age_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> dark_age_cooldown;
 
+    public static final ForgeConfigSpec.ConfigValue<Integer> archaic_heart_droprate;
+    public static final ForgeConfigSpec.ConfigValue<Integer> beating_heart_droprate;
+    public static final ForgeConfigSpec.ConfigValue<Integer> sweet_heart_droprate;
+
     static {
         BUILDER.push("Costs and Cooldowns:").comment("Cost means amount of tome damage, and cooldown is in ticks.");
         self_prop_cost = BUILDER.comment("DEFAULT = 8").define("Self Propulsion Cost", 8);
@@ -62,6 +66,11 @@ public final class TomesConfig {
         withering_stench_cooldown = BUILDER.comment("DEFAULT = 35").define("Withering Stench Cooldown", 35);
         dark_age_cost = BUILDER.comment("DEFAULT = 70").define("Dark Age Cost", 70);
         dark_age_cooldown = BUILDER.comment("DEFAULT = 4000").define("Dark Age Cooldown", 4000);
+        BUILDER.pop();
+        BUILDER.push("Droprates: (0 is never drop, 20 is always drop)").comment("The drop rate of the hearts. 0 is never, 20 is always.");
+        archaic_heart_droprate = BUILDER.comment("DEFAULT = 1").define("Archaic Heart Droprate", 1);
+        beating_heart_droprate = BUILDER.comment("DEFAULT = 3").define("Beating Heart Droprate", 3);
+        sweet_heart_droprate = BUILDER.comment("DEFAULT = 8").define("Sweet Heart Droprate", 8);
         BUILDER.pop();
         SPEC = BUILDER.build();
     }

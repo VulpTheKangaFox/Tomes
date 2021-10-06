@@ -1,6 +1,7 @@
 package com.vulp.tomes.events;
 
 import com.vulp.tomes.Tomes;
+import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.entities.SpectralSteedEntity;
 import com.vulp.tomes.entities.TamedSpiderEntity;
 import com.vulp.tomes.entities.WildWolfEntity;
@@ -82,15 +83,15 @@ public class EntityEvents {
         Entity entity = event.getEntity();
         Random rand = new Random();
         if (entity instanceof WitchEntity) {
-            if (rand.nextInt(2) == 0) {
+            if (rand.nextInt(19) < TomesConfig.sweet_heart_droprate.get()) {
                 event.getDrops().add(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY() + entity.getYOffset(), entity.getPosZ(), new ItemStack(ItemInit.sweet_heart)));
             }
         } else if (entity instanceof VillagerEntity || entity instanceof AbstractIllagerEntity) {
-            if (rand.nextInt(6) == 0) {
+            if (rand.nextInt(19) < TomesConfig.beating_heart_droprate.get()) {
                 event.getDrops().add(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY() + entity.getYOffset(), entity.getPosZ(), new ItemStack(ItemInit.beating_heart)));
             }
         } else if (entity instanceof ZombieEntity) {
-            if (rand.nextInt(20) == 0) {
+            if (rand.nextInt(19) < TomesConfig.archaic_heart_droprate.get()) {
                 event.getDrops().add(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY() + entity.getYOffset(), entity.getPosZ(), new ItemStack(ItemInit.ancient_heart)));
             }
         }
@@ -200,7 +201,7 @@ public class EntityEvents {
     @SubscribeEvent
     public static void expEvent(PlayerXpEvent.XpChange event) {
         if (SpellEnchantUtil.hasEnchant(event.getPlayer(), EnchantmentInit.dying_knowledge)) {
-            event.setAmount((int) ((float) event.getAmount() * 1.4F));
+            event.setAmount((int) ((float) event.getAmount() * 1.5F));
         }
     }
 
