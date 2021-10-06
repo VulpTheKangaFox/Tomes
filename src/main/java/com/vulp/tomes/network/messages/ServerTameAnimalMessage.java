@@ -5,6 +5,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.Random;
@@ -36,6 +38,7 @@ public class ServerTameAnimalMessage implements IMessage<ServerTameAnimalMessage
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handle(ServerTameAnimalMessage message, Supplier<NetworkEvent.Context> supplier) {
         supplier.get().enqueueWork(() -> {
             PlayerEntity player = Minecraft.getInstance().player;

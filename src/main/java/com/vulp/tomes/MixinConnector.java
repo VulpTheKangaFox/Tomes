@@ -6,6 +6,6 @@ import org.spongepowered.asm.mixin.connect.IMixinConnector;
 public class MixinConnector implements IMixinConnector {
     @Override
     public void connect() {
-        Mixins.addConfigurations("assets/tomes/tomes.mixins.json");
+        Mixins.addConfigurations("tomes.mixins.json");
     }
 }

@@ -1,8 +1,12 @@
 package com.vulp.tomes.events;
 
 import com.vulp.tomes.Tomes;
+import com.vulp.tomes.entities.SpectralSteedEntity;
+import com.vulp.tomes.entities.TamedSpiderEntity;
+import com.vulp.tomes.entities.WildWolfEntity;
 import com.vulp.tomes.init.EffectInit;
 import com.vulp.tomes.init.EnchantmentInit;
+import com.vulp.tomes.init.EntityInit;
 import com.vulp.tomes.init.ItemInit;
 import com.vulp.tomes.inventory.container.WitchMerchantContainer;
 import com.vulp.tomes.items.DebugItem;
@@ -14,6 +18,7 @@ import net.minecraft.block.CropsBlock;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.*;
@@ -35,6 +40,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;

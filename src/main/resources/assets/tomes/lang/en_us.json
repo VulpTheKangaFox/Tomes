@@ -35,7 +35,17 @@
   "enchantment.tomes.covens_rule": "Coven's Rule",
   "enchantment.tomes.dark_age": "Dark Age",
 
+  "container.tomes.witch_merchant_container": "Witch Merchant",
+
+  "entity.tomes.wild_wolf": "Wild Wolf",
+  "entity.tomes.spectral_steed": "Spectral Steed",
+  "entity.tomes.tamed_spider": "Tamed Spider",
+  "entity.tomes.withering_stench": "Withering Stench",
+
   "effect.tomes.light_footed": "Light-Footed",
   "effect.tomes.mind_bend": "Mind Bend",
-  "effect.tomes.leaden_veins": "Leaden Veins"
+  "effect.tomes.leaden_veins": "Leaden Veins",
+
+  "particle.tomes.spirit_flame": "Spirit Flame",
+  "particle.tomes.withering_stench": "Withering Stench"
 }

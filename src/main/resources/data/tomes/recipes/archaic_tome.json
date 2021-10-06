@@ -1,0 +1,30 @@
+{
+    "type": "minecraft:crafting_shaped",
+	"group": "tomes",
+    "pattern": [
+        " # ",
+        "EDF",
+        " C "
+    ],
+    "key": {
+        "#": {
+            "item": "tomes:ancient_heart"
+        },
+        "E": {
+            "item": "minecraft:experience_bottle"
+        },
+        "D": {
+            "item": "minecraft:book"
+        },
+        "F": {
+            "item": "minecraft:feather"
+        },
+        "C": {
+            "item": "minecraft:clock"
+        }
+    },
+    "result": {
+        "item": "tomes:archaic_tome",
+        "count": 1
+    }
+}

@@ -5,6 +5,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.EnchantmentContainer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -34,6 +36,7 @@ public class ServerEnchantmentClueMessage implements IMessage<ServerEnchantmentC
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handle(ServerEnchantmentClueMessage message, Supplier<NetworkEvent.Context> supplier) {
         supplier.get().enqueueWork(() -> {
             PlayerEntity player = Minecraft.getInstance().player;

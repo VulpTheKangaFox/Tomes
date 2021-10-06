@@ -1,0 +1,30 @@
+{
+    "type": "minecraft:crafting_shaped",
+	"group": "tomes",
+    "pattern": [
+        " # ",
+        "EDF",
+        " C "
+    ],
+    "key": {
+        "#": {
+            "item": "tomes:beating_heart"
+        },
+        "E": {
+            "item": "minecraft:ghast_tear"
+        },
+        "D": {
+            "item": "minecraft:book"
+        },
+        "F": {
+            "tag": "minecraft:saplings"
+        },
+        "C": {
+            "item": "minecraft:golden_apple"
+        }
+    },
+    "result": {
+        "item": "tomes:living_tome",
+        "count": 1
+    }
+}

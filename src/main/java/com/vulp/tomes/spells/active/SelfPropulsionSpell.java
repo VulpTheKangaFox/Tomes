@@ -32,17 +32,16 @@ public class SelfPropulsionSpell extends ActiveSpell {
 
     @Override
     public boolean onCast(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        if (worldIn.isRemote) {
             this.betweenTimer = 2;
             this.totalTimer = 30;
-            Random rand = new Random();
-            for (int i = 0; i < 10; i++) {
-                worldIn.addParticle(ParticleTypes.POOF, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), (rand.nextFloat() - rand.nextFloat()) * 0.1, (rand.nextFloat() - rand.nextFloat()) * 0.1, (rand.nextFloat() - rand.nextFloat()) * 0.1);
+            if (worldIn.isRemote) {
+                Random rand = new Random();
+                for (int i = 0; i < 10; i++) {
+                    worldIn.addParticle(ParticleTypes.POOF, playerIn.getPosX(), playerIn.getPosY(), playerIn.getPosZ(), (rand.nextFloat() - rand.nextFloat()) * 0.1, (rand.nextFloat() - rand.nextFloat()) * 0.1, (rand.nextFloat() - rand.nextFloat()) * 0.1);
+                }
             }
-        } else {
             playerIn.addVelocity(playerIn.getLookVec().x * 1.4, playerIn.getLookVec().y * 1.4, playerIn.getLookVec().z * 1.4);
             playerIn.addPotionEffect(new EffectInstance(EffectInit.light_footed, 65, 0, false, false));
-        }
         return true;
     }
 

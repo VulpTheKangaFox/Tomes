@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.DeferredWorkQueue;
 
 public class EntityInit {
 
@@ -34,7 +35,8 @@ public class EntityInit {
         return entity;
     }
 
-    public static void registerEntityAttributes() {
+    // I'm keeping the deprecated method for the attributes because the newer event doesn't trigger in time apparently and then the game spews missing attribute errors in logs.
+    public static void setupAttributes() {
         GlobalEntityTypeAttributes.put(wild_wolf, WildWolfEntity.registerAttributes().create());
         GlobalEntityTypeAttributes.put(tamed_spider, TamedSpiderEntity.bakeAttributes().create());
         GlobalEntityTypeAttributes.put(spectral_steed, SpectralSteedEntity.func_234237_fg_().create());

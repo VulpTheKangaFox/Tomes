@@ -4,6 +4,8 @@ import com.vulp.tomes.init.ParticleInit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.Random;
@@ -46,6 +48,7 @@ public class ServerWitheringStenchParticleMessage implements IMessage<ServerWith
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public void handle(ServerWitheringStenchParticleMessage message, Supplier<NetworkEvent.Context> supplier) {
         supplier.get().enqueueWork(() -> {
             World world = Minecraft.getInstance().world;

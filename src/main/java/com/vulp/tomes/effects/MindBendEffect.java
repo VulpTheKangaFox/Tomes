@@ -17,23 +17,19 @@ public class MindBendEffect extends TomeEffect {
 
     @Override
     public void applyAttributesModifiersToEntity(LivingEntity entityLivingBaseIn, AttributeModifierManager attributeMapIn, int amplifier) {
-        if (!entityLivingBaseIn.world.isRemote) {
-            CompoundNBT nbt = entityLivingBaseIn.getPersistentData();
-            if (!nbt.hasUniqueId("PlayerFollowingUUID")) {
-                Tomes.LOGGER.error("MindBendEffect applied through unusual means or commands. Effect will likely not cause anything to happen.");
-            }
+        CompoundNBT nbt = entityLivingBaseIn.getPersistentData();
+        if (!nbt.hasUniqueId("PlayerFollowingUUID")) {
+            Tomes.LOGGER.error("MindBendEffect applied through unusual means or commands. Effect will likely not cause anything to happen.");
         }
         super.applyAttributesModifiersToEntity(entityLivingBaseIn, attributeMapIn, amplifier);
     }
 
     @Override
     public void removeAttributesModifiersFromEntity(LivingEntity entityLivingBaseIn, AttributeModifierManager attributeMapIn, int amplifier) {
-        if (!entityLivingBaseIn.world.isRemote) {
-            entityLivingBaseIn.getPersistentData().remove("PlayerFollowingUUID");
-            if (entityLivingBaseIn instanceof MobEntity) {
-                ((MobEntity) entityLivingBaseIn).goalSelector.removeGoal(new MindBendFollowGoal((MobEntity) entityLivingBaseIn, 1.0F, 5.0F, 2.0F));
-                ((MobEntity) entityLivingBaseIn).targetSelector.removeGoal(new NullifyAttackableTargetGoal((MobEntity) entityLivingBaseIn, false));
-            }
+        entityLivingBaseIn.getPersistentData().remove("PlayerFollowingUUID");
+        if (entityLivingBaseIn instanceof MobEntity) {
+            ((MobEntity) entityLivingBaseIn).goalSelector.removeGoal(new MindBendFollowGoal((MobEntity) entityLivingBaseIn, 1.0F, 5.0F, 2.0F));
+            ((MobEntity) entityLivingBaseIn).targetSelector.removeGoal(new NullifyAttackableTargetGoal((MobEntity) entityLivingBaseIn, false));
         }
         super.removeAttributesModifiersFromEntity(entityLivingBaseIn, attributeMapIn, amplifier);
     }

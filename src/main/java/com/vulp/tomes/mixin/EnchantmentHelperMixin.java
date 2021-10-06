@@ -58,6 +58,14 @@ public abstract class EnchantmentHelperMixin {
                         }
                     }
                 }
+                if (level >= 40 + randomIn.nextInt(10)) {
+                    while (list.size() < 4) {
+                        EnchantmentData data = WeightedRandom.getRandomItem(randomIn, list1);
+                        if (!((TomeEnchantment)data.enchantment).isActive() && !list.contains(data)) {
+                            list.add(data);
+                        }
+                    }
+                }
             }
 
             info.setReturnValue(list);

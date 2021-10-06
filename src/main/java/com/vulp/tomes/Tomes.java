@@ -25,9 +25,9 @@ public class Tomes {
     public Tomes() {
         IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        bus.addListener(this::setup);
-        bus.addListener(this::doClientStuff);
-        bus.addListener(this::doParticleStuff);
+        bus.addListener(this::commonSetup);
+        bus.addListener(this::clientSetup);
+        bus.addListener(this::particleSetup);
 
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, TomesConfig.SPEC, "tomes-common.toml");
 
@@ -36,17 +36,17 @@ public class Tomes {
         TagInit.init();
     }
 
-    private void setup(final FMLCommonSetupEvent event) {
+    private void commonSetup(final FMLCommonSetupEvent event) {
         TomesPacketHandler.init();
         LOGGER.info("Common setup event complete!");
     }
 
-    private void doClientStuff(final FMLClientSetupEvent event) {
+    private void clientSetup(final FMLClientSetupEvent event) {
         TomesRegistry.registerRenderers(event);
         LOGGER.info("Client setup event complete!");
     }
 
-    private void doParticleStuff(final ParticleFactoryRegisterEvent event) {
+    private void particleSetup(final ParticleFactoryRegisterEvent event) {
         ParticleInit.registerFactories();
         LOGGER.info("Particle setup event complete!");
     }

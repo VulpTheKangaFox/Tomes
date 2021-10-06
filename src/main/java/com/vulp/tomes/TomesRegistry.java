@@ -59,16 +59,6 @@ public class TomesRegistry {
                 ItemInit.debug_tome = new DebugItem(new Item.Properties()).setRegistryName(location("debug_tome"))
         );
 
-/*
-        ItemModelsProperties.registerProperty(ItemInit.archaic_tome, new ResourceLocation(Tomes.MODID, "open"), (itemStack, world, livingEntity) -> {
-            if (itemStack.hasTag()) {
-                CompoundNBT nbt = itemStack.getTag();
-                return nbt.contains("Open") && nbt.getBoolean("Open") ? 1 : 0;
-            }
-            return 0;
-        });
-*/
-
         Tomes.LOGGER.info("Items Registered!");
     }
 
@@ -119,7 +109,9 @@ public class TomesRegistry {
                 EntityInit.spectral_steed,
                 EntityInit.withering_stench
                 );
-        EntityInit.registerEntityAttributes();
+
+        EntityInit.setupAttributes();
+
         Tomes.LOGGER.info("Entities Registered!");
     }
 
