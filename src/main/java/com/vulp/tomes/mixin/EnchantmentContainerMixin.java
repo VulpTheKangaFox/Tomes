@@ -1,9 +1,9 @@
 package com.vulp.tomes.mixin;
 
+import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.enchantments.EnchantClueHolder;
 import com.vulp.tomes.network.TomesPacketHandler;
 import com.vulp.tomes.network.messages.ServerEnchantmentClueMessage;
-import javafx.util.Pair;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;

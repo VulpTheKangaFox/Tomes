@@ -1,5 +1,9 @@
 package com.vulp.tomes.entities;
 
+import com.vulp.tomes.init.ParticleInit;
+import com.vulp.tomes.network.TomesPacketHandler;
+import com.vulp.tomes.network.messages.ServerOpenHorseInventoryMessage;
+import com.vulp.tomes.network.messages.ServerSpiderFallMessage;
 import com.vulp.tomes.pathfinding.BetterClimberPathNavigator;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -16,6 +20,7 @@ import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.WolfEntity;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.entity.projectile.AbstractArrowEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -34,6 +39,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -252,9 +258,10 @@ public class TamedSpiderEntity extends TameableEntity implements IAngerable {
 
     @Override
     public boolean onLivingFall(float distance, float damageMultiplier) {
-        /*if (distance > 3) {
-            // TODO: Throw some web particles and poofiness for effect when the spider lands.
-        }*/
+        if (distance > 3) {
+            Vector3d vec = this.getPositionVec();
+            TomesPacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY.with(() -> this), new ServerSpiderFallMessage(vec.x, vec.y, vec.z));
+        }
         return super.onLivingFall(distance, 0);
     }
 

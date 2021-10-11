@@ -1,6 +1,6 @@
 package com.vulp.tomes.enchantments;
 
-import javafx.util.Pair;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.util.registry.Registry;
 
@@ -52,33 +52,33 @@ public class EnchantClueHolder {
         int[] levels = new int[a + b + c];
         int counter = 0;
         for (Pair<Enchantment, Integer> value : slot1) {
-            enchants[counter] = Registry.ENCHANTMENT.getId(value.getKey());
+            enchants[counter] = Registry.ENCHANTMENT.getId(value.getFirst());
             counter++;
         }
         enchants[counter] = -5;
         counter++;
         for (Pair<Enchantment, Integer> pair : slot2) {
-            enchants[counter] = Registry.ENCHANTMENT.getId(pair.getKey());
+            enchants[counter] = Registry.ENCHANTMENT.getId(pair.getFirst());
             counter++;
         }
         enchants[counter] = -5;
         counter++;
         for (Pair<Enchantment, Integer> integerPair : slot3) {
-            enchants[counter] = Registry.ENCHANTMENT.getId(integerPair.getKey());
+            enchants[counter] = Registry.ENCHANTMENT.getId(integerPair.getFirst());
             counter++;
         }
         enchants[counter] = -5;
         counter = 0;
         for (Pair<Enchantment, Integer> enchantmentIntegerPair : slot1) {
-            levels[counter] = enchantmentIntegerPair.getValue();
+            levels[counter] = enchantmentIntegerPair.getSecond();
             counter++;
         }
         for (Pair<Enchantment, Integer> enchantmentIntegerPair : slot2) {
-            levels[counter] = enchantmentIntegerPair.getValue();
+            levels[counter] = enchantmentIntegerPair.getSecond();
             counter++;
         }
         for (Pair<Enchantment, Integer> enchantmentIntegerPair : slot3) {
-            levels[counter] = enchantmentIntegerPair.getValue();
+            levels[counter] = enchantmentIntegerPair.getSecond();
             counter++;
         }
         int enchLength = enchants.length;

@@ -25,6 +25,11 @@ public class TomesPacketHandler {
         register(ServerEnchantmentClueMessage.class, new ServerEnchantmentClueMessage());
         register(ServerWitheringStenchParticleMessage.class, new ServerWitheringStenchParticleMessage());
         register(ServerOpenHorseInventoryMessage.class, new ServerOpenHorseInventoryMessage());
+        register(ServerProjDeflectMessage.class, new ServerProjDeflectMessage());
+        register(ServerSpiderFallMessage.class, new ServerSpiderFallMessage());
+        register(ServerMindBendMessage.class, new ServerMindBendMessage());
+        register(ServerSyncPersistentDataMessage.class, new ServerSyncPersistentDataMessage());
+        register(ServerSummonDespawnMessage.class, new ServerSummonDespawnMessage());
     }
 
     private static <T> void register(Class<T> clazz, IMessage<T> message)

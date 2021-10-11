@@ -43,6 +43,6 @@ abstract class FoodStatsMixin {
                 this.foodTimer = 0;
             }
         }
-    }
+    }// diamond, heart, jack, spade
 
 }

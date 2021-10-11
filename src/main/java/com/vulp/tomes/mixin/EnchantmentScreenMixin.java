@@ -2,10 +2,10 @@ package com.vulp.tomes.mixin;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.enchantments.EnchantClueHolder;
 import com.vulp.tomes.init.EnchantmentInit;
 import com.vulp.tomes.init.ItemInit;
-import javafx.util.Pair;
 import net.minecraft.client.gui.screen.EnchantmentScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.enchantment.Enchantment;
@@ -78,7 +78,11 @@ public abstract class EnchantmentScreenMixin extends ContainerScreen<Enchantment
                     list.add((new TranslationTextComponent("container.enchant.clue", enchantment == null ? "" : enchantment.getDisplayName(l))).mergeStyle(TextFormatting.WHITE));
                 } else {
                     for (Pair<Enchantment, Integer> clue : clueList) {
-                        list.add(getDisplayName(clue.getKey(), clue.getValue()));
+                        if (clue.getFirst() != null) {
+                            list.add(getDisplayName(clue.getFirst(), clue.getSecond()));
+                        } else {
+                            list.add(new StringTextComponent(". . .").mergeStyle(TextFormatting.AQUA));
+                        }
                     }
                 }
                 if (clueList.isEmpty()) {

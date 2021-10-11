@@ -84,12 +84,6 @@ public class WitheringStenchEntity extends ProjectileEntity {
         super.shoot(x, y, z, velocity, inaccuracy);
         Vector3d motion = this.getMotion();
         TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerWitheringStenchParticleMessage(this.getPosX(), this.getPosY(), this.getPosZ(), motion.getX(), motion.getY(), motion.getZ()));
-        /*if (this.world.isRemote()) {
-            for(int i = 0; i < 2; ++i) {
-                double d0 = 0.2D + 0.1D * (double)i;
-                this.world.addParticle(ParticleInit.withering_stench, this.getPosition().getX() + (rand.nextFloat() * 0.2) - 0.1, this.getPosition().getY() + (rand.nextFloat() * 0.1) - 0.05, this.getPosZ() + (rand.nextFloat() * 0.2) - 0.1, this.getMotion().x * d0, this.getMotion().y, this.getMotion().z * d0);
-            }
-        }*/
     }
 
     protected void onEntityHit(EntityRayTraceResult result) {

@@ -3,6 +3,7 @@ package com.vulp.tomes.entities;
 import com.vulp.tomes.init.ParticleInit;
 import com.vulp.tomes.network.TomesPacketHandler;
 import com.vulp.tomes.network.messages.ServerOpenHorseInventoryMessage;
+import com.vulp.tomes.network.messages.ServerSummonDespawnMessage;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.passive.AnimalEntity;
@@ -12,7 +13,9 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.particles.IParticleData;
 import net.minecraft.util.*;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -21,10 +24,12 @@ public class SpectralSteedEntity extends HorseEntity {
 
     private int regenTimer = 35;
     public int lifeTimer;
+    private boolean despawning = false;
 
     public SpectralSteedEntity(EntityType<? extends HorseEntity> type, World worldIn) {
         super(type, worldIn);
-        this.lifeTimer = 12000;
+        // this.lifeTimer = 12000;
+        this.lifeTimer = 200;
         this.setHorseTamed(true);
         this.horseChest.setInventorySlotContents(0, new ItemStack(Items.SADDLE));
     }
@@ -52,12 +57,13 @@ public class SpectralSteedEntity extends HorseEntity {
         if (compound.contains("LifeTime")) {
             this.lifeTimer = compound.getInt("LifeTime");
         } else {
-            this.lifeTimer = 12000;
+            this.lifeTimer = 200;
         }
     }
 
     public void livingTick() {
         super.livingTick();
+        boolean flag = false;
         if (!this.world.isRemote) {
             if (this.regenTimer <= 0) {
                 this.heal(1.0F);
@@ -65,17 +71,19 @@ public class SpectralSteedEntity extends HorseEntity {
             } else {
                 this.regenTimer--;
             }
-
-            if (this.lifeTimer <= 0) {
-                this.remove();
-            } else {
-                if (this.lifeTimer <= 100) {
-                    // TODO: Add particle as warning that horse will disappear.
-                }
-                this.lifeTimer--;
-            }
         } else {
-            this.world.addParticle(ParticleInit.spirit_flame, this.getPosXRandom(0.65D), this.getPosYRandom(), this.getPosZRandom(0.65D), 0.0D, 0.0D, 0.0D);
+            flag = true;
+        }
+        if (this.lifeTimer <= 0) {
+            this.remove();
+        } else {
+            if (this.lifeTimer <= 100 && flag) {
+                this.despawning = true;
+                this.world.addParticle(ParticleInit.spectral_steed_despawn, this.getPosX(), this.getPosY() + (this.getHeight() / 2.0F), this.getPosZ(), this.getEntityId(), 0.0F, 0.0F);
+            } else {
+                this.world.addParticle(ParticleInit.spirit_flame, this.getPosXRandom(0.65D), this.getPosYRandom(), this.getPosZRandom(0.65D), 0.0D, 0.0D, 0.0D);
+            }
+            this.lifeTimer--;
         }
     }
 
@@ -146,6 +154,10 @@ public class SpectralSteedEntity extends HorseEntity {
     @Override
     public boolean canMateWith(AnimalEntity otherAnimal) {
         return false;
+    }
+
+    public boolean isDespawning() {
+        return this.despawning;
     }
 
 }

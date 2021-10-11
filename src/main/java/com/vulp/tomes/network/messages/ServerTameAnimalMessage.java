@@ -43,7 +43,7 @@ public class ServerTameAnimalMessage implements IMessage<ServerTameAnimalMessage
         supplier.get().enqueueWork(() -> {
             PlayerEntity player = Minecraft.getInstance().player;
             if (player != null) {
-                World world = Minecraft.getInstance().player.getEntityWorld();
+                World world = player.getEntityWorld();
                 Random rand = new Random();
                 double[] array = message.array;
                 for(int i = 0; i < 7; ++i) {

@@ -4,14 +4,19 @@ import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.entities.ai.MindBendFollowGoal;
 import com.vulp.tomes.entities.ai.NullifyAttackableTargetGoal;
 import com.vulp.tomes.init.EffectInit;
+import com.vulp.tomes.network.TomesPacketHandler;
+import com.vulp.tomes.network.messages.ServerMindBendMessage;
+import com.vulp.tomes.network.messages.ServerOpenHorseInventoryMessage;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 public class MindBenderSpell extends ActiveSpell {
 
@@ -32,7 +37,7 @@ public class MindBenderSpell extends ActiveSpell {
                 target.getPersistentData().putUniqueId("PlayerFollowingUUID", playerIn.getUniqueID());
                 ((MobEntity) target).goalSelector.addGoal(1, new MindBendFollowGoal((MobEntity) target, 1.0F, 5.0F, 2.0F));
                 ((MobEntity) target).targetSelector.addGoal(0, new NullifyAttackableTargetGoal((MobEntity) target, false));
-                target.addPotionEffect(new EffectInstance(EffectInit.mind_bend, 2400, 0, false, true));
+                target.addPotionEffect(new EffectInstance(EffectInit.mind_bend, 2400, 0, false, false));
                 return true;
             }
         }

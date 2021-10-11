@@ -132,7 +132,12 @@ public class TomesRegistry {
         event.getRegistry().registerAll
                 (
                         ParticleInit.spirit_flame.setRegistryName(location("spirit_flame")),
-                        ParticleInit.withering_stench.setRegistryName(location("withering_stench"))
+                        ParticleInit.withering_stench.setRegistryName(location("withering_stench")),
+                        ParticleInit.wind_deflect.setRegistryName(location("wind_deflect")),
+                        ParticleInit.web_net.setRegistryName(location("web_net")),
+                        ParticleInit.hex.setRegistryName(location("hex")),
+                        ParticleInit.wild_wolf_despawn.setRegistryName(location("wild_wolf_despawn")),
+                        ParticleInit.spectral_steed_despawn.setRegistryName(location("spectral_steed_despawn"))
                 );
 
         Tomes.LOGGER.info("Particles Registered!");
