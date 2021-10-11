@@ -143,14 +143,13 @@ public class EntityEvents {
         }
     }
 
-    // NOTE: this will double block drops from crops, not add a percentile chance of an extra drop. The latter is too tricky to pull off.
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
         PlayerEntity player = event.getPlayer();
         World world = player.world;
         BlockPos pos = event.getPos();
         BlockState state = world.getBlockState(pos);
-        if (SpellEnchantUtil.hasEnchant(player, EnchantmentInit.advantageous_growth) && state.getBlock() instanceof CropsBlock) {
+        if (SpellEnchantUtil.hasEnchant(player, EnchantmentInit.advantageous_growth) && state.getBlock() instanceof CropsBlock && ((CropsBlock) state.getBlock()).isMaxAge(state)) {
             Block.spawnDrops(state, world, pos);
         }
     }
