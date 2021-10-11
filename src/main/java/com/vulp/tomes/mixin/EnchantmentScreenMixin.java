@@ -6,6 +6,7 @@ import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.enchantments.EnchantClueHolder;
 import com.vulp.tomes.init.EnchantmentInit;
 import com.vulp.tomes.init.ItemInit;
+import com.vulp.tomes.items.TomeItem;
 import net.minecraft.client.gui.screen.EnchantmentScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.enchantment.Enchantment;
@@ -48,7 +49,7 @@ public abstract class EnchantmentScreenMixin extends ContainerScreen<Enchantment
     }
 
     private boolean hasTome() {
-        return inventory != null && Arrays.stream(new ItemStack[]{inventory.getCurrentItem(), inventory.offHandInventory.get(0)}).anyMatch(item -> item.getItem() == ItemInit.archaic_tome && EnchantmentHelper.getEnchantments(item).containsKey(EnchantmentInit.linguist));
+        return inventory != null && Arrays.stream(new ItemStack[]{inventory.getCurrentItem(), inventory.offHandInventory.get(0)}).anyMatch(item -> item.getItem() instanceof TomeItem && EnchantmentHelper.getEnchantments(item).containsKey(EnchantmentInit.linguist));
     }
 
     /**
