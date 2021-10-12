@@ -25,11 +25,13 @@ public class SpectralSteedEntity extends HorseEntity {
     private int regenTimer = 35;
     public int lifeTimer;
     private boolean despawning = false;
+    private boolean fade = false;
+    private int fadeTimer = 17;
+    private int fadeTimerMax = 17;
 
     public SpectralSteedEntity(EntityType<? extends HorseEntity> type, World worldIn) {
         super(type, worldIn);
-        // this.lifeTimer = 12000;
-        this.lifeTimer = 200;
+        this.lifeTimer = 12000;
         this.setHorseTamed(true);
         this.horseChest.setInventorySlotContents(0, new ItemStack(Items.SADDLE));
     }
@@ -57,7 +59,7 @@ public class SpectralSteedEntity extends HorseEntity {
         if (compound.contains("LifeTime")) {
             this.lifeTimer = compound.getInt("LifeTime");
         } else {
-            this.lifeTimer = 200;
+            this.lifeTimer = 12000;
         }
     }
 
@@ -77,8 +79,17 @@ public class SpectralSteedEntity extends HorseEntity {
         if (this.lifeTimer <= 0) {
             this.remove();
         } else {
-            if (this.lifeTimer <= 100 && flag) {
+            if (this.lifeTimer <= 200 && flag) {
                 this.despawning = true;
+                if (this.fadeTimer <= 0) {
+                    this.fade = !this.fade;
+                    this.fadeTimer = this.fadeTimerMax;
+                    if (this.fadeTimerMax > 2) {
+                        this.fadeTimerMax--;
+                    }
+                } else {
+                    this.fadeTimer--;
+                }
                 this.world.addParticle(ParticleInit.spectral_steed_despawn, this.getPosX(), this.getPosY() + (this.getHeight() / 2.0F), this.getPosZ(), this.getEntityId(), 0.0F, 0.0F);
             } else {
                 this.world.addParticle(ParticleInit.spirit_flame, this.getPosXRandom(0.65D), this.getPosYRandom(), this.getPosZRandom(0.65D), 0.0D, 0.0D, 0.0D);
@@ -160,4 +171,7 @@ public class SpectralSteedEntity extends HorseEntity {
         return this.despawning;
     }
 
+    public boolean getFade() {
+        return this.fade;
+    }
 }

@@ -35,7 +35,6 @@ public class GhostlySteedSpell extends ActiveSpell {
                 BlockPos pos = rayHit.getPos();
                 SpectralSteedEntity entity = (SpectralSteedEntity) EntityInit.spectral_steed.spawn(((ServerPlayerEntity)playerIn).getServerWorld(), null, playerIn, pos, SpawnReason.MOB_SUMMONED, true, false);
                 if (entity != null) {
-                    entity.lifeTimer = 200;
                     entity.setHorseTamed(true);
                     entity.saddleUp();
                 }

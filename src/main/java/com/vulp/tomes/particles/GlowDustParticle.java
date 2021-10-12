@@ -39,7 +39,7 @@ public class GlowDustParticle extends SpriteTexturedParticle {
 
     @Override
     public IParticleRenderType getRenderType() {
-        return IParticleRenderType.PARTICLE_SHEET_LIT;
+        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -52,9 +52,10 @@ public class GlowDustParticle extends SpriteTexturedParticle {
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
-        if (this.maxAge-- <= 0) {
+        if (this.maxAge-- <= 0 || this.particleAlpha <= 0.0F) {
             this.setExpired();
         } else {
+            this.particleAlpha -= 0.05F;
             Entity entity = this.world.getEntityByID(this.entityID);
             if (entity != null) {
                 this.posX = entity.getPosX() + this.varX;

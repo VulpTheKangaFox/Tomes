@@ -17,7 +17,7 @@ public class RenderTypes extends RenderType {
 
     public static RenderType getSpectral(ResourceLocation locationIn, boolean outlineIn) {
         RenderState.TextureState renderstate$texturestate = new RenderState.TextureState(locationIn, false, false);
-        return makeType("spectral", DefaultVertexFormats.ENTITY, 7, 256, false, true, RenderType.State.getBuilder().texture(renderstate$texturestate).transparency(TRANSLUCENT_TRANSPARENCY).writeMask(COLOR_DEPTH_WRITE).fog(BLACK_FOG).alpha(RenderState.HALF_ALPHA).cull(CULL_DISABLED).overlay(OVERLAY_ENABLED).build(outlineIn));
+        return makeType("spectral", DefaultVertexFormats.ENTITY, 7, 256, false, true, RenderType.State.getBuilder().texture(renderstate$texturestate).transparency(TRANSLUCENT_TRANSPARENCY).writeMask(COLOR_DEPTH_WRITE).fog(BLACK_FOG).alpha(RenderState.DEFAULT_ALPHA).cull(CULL_DISABLED).overlay(OVERLAY_ENABLED).build(outlineIn));
     }
 
 }
