@@ -7,6 +7,7 @@ import com.vulp.tomes.inventory.container.WitchMerchantContainer;
 import com.vulp.tomes.items.DebugItem;
 import com.vulp.tomes.items.TomeItem;
 import com.vulp.tomes.network.TomesPacketHandler;
+import com.vulp.tomes.network.messages.ServerCropBreakMessage;
 import com.vulp.tomes.network.messages.ServerMindBendMessage;
 import com.vulp.tomes.network.messages.ServerProjDeflectMessage;
 import com.vulp.tomes.util.SpellEnchantUtil;
@@ -38,6 +39,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.entity.*;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -50,6 +52,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.OptionalInt;
 import java.util.Random;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid=Tomes.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
 public class EntityEvents {
@@ -149,8 +152,9 @@ public class EntityEvents {
         World world = player.world;
         BlockPos pos = event.getPos();
         BlockState state = world.getBlockState(pos);
-        if (SpellEnchantUtil.hasEnchant(player, EnchantmentInit.advantageous_growth) && state.getBlock() instanceof CropsBlock && ((CropsBlock) state.getBlock()).isMaxAge(state)) {
+        if (SpellEnchantUtil.hasEnchant(player, EnchantmentInit.advantageous_growth) && state.getBlock() instanceof CropsBlock && ((CropsBlock) state.getBlock()).isMaxAge(state) && !player.isCreative()) {
             Block.spawnDrops(state, world, pos);
+            TomesPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with((() -> (Chunk) world.getChunk(pos))), new ServerCropBreakMessage(pos.getX(), pos.getY(), pos.getZ()));
         }
     }
 

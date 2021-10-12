@@ -30,6 +30,7 @@ public class TomesPacketHandler {
         register(ServerMindBendMessage.class, new ServerMindBendMessage());
         register(ServerSyncPersistentDataMessage.class, new ServerSyncPersistentDataMessage());
         register(ServerSummonDespawnMessage.class, new ServerSummonDespawnMessage());
+        register(ServerCropBreakMessage.class, new ServerCropBreakMessage());
     }
 
     private static <T> void register(Class<T> clazz, IMessage<T> message)
