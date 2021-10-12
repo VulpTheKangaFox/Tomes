@@ -17,43 +17,46 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ParticleInit {
 
-    public static final IParticleRenderType RENDERER_LIT_NOCULL = new IParticleRenderType() {
-        public void beginRender(BufferBuilder bufferBuilder, TextureManager textureManager) {
-            RenderSystem.disableBlend();
-            RenderSystem.disableCull();
-            RenderSystem.depthMask(true);
-            textureManager.bindTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE);
-            bufferBuilder.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        }
+    @OnlyIn(Dist.CLIENT)
+    public static class ParticleTypes {
+        public static final IParticleRenderType RENDERER_LIT_NOCULL = new IParticleRenderType() {
+            public void beginRender(BufferBuilder bufferBuilder, TextureManager textureManager) {
+                RenderSystem.disableBlend();
+                RenderSystem.disableCull();
+                RenderSystem.depthMask(true);
+                textureManager.bindTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE);
+                bufferBuilder.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+            }
 
-        public void finishRender(Tessellator tesselator) {
-            tesselator.draw();
-        }
+            public void finishRender(Tessellator tesselator) {
+                tesselator.draw();
+            }
 
-        public String toString() {
-            return "RENDERER_LIT_NOCULL";
-        }
-    };
+            public String toString() {
+                return "RENDERER_LIT_NOCULL";
+            }
+        };
 
-    public static final IParticleRenderType RENDERER_TRANSPARENT_NOCULL = new IParticleRenderType() {
-        public void beginRender(BufferBuilder bufferBuilder, TextureManager textureManager) {
-            RenderSystem.depthMask(true);
-            RenderSystem.disableCull();
-            textureManager.bindTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
-            RenderSystem.alphaFunc(516, 0.003921569F);
-            bufferBuilder.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
-        }
+        public static final IParticleRenderType RENDERER_TRANSPARENT_NOCULL = new IParticleRenderType() {
+            public void beginRender(BufferBuilder bufferBuilder, TextureManager textureManager) {
+                RenderSystem.depthMask(true);
+                RenderSystem.disableCull();
+                textureManager.bindTexture(AtlasTexture.LOCATION_PARTICLES_TEXTURE);
+                RenderSystem.enableBlend();
+                RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+                RenderSystem.alphaFunc(516, 0.003921569F);
+                bufferBuilder.begin(7, DefaultVertexFormats.PARTICLE_POSITION_TEX_COLOR_LMAP);
+            }
 
-        public void finishRender(Tessellator tesselator) {
-            tesselator.draw();
-        }
+            public void finishRender(Tessellator tesselator) {
+                tesselator.draw();
+            }
 
-        public String toString() {
-            return "RENDERER_TRANSPARENT_NOCULL";
-        }
-    };
+            public String toString() {
+                return "RENDERER_TRANSPARENT_NOCULL";
+            }
+        };
+    }
 
     public static final BasicParticleType spirit_flame = new BasicParticleType(false);
     public static final BasicParticleType withering_stench = new BasicParticleType(false);

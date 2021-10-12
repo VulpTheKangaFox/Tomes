@@ -34,7 +34,7 @@ public class WindDeflectParticle extends RotationLockedParticle {
     }
 
     public IParticleRenderType getRenderType() {
-        return ParticleInit.RENDERER_LIT_NOCULL;
+        return ParticleInit.ParticleTypes.RENDERER_LIT_NOCULL;
     }
 
     @OnlyIn(Dist.CLIENT)

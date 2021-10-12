@@ -38,7 +38,7 @@ public class WebNetParticle extends RotationLockedParticle{
 
     @Override
     public IParticleRenderType getRenderType() {
-        return ParticleInit.RENDERER_TRANSPARENT_NOCULL;
+        return ParticleInit.ParticleTypes.RENDERER_TRANSPARENT_NOCULL;
     }
 
     @Override
