@@ -137,7 +137,8 @@ public class TomesRegistry {
                         ParticleInit.web_net.setRegistryName(location("web_net")),
                         ParticleInit.hex.setRegistryName(location("hex")),
                         ParticleInit.wild_wolf_despawn.setRegistryName(location("wild_wolf_despawn")),
-                        ParticleInit.spectral_steed_despawn.setRegistryName(location("spectral_steed_despawn"))
+                        ParticleInit.spectral_steed_despawn.setRegistryName(location("spectral_steed_despawn")),
+                        ParticleInit.living_wisp.setRegistryName(location("living_wisp"))
                 );
 
         Tomes.LOGGER.info("Particles Registered!");

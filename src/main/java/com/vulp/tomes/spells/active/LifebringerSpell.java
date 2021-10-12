@@ -1,6 +1,7 @@
 package com.vulp.tomes.spells.active;
 
 import com.vulp.tomes.config.TomesConfig;
+import com.vulp.tomes.init.ParticleInit;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.IGrowable;
 import net.minecraft.enchantment.Enchantment;
@@ -13,12 +14,17 @@ import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import java.util.List;
+import java.util.Random;
 
 public class LifebringerSpell extends ActiveSpell {
+
+    private int timer = 0;
+    private Vector3d playerPos;
 
     public LifebringerSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare) {
         super(rarity, isActive, isRare);
@@ -52,6 +58,9 @@ public class LifebringerSpell extends ActiveSpell {
                 }
             }
 
+        } else {
+            timer = 30;
+            this.playerPos = playerIn.getPositionVec();
         }
         return true;
     }
@@ -63,11 +72,23 @@ public class LifebringerSpell extends ActiveSpell {
 
     @Override
     public boolean canTick() {
-        return false;
+        return true;
     }
 
     @Override
     public void tick(World world, Entity entity) {
-
+        if (world.isRemote) {
+            if (this.timer > 0 && this.timer % 5 == 0) {
+                for (int i = 0; i < 8; i++) {
+                    Random rand = new Random();
+                    float j = (rand.nextFloat() - 0.5F) * 0.5F;
+                    float k = (rand.nextFloat() - 0.5F) * 0.5F;
+                    float l = (rand.nextFloat() - 0.5F) * 0.5F;
+                    world.addParticle(ParticleInit.living_wisp, playerPos.x + (rand.nextFloat() * 7.0F) - 3.5F, playerPos.y + (rand.nextFloat() * 7.0F) - 3.5F, playerPos.z + (rand.nextFloat() * 7.0F) - 3.5F, j, k, l);
+                }
+            }
+            this.timer--;
+        }
     }
+
 }

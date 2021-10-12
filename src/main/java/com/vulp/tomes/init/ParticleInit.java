@@ -62,6 +62,7 @@ public class ParticleInit {
     public static final BasicParticleType hex = new BasicParticleType(true);
     public static final BasicParticleType wild_wolf_despawn = new BasicParticleType(false);
     public static final BasicParticleType spectral_steed_despawn = new BasicParticleType(false);
+    public static final BasicParticleType living_wisp = new BasicParticleType(false);
 
     @OnlyIn(Dist.CLIENT)
     public static void registerFactories() {
@@ -73,6 +74,7 @@ public class ParticleInit {
         particles.registerFactory(hex, HexParticle.Factory::new);
         particles.registerFactory(wild_wolf_despawn, GlowDustParticle.WildWolfFactory::new);
         particles.registerFactory(spectral_steed_despawn, GlowDustParticle.SpectralSteedFactory::new);
+        particles.registerFactory(living_wisp, LivingWispParticle.Factory::new);
     }
 
 }
