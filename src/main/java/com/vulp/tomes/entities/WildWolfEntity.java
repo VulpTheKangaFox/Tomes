@@ -1,5 +1,6 @@
 package com.vulp.tomes.entities;
 
+import com.vulp.tomes.init.ParticleInit;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.passive.WolfEntity;
@@ -13,11 +14,15 @@ import net.minecraft.world.server.ServerWorld;
 public class WildWolfEntity extends WolfEntity {
 
     private int regenTimer = 35;
-    private int lifeTimer;
+    public int lifeTimer;
+
+    private boolean fade = false;
+    private int fadeTimer = 14;
+    private int fadeTimerMax = 14;
 
     public WildWolfEntity(EntityType<? extends WolfEntity> type, World worldIn) {
         super(type, worldIn);
-        this.lifeTimer = 2400;
+        this.lifeTimer = 200;
     }
 
     @Override
@@ -50,15 +55,16 @@ public class WildWolfEntity extends WolfEntity {
         if (compound.contains("LifeTime")) {
             this.lifeTimer = compound.getInt("LifeTime");
         } else {
-            this.lifeTimer = 2400;
+            this.lifeTimer = 200;
         }
         if(!world.isRemote) {
             this.readAngerNBT((ServerWorld) this.world, compound);
         }
     }
 
-    public void livingTick() {
-        super.livingTick();
+    public void tick() {
+        super.tick();
+        boolean flag = false;
         if (!this.world.isRemote) {
             if (this.regenTimer <= 0) {
                 this.heal(1.0F);
@@ -66,16 +72,27 @@ public class WildWolfEntity extends WolfEntity {
             } else {
                 this.regenTimer--;
             }
-
-            if (this.lifeTimer <= 0) {
-                this.remove();
-            } else {
-                if (this.lifeTimer <= 100) {
-                    // TODO: Add particle as warning that wolf will disappear.
-                }
-                this.lifeTimer--;
-            }
+        } else {
+            flag = true;
         }
+        if (this.lifeTimer <= 0) {
+            this.remove();
+        } else {
+            if (this.lifeTimer <= 150 && flag) {
+                if (this.fadeTimer <= 0) {
+                    this.fade = !this.fade;
+                    this.fadeTimer = this.fadeTimerMax;
+                    if (this.fadeTimerMax > 2) {
+                        this.fadeTimerMax--;
+                    }
+                } else {
+                    this.fadeTimer--;
+                }
+                this.world.addParticle(ParticleInit.wild_wolf_despawn, this.getPosX(), this.getPosY() + (this.getHeight() / 2.0F), this.getPosZ(), this.getEntityId(), 0.0F, 0.0F);
+            }
+            this.lifeTimer--;
+        }
+
     }
 
     public ActionResultType getEntityInteractionResult(PlayerEntity playerIn, Hand hand) {
@@ -97,6 +114,10 @@ public class WildWolfEntity extends WolfEntity {
             }
             return super.getEntityInteractionResult(playerIn, hand);
         }
+    }
+
+    public boolean getFade() {
+        return this.fade;
     }
 
 }

@@ -24,7 +24,6 @@ public class SpectralSteedEntity extends HorseEntity {
 
     private int regenTimer = 35;
     public int lifeTimer;
-    private boolean despawning = false;
     private boolean fade = false;
     private int fadeTimer = 17;
     private int fadeTimerMax = 17;
@@ -80,7 +79,6 @@ public class SpectralSteedEntity extends HorseEntity {
             this.remove();
         } else {
             if (this.lifeTimer <= 200 && flag) {
-                this.despawning = true;
                 if (this.fadeTimer <= 0) {
                     this.fade = !this.fade;
                     this.fadeTimer = this.fadeTimerMax;
@@ -165,10 +163,6 @@ public class SpectralSteedEntity extends HorseEntity {
     @Override
     public boolean canMateWith(AnimalEntity otherAnimal) {
         return false;
-    }
-
-    public boolean isDespawning() {
-        return this.despawning;
     }
 
     public boolean getFade() {

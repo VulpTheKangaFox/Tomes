@@ -31,16 +31,15 @@ public class WildAidSpell extends ActiveSpell{
     @Override
     public boolean onCast(World worldIn, PlayerEntity playerIn, Hand handIn) {
         if (!worldIn.isRemote) {
-
             Vector3d startPoint = playerIn.getEyePosition(0);
             RayTraceContext raytraceContext = new RayTraceContext(startPoint, startPoint.add(playerIn.getLookVec().scale(4.0D)), RayTraceContext.BlockMode.OUTLINE, RayTraceContext.FluidMode.ANY, null);
             BlockRayTraceResult rayHit = worldIn.rayTraceBlocks(raytraceContext);
-
             if (rayHit.getType() == RayTraceResult.Type.BLOCK) {
                 BlockPos pos = rayHit.getPos();
                 WildWolfEntity entity = (WildWolfEntity) EntityInit.wild_wolf.spawn(((ServerPlayerEntity)playerIn).getServerWorld(), null, playerIn, pos, SpawnReason.MOB_SUMMONED, true, false);
                 if (entity != null) {
                     entity.setTamedBy(playerIn);
+                    entity.lifeTimer = 200;
                 }
                 return true;
             }

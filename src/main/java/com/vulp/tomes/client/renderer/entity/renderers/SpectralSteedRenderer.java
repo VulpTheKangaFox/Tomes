@@ -33,7 +33,7 @@ public class SpectralSteedRenderer<T extends SpectralSteedEntity> extends MobRen
     public ResourceLocation getEntityTexture(T entity) {
         if (entity.getFade()) {
             return SPECTRAL_STEED_FADE_TEXTURE;
-        } else return SPECTRAL_STEED_TEXTURE;
+        } else return entity.getFade() ? SPECTRAL_STEED_FADE_TEXTURE : SPECTRAL_STEED_TEXTURE;
     }
 
     // TODO: Probably solve by using a mixin for the LivingRenderer render, and sliding a slightly modified renderer if LivingEntity uses an interface with an abstract telling us if it should be flashing.
