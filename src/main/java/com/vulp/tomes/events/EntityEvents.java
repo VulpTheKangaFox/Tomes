@@ -172,7 +172,7 @@ public class EntityEvents {
                     TomesPacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> victim), new ServerProjDeflectMessage(victim.getEntityId(), proj.getEntityId()));
                     Vector3d vec = proj.getMotion();
                     Vector3d vec2 = vec.inverse();
-                    proj.setVelocity(vec2.getX() * 0.75, vec2.getY() * 0.75, vec2.getZ() * 0.75);
+                    proj.setMotion(vec2.getX() * 0.75, vec2.getY() * 0.75, vec2.getZ() * 0.75);
                     proj.rotationPitch = MathHelper.wrapDegrees(proj.rotationPitch + 180);
                     proj.rotationYaw = MathHelper.wrapDegrees(proj.rotationYaw + 180);
                     if (proj instanceof DamagingProjectileEntity) {

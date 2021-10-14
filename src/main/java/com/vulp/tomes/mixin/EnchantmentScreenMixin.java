@@ -5,12 +5,10 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.enchantments.EnchantClueHolder;
 import com.vulp.tomes.init.EnchantmentInit;
-import com.vulp.tomes.init.ItemInit;
 import com.vulp.tomes.items.TomeItem;
 import net.minecraft.client.gui.screen.EnchantmentScreen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.EnchantmentContainer;
@@ -25,13 +23,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 @OnlyIn(Dist.CLIENT)
 @Mixin(EnchantmentScreen.class)
 public abstract class EnchantmentScreenMixin extends ContainerScreen<EnchantmentContainer> {
+
+    private int listNum = 0;
 
     private PlayerInventory inventory;
 
@@ -132,63 +130,6 @@ public abstract class EnchantmentScreenMixin extends ContainerScreen<Enchantment
         }
 
         return iformattabletextcomponent;
-    }
-
-    private EnchantClueHolder getClues() {
-        EnchantClueHolder holder = new EnchantClueHolder();
-        ItemStack itemstack = this.container.tableInventory.getStackInSlot(0);
-        if (!itemstack.isEmpty() && itemstack.isEnchantable()) {
-            this.container.worldPosCallable.consume((world, pos) -> {
-                int power = 0;
-
-                for (int k = -1; k <= 1; ++k) {
-                    for (int l = -1; l <= 1; ++l) {
-                        if ((k != 0 || l != 0) && world.isAirBlock(pos.add(l, 0, k)) && world.isAirBlock(pos.add(l, 1, k))) {
-                            power += this.getPower(world, pos.add(l * 2, 0, k * 2));
-                            power += this.getPower(world, pos.add(l * 2, 1, k * 2));
-
-                            if (l != 0 && k != 0) {
-                                power += this.getPower(world, pos.add(l * 2, 0, k));
-                                power += this.getPower(world, pos.add(l * 2, 1, k));
-                                power += this.getPower(world, pos.add(l, 0, k * 2));
-                                power += this.getPower(world, pos.add(l, 1, k * 2));
-                            }
-                        }
-                    }
-                }
-
-                Random rand = new Random();
-
-                rand.setSeed(this.container.xpSeed.get());
-
-                for (int i1 = 0; i1 < 3; ++i1) {
-                    this.container.enchantLevels[i1] = EnchantmentHelper.calcItemStackEnchantability(rand, i1, power, itemstack);
-                    if (this.container.enchantLevels[i1] < i1 + 1) {
-                        this.container.enchantLevels[i1] = 0;
-                    }
-                    this.container.enchantLevels[i1] = net.minecraftforge.event.ForgeEventFactory.onEnchantmentLevelSet(world, pos, i1, power, itemstack, this.container.enchantLevels[i1]);
-                }
-
-                for (int j1 = 0; j1 < 3; ++j1) {
-                    if (this.container.enchantLevels[j1] > 0) {
-                        List<EnchantmentData> list = this.container.getEnchantmentList(itemstack, j1, this.container.enchantLevels[j1]);
-                        if (!list.isEmpty()) {
-                            List<Pair<Enchantment, Integer>> cluedPairingList = new java.util.ArrayList<>(Collections.emptyList());
-                            for (EnchantmentData enchantmentData : list) {
-                                cluedPairingList.add(new Pair<>(enchantmentData.enchantment, enchantmentData.enchantmentLevel));
-                            }
-                            holder.setData(j1, cluedPairingList);
-                        }
-                    }
-                }
-                this.container.detectAndSendChanges();
-            });
-        }
-        return holder;
-    }
-
-    private float getPower(net.minecraft.world.World world, net.minecraft.util.math.BlockPos pos) {
-        return world.getBlockState(pos).getEnchantPowerBonus(world, pos);
     }
 
 }

@@ -45,11 +45,6 @@ public class TomeEnchantment extends Enchantment {
     }
 
     @Override
-    public int getMaxLevel() {
-        return 1;
-    }
-
-    @Override
     protected boolean canApplyTogether(Enchantment ench) {
         if (ench instanceof TomeEnchantment) {
             if (this.isActive() && ((TomeEnchantment) ench).isActive()) {

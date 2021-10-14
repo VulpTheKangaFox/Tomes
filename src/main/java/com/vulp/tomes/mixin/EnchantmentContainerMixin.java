@@ -20,6 +20,10 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -29,75 +33,35 @@ import java.util.Random;
 @Mixin(EnchantmentContainer.class)
 public abstract class EnchantmentContainerMixin extends Container {
 
-    @Final
-    @Shadow
-    public IInventory tableInventory;
-    @Final
-    @Shadow
-    public IWorldPosCallable worldPosCallable;
-    @Final
-    @Shadow
-    private Random rand;
-    @Final
-    @Shadow
-    public IntReferenceHolder xpSeed;
-    @Final
-    @Shadow
-    public int[] enchantLevels;
-    @Shadow
-    public int[] enchantClue;
-    @Final
-    @Shadow
-    public int[] worldClue;
+    @Shadow @Final public int[] enchantLevels;
+
+    @Shadow @Final public IInventory tableInventory;
+
+    @Shadow @Final public IWorldPosCallable worldPosCallable;
+
+    @Shadow public abstract List<EnchantmentData> getEnchantmentList(ItemStack stack, int enchantSlot, int level);
+
+    @Shadow public int[] enchantClue;
+
+    @Shadow @Final public int[] worldClue;
+
+    @Shadow @Final public Random rand;
 
     protected EnchantmentContainerMixin(@Nullable ContainerType<?> type, int id) {
         super(type, id);
     }
 
-    /**
-     * @author VulpTheHorseDog
-     */
-    @Overwrite
-    public void onCraftMatrixChanged(IInventory inventoryIn) {
+    @Inject(at = @At("TAIL"), method = "onCraftMatrixChanged", cancellable = true)
+    public void onCraftMatrixChanged(IInventory inventoryIn, CallbackInfo ci) {
         if (inventoryIn == this.tableInventory) {
             ItemStack itemstack = inventoryIn.getStackInSlot(0);
             if (!itemstack.isEmpty() && itemstack.isEnchantable()) {
                 this.worldPosCallable.consume((p_217002_2_, p_217002_3_) -> {
-                    int power = 0;
-
-                    for(int k = -1; k <= 1; ++k) {
-                        for(int l = -1; l <= 1; ++l) {
-                            if ((k != 0 || l != 0) && p_217002_2_.isAirBlock(p_217002_3_.add(l, 0, k)) && p_217002_2_.isAirBlock(p_217002_3_.add(l, 1, k))) {
-                                power += getPower(p_217002_2_, p_217002_3_.add(l * 2, 0, k * 2));
-                                power += getPower(p_217002_2_, p_217002_3_.add(l * 2, 1, k * 2));
-
-                                if (l != 0 && k != 0) {
-                                    power += getPower(p_217002_2_, p_217002_3_.add(l * 2, 0, k));
-                                    power += getPower(p_217002_2_, p_217002_3_.add(l * 2, 1, k));
-                                    power += getPower(p_217002_2_, p_217002_3_.add(l, 0, k * 2));
-                                    power += getPower(p_217002_2_, p_217002_3_.add(l, 1, k * 2));
-                                }
-                            }
-                        }
-                    }
-
-                    this.rand.setSeed(this.xpSeed.get());
-
-                    for(int i1 = 0; i1 < 3; ++i1) {
-                        this.enchantLevels[i1] = EnchantmentHelper.calcItemStackEnchantability(this.rand, i1, (int)power, itemstack);
-                        this.enchantClue[i1] = -1;
-                        this.worldClue[i1] = -1;
-                        if (this.enchantLevels[i1] < i1 + 1) {
-                            this.enchantLevels[i1] = 0;
-                        }
-                        this.enchantLevels[i1] = net.minecraftforge.event.ForgeEventFactory.onEnchantmentLevelSet(p_217002_2_, p_217002_3_, i1, (int)power, itemstack, enchantLevels[i1]);
-                    }
-
                     EnchantClueHolder holder = new EnchantClueHolder();
                     for(int j1 = 0; j1 < 3; ++j1) {
                         if (this.enchantLevels[j1] > 0) {
-                            List<EnchantmentData> list = this.getEnchantmentList(itemstack, j1, this.enchantLevels[j1]);
-                            if (list != null && !list.isEmpty()) {
+                            List<EnchantmentData> list = this.getEnchantmentList(this.tableInventory.getStackInSlot(0), j1, this.enchantLevels[j1]);
+                            if (!list.isEmpty()) {
                                 List<Pair<Enchantment, Integer>> cluedPairingList = new java.util.ArrayList<>(Collections.emptyList());
 
                                 for (EnchantmentData enchantmentData : list) {
@@ -114,23 +78,9 @@ public abstract class EnchantmentContainerMixin extends Container {
                     }
                     this.enchantClue = EnchantClueHolder.encodeClues(holder, this.enchantClue);
                     TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerEnchantmentClueMessage(this.windowId, this.enchantClue));
-                    this.detectAndSendChanges();
                 });
-            } else {
-                for(int i = 0; i < 3; ++i) {
-                    this.enchantLevels[i] = 0;
-                    this.enchantClue[i] = -1;
-                    this.worldClue[i] = -1;
-                }
             }
         }
-
     }
-
-    @Shadow
-    protected abstract float getPower(net.minecraft.world.World world, net.minecraft.util.math.BlockPos pos);
-
-    @Shadow
-    public abstract List<EnchantmentData> getEnchantmentList(ItemStack stack, int enchantSlot, int level);
 
 }
