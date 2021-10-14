@@ -29,17 +29,8 @@ import java.util.List;
 @Mixin(EnchantmentScreen.class)
 public abstract class EnchantmentScreenMixin extends ContainerScreen<EnchantmentContainer> {
 
-    private int listNum = 0;
-
-    private PlayerInventory inventory;
-
     public EnchantmentScreenMixin(EnchantmentContainer screenContainer, PlayerInventory inv, ITextComponent titleIn) {
         super(screenContainer, inv, titleIn);
-    }
-
-    @Inject(at = @At("TAIL"), method = "<init>")
-    public void EnchantmentScreen(EnchantmentContainer container, PlayerInventory playerInventory, ITextComponent textComponent, CallbackInfo ci) {
-        this.inventory = playerInventory;
     }
 
     private boolean isItemEnchantable(ItemStack itemStack) {
@@ -47,74 +38,79 @@ public abstract class EnchantmentScreenMixin extends ContainerScreen<Enchantment
     }
 
     private boolean hasTome() {
+        PlayerInventory inventory = this.playerInventory;
         return inventory != null && Arrays.stream(new ItemStack[]{inventory.getCurrentItem(), inventory.offHandInventory.get(0)}).anyMatch(item -> item.getItem() instanceof TomeItem && EnchantmentHelper.getEnchantments(item).containsKey(EnchantmentInit.linguist));
     }
 
     /**
      * @author VulpTheHorseDog
      */
-    @Overwrite
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
-        partialTicks = this.minecraft.getRenderPartialTicks();
-        this.renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
-        boolean flag = this.minecraft.player.abilities.isCreativeMode;
-        int i = this.container.getLapisAmount();
-        EnchantClueHolder clueHolder = EnchantClueHolder.decodeClues(this.container.enchantClue);
-        for(int j = 0; j < 3; ++j) {
-            List<Pair<Enchantment, Integer>> clueList = clueHolder.getData(j);
-            // Stuff below here is all used in strings and positioning.
-            List<ITextComponent> list = Lists.newArrayList();
-            Enchantment enchantment = Enchantment.getEnchantmentByID((this.container).enchantClue[j]);
-            int l = (this.container).worldClue[j];
-            int k = 0;
-            int i1 = j + 1;
-            // Below here is actual string and positioning code.
-            if (this.isPointInRegion(60, 14 + 19 * j, 108, 17, (double)mouseX, (double)mouseY) && clueList.size() > 0 && isItemEnchantable(this.container.tableInventory.getStackInSlot(0))) {
-                // Trying to run a for loop to create a list of all enchantments.
-                if (!this.hasTome()) {
-                    list.add((new TranslationTextComponent("container.enchant.clue", enchantment == null ? "" : enchantment.getDisplayName(l))).mergeStyle(TextFormatting.WHITE));
-                } else {
-                    for (Pair<Enchantment, Integer> clue : clueList) {
-                        if (clue.getFirst() != null) {
-                            list.add(getDisplayName(clue.getFirst(), clue.getSecond()));
-                        } else {
-                            list.add(new StringTextComponent(". . .").mergeStyle(TextFormatting.AQUA));
-                        }
-                    }
-                }
-                if (clueList.isEmpty()) {
-                    list.add(new StringTextComponent(""));
-                    list.add(new TranslationTextComponent("forge.container.enchant.limitedEnchantability").mergeStyle(TextFormatting.RED));
-                } else if (!flag) {
-                    list.add(StringTextComponent.EMPTY);
-                    if (this.minecraft.player.experienceLevel < k) {
-                        list.add((new TranslationTextComponent("container.enchant.level.requirement", (this.container).enchantLevels[j])).mergeStyle(TextFormatting.RED));
+    @Inject(at = @At("HEAD"), method = "render", cancellable = true)
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks, CallbackInfo ci) {
+        if (this.hasTome()) {
+            partialTicks = this.minecraft.getRenderPartialTicks();
+            this.renderBackground(matrixStack);
+            super.render(matrixStack, mouseX, mouseY, partialTicks);
+            this.renderHoveredTooltip(matrixStack, mouseX, mouseY);
+            boolean flag = this.minecraft.player.abilities.isCreativeMode;
+            int i = this.container.getLapisAmount();
+            EnchantClueHolder clueHolder = EnchantClueHolder.decodeClues(this.container.enchantClue);
+            for (int j = 0; j < 3; ++j) {
+                List<Pair<Enchantment, Integer>> clueList = clueHolder.getData(j);
+                // Stuff below here is all used in strings and positioning.
+                List<ITextComponent> list = Lists.newArrayList();
+                Enchantment enchantment = Enchantment.getEnchantmentByID((this.container).enchantClue[j]);
+                int l = (this.container).worldClue[j];
+                int k = 0;
+                int i1 = j + 1;
+                // Below here is actual string and positioning code.
+                if (this.isPointInRegion(60, 14 + 19 * j, 108, 17, (double) mouseX, (double) mouseY) && clueList.size() > 0 && isItemEnchantable(this.container.tableInventory.getStackInSlot(0))) {
+                    // Trying to run a for loop to create a list of all enchantments.
+                    if (!this.hasTome()) {
+                        list.add((new TranslationTextComponent("container.enchant.clue", enchantment == null ? "" : enchantment.getDisplayName(l))).mergeStyle(TextFormatting.WHITE));
                     } else {
-                        IFormattableTextComponent iformattabletextcomponent;
-                        if (i1 == 1) {
-                            iformattabletextcomponent = new TranslationTextComponent("container.enchant.lapis.one");
-                        } else {
-                            iformattabletextcomponent = new TranslationTextComponent("container.enchant.lapis.many", i1);
+                        for (Pair<Enchantment, Integer> clue : clueList) {
+                            if (clue.getFirst() != null) {
+                                list.add(getDisplayName(clue.getFirst(), clue.getSecond()));
+                            } else {
+                                list.add(new StringTextComponent(". . .").mergeStyle(TextFormatting.AQUA));
+                            }
                         }
-
-                        list.add(iformattabletextcomponent.mergeStyle(i >= i1 ? TextFormatting.GRAY : TextFormatting.RED));
-                        IFormattableTextComponent iformattabletextcomponent1;
-                        if (i1 == 1) {
-                            iformattabletextcomponent1 = new TranslationTextComponent("container.enchant.level.one");
-                        } else {
-                            iformattabletextcomponent1 = new TranslationTextComponent("container.enchant.level.many", i1);
-                        }
-
-                        list.add(iformattabletextcomponent1.mergeStyle(TextFormatting.GRAY));
                     }
-                }
+                    if (clueList.isEmpty()) {
+                        list.add(new StringTextComponent(""));
+                        list.add(new TranslationTextComponent("forge.container.enchant.limitedEnchantability").mergeStyle(TextFormatting.RED));
+                    } else if (!flag) {
+                        list.add(StringTextComponent.EMPTY);
+                        if (this.minecraft.player.experienceLevel < k) {
+                            list.add((new TranslationTextComponent("container.enchant.level.requirement", (this.container).enchantLevels[j])).mergeStyle(TextFormatting.RED));
+                        } else {
+                            IFormattableTextComponent iformattabletextcomponent;
+                            if (i1 == 1) {
+                                iformattabletextcomponent = new TranslationTextComponent("container.enchant.lapis.one");
+                            } else {
+                                iformattabletextcomponent = new TranslationTextComponent("container.enchant.lapis.many", i1);
+                            }
 
-                this.func_243308_b(matrixStack, list, mouseX, mouseY);
-                break;
+                            list.add(iformattabletextcomponent.mergeStyle(i >= i1 ? TextFormatting.GRAY : TextFormatting.RED));
+                            IFormattableTextComponent iformattabletextcomponent1;
+                            if (i1 == 1) {
+                                iformattabletextcomponent1 = new TranslationTextComponent("container.enchant.level.one");
+                            } else {
+                                iformattabletextcomponent1 = new TranslationTextComponent("container.enchant.level.many", i1);
+                            }
+
+                            list.add(iformattabletextcomponent1.mergeStyle(TextFormatting.GRAY));
+                        }
+                    }
+
+                    this.func_243308_b(matrixStack, list, mouseX, mouseY);
+                    break;
+                }
             }
+            ci.cancel();
         }
+
     }
 
     private ITextComponent getDisplayName(Enchantment enchantment, int level) {

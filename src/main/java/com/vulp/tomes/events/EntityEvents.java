@@ -1,5 +1,6 @@
 package com.vulp.tomes.events;
 
+import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.Tomes;
 import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.init.*;
@@ -10,6 +11,7 @@ import com.vulp.tomes.network.TomesPacketHandler;
 import com.vulp.tomes.network.messages.ServerCropBreakMessage;
 import com.vulp.tomes.network.messages.ServerMindBendMessage;
 import com.vulp.tomes.network.messages.ServerProjDeflectMessage;
+import com.vulp.tomes.util.HealthHandler;
 import com.vulp.tomes.util.SpellEnchantUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -40,6 +42,7 @@ import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.*;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -50,14 +53,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 
-import java.util.OptionalInt;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid=Tomes.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
 public class EntityEvents {
 
     private static int mindbend_particle_timer = 7;
+    private static final List<Pair<LivingEntity, HealthHandler>> healthHandlers = new ArrayList<>();
 
     @SubscribeEvent
     public static void onLivingSetAttackTarget(LivingSetAttackTargetEvent event) {
@@ -190,6 +193,42 @@ public class EntityEvents {
     }
 
     @SubscribeEvent
+    public static void onLivingHealed(LivingHealEvent event) {
+        LivingEntity entity = event.getEntityLiving();
+        if (entity.isPotionActive(EffectInit.leaden_veins)) {
+            float amount = event.getAmount();
+            if (amount > 2.0F) {
+                event.setAmount(amount - 2.0F);
+            }
+            else if (amount > 1.0F) {
+                event.setAmount(amount - 1.0F);
+            } else {
+                boolean flag = false;
+                Optional<Pair<LivingEntity, HealthHandler>> optional = healthHandlers.stream().filter(pair -> pair.getFirst() == entity).findFirst();
+                if (optional.isPresent()) {
+                    HealthHandler handler = optional.get().getSecond();
+                    if (handler != null) {
+                        if (handler.shouldHeal()) {
+                            event.setAmount(amount);
+                        } else {
+                            event.setAmount(0.0F);
+                        }
+                        handler.toggleHeal();
+                    } else {
+                        flag = true;
+                    }
+                } else {
+                    flag = true;
+                }
+                if (flag) {
+                    healthHandlers.add(new Pair<>(entity, new HealthHandler(entity)));
+                    event.setAmount(0.0F);
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void livingTickEvent(LivingEvent.LivingUpdateEvent event) {
         LivingEntity entity = (LivingEntity) event.getEntity();
         if (entity != null) {
@@ -205,6 +244,14 @@ public class EntityEvents {
             } else {
                 TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerMindBendMessage(entity.getEntityId(), entity.getPersistentData().getBoolean("HexParticle")));
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void serverTickEvent(TickEvent.ServerTickEvent event) {
+        if (!healthHandlers.isEmpty()) {
+            healthHandlers.removeIf(pair -> pair.getFirst() == null || pair.getSecond() == null || pair.getSecond().readyToRemove());
+            healthHandlers.forEach(pair -> pair.getSecond().tick());
         }
     }
 

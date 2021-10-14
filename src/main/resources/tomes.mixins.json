@@ -5,8 +5,7 @@
   "refmap": "tomes.refmap.json",
   "mixins": [
     "EnchantmentContainerMixin",
-    "EnchantmentHelperMixin",
-    "FoodStatsMixin"
+    "EnchantmentHelperMixin"
   ],
   "client": [
     "EnchantmentScreenMixin",
