@@ -1,12 +1,9 @@
 package com.vulp.tomes.inventory.container;
 
 import com.vulp.tomes.inventory.WitchMerchantInventory;
-import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.entity.item.ExperienceOrbEntity;
-import net.minecraft.entity.merchant.IMerchant;
 import net.minecraft.entity.monster.WitchEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MerchantOffer;

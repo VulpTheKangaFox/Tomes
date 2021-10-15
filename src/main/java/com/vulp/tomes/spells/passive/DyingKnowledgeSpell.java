@@ -2,7 +2,6 @@ package com.vulp.tomes.spells.passive;
 
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ExperienceOrbEntity;
 import net.minecraft.world.World;
 
 public class DyingKnowledgeSpell extends PassiveSpell {

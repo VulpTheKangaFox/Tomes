@@ -4,19 +4,14 @@ import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.entities.ai.MindBendFollowGoal;
 import com.vulp.tomes.entities.ai.NullifyAttackableTargetGoal;
 import com.vulp.tomes.init.EffectInit;
-import com.vulp.tomes.network.TomesPacketHandler;
-import com.vulp.tomes.network.messages.ServerMindBendMessage;
-import com.vulp.tomes.network.messages.ServerOpenHorseInventoryMessage;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 public class MindBenderSpell extends ActiveSpell {
 

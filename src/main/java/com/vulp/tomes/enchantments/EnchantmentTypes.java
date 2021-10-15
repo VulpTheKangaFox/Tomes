@@ -1,7 +1,6 @@
 package com.vulp.tomes.enchantments;
 
 import com.vulp.tomes.init.ItemInit;
-import com.vulp.tomes.items.TomeItem;
 import net.minecraft.enchantment.EnchantmentType;
 
 public class EnchantmentTypes {

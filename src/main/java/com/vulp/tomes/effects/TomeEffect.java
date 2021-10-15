@@ -1,11 +1,8 @@
 package com.vulp.tomes.effects;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectType;
-
-import javax.annotation.Nullable;
 
 public abstract class TomeEffect extends Effect {
 

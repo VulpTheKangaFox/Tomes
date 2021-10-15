@@ -1,29 +1,21 @@
 package com.vulp.tomes.spells.active;
 
 import com.google.common.collect.ImmutableSet;
-import com.sun.javafx.geom.Vec3d;
 import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.entities.TamedSpiderEntity;
 import com.vulp.tomes.init.EntityInit;
 import com.vulp.tomes.network.TomesPacketHandler;
-import com.vulp.tomes.network.messages.ServerActiveSpellMessage;
 import com.vulp.tomes.network.messages.ServerTameAnimalMessage;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.monster.SpiderEntity;
 import net.minecraft.entity.passive.*;
 import net.minecraft.entity.passive.horse.*;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
@@ -31,8 +23,6 @@ import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
-
-import java.util.Random;
 
 public class BeastTamerSpell extends ActiveSpell {
 

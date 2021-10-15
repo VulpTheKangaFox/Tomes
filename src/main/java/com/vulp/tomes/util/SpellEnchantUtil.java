@@ -1,14 +1,11 @@
 package com.vulp.tomes.util;
 
-import com.vulp.tomes.init.EnchantmentInit;
 import com.vulp.tomes.items.TomeItem;
-import com.vulp.tomes.spells.Spell;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

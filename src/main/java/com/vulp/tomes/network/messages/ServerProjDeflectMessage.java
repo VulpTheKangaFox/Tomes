@@ -1,7 +1,6 @@
 package com.vulp.tomes.network.messages;
 
 import com.vulp.tomes.init.ParticleInit;
-import com.vulp.tomes.network.TomesPacketHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,12 +9,10 @@ import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkEvent;
-import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.Random;
 import java.util.function.Supplier;

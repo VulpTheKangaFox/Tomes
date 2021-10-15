@@ -1,18 +1,14 @@
 package com.vulp.tomes.spells.active;
 
-import com.vulp.tomes.Tomes;
 import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.init.EffectInit;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.LlamaSpitEntity;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.Random;
 

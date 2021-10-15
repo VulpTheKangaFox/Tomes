@@ -2,13 +2,9 @@ package com.vulp.tomes.items;
 
 import com.vulp.tomes.Tomes;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MerchantOffers;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-
-import javax.annotation.Nullable;
 
 public class DebugItem extends HiddenDescriptorItem {
 

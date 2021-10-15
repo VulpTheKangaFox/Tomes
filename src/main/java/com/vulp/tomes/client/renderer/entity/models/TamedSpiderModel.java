@@ -1,13 +1,9 @@
 package com.vulp.tomes.client.renderer.entity.models;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.vulp.tomes.entities.TamedSpiderEntity;
 import net.minecraft.client.renderer.entity.model.SegmentedModel;
-import net.minecraft.client.renderer.entity.model.SpiderModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.entity.Entity;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;

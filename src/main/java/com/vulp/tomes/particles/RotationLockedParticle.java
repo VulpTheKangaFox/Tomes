@@ -1,7 +1,6 @@
 package com.vulp.tomes.particles;
 
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.particle.IParticleRenderType;
 import net.minecraft.client.particle.SpriteTexturedParticle;
 import net.minecraft.client.renderer.ActiveRenderInfo;
 import net.minecraft.client.world.ClientWorld;

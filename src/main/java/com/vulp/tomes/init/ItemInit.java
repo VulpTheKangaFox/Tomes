@@ -1,7 +1,6 @@
 package com.vulp.tomes.init;
 
 import net.minecraft.item.Item;
-import net.minecraft.util.IItemProvider;
 
 public class ItemInit {
 

@@ -5,7 +5,6 @@ import com.vulp.tomes.entities.WildWolfEntity;
 import com.vulp.tomes.init.EntityInit;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;

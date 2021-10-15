@@ -8,10 +8,12 @@ import com.vulp.tomes.entities.projectile.WitheringStenchEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityClassification;
 import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ai.attributes.GlobalEntityTypeAttributes;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.DeferredWorkQueue;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
+@Mod.EventBusSubscriber(modid = Tomes.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class EntityInit {
 
     public static final EntityType<WildWolfEntity> wild_wolf = createEntity(WildWolfEntity::new, EntityClassification.CREATURE, "wild_wolf", 0.6F, 0.85F, 10);
@@ -35,11 +37,17 @@ public class EntityInit {
         return entity;
     }
 
-    // I'm keeping the deprecated method for the attributes because the newer event doesn't trigger in time apparently and then the game spews missing attribute errors in logs.
-    public static void setupAttributes() {
+/*    public static void setupAttributes() {
         GlobalEntityTypeAttributes.put(wild_wolf, WildWolfEntity.registerAttributes().create());
         GlobalEntityTypeAttributes.put(tamed_spider, TamedSpiderEntity.bakeAttributes().create());
         GlobalEntityTypeAttributes.put(spectral_steed, SpectralSteedEntity.func_234237_fg_().create());
+    }*/
+
+    @SubscribeEvent
+    public static void setupAttributes(EntityAttributeCreationEvent event) {
+        event.put(wild_wolf, WildWolfEntity.registerAttributes().create());
+        event.put(tamed_spider, TamedSpiderEntity.bakeAttributes().create());
+        event.put(spectral_steed, SpectralSteedEntity.func_234237_fg_().create());
     }
 
 }

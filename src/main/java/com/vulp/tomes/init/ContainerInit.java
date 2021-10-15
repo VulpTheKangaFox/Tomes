@@ -1,6 +1,5 @@
 package com.vulp.tomes.init;
 
-import com.vulp.tomes.Tomes;
 import com.vulp.tomes.inventory.container.WitchMerchantContainer;
 import net.minecraft.inventory.container.ContainerType;
 

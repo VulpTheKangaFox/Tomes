@@ -2,7 +2,6 @@ package com.vulp.tomes.network.messages;
 
 import com.vulp.tomes.init.ParticleInit;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;

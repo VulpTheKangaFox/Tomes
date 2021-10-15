@@ -3,7 +3,10 @@ package com.vulp.tomes.events;
 import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.Tomes;
 import com.vulp.tomes.config.TomesConfig;
-import com.vulp.tomes.init.*;
+import com.vulp.tomes.init.EffectInit;
+import com.vulp.tomes.init.EnchantmentInit;
+import com.vulp.tomes.init.ItemInit;
+import com.vulp.tomes.init.ParticleInit;
 import com.vulp.tomes.inventory.container.WitchMerchantContainer;
 import com.vulp.tomes.items.DebugItem;
 import com.vulp.tomes.items.TomeItem;
@@ -43,7 +46,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.*;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
@@ -54,7 +57,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid=Tomes.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
 public class EntityEvents {

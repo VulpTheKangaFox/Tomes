@@ -2,7 +2,6 @@ package com.vulp.tomes.client.renderer.entity;
 
 import com.google.common.collect.ImmutableMap;
 import com.vulp.tomes.init.EnchantmentInit;
-import com.vulp.tomes.spells.SpellIndex;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.enchantment.Enchantment;
@@ -14,10 +13,6 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Random;
 
 public class WitchTrades extends VillagerTrades {

@@ -1,9 +1,7 @@
 package com.vulp.tomes.spells;
 
-import com.vulp.tomes.enchantments.EnchantmentTypes;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 public abstract class Spell {

@@ -1,6 +1,5 @@
 package com.vulp.tomes.inventory;
 
-import net.minecraft.entity.merchant.IMerchant;
 import net.minecraft.entity.monster.WitchEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.MerchantInventory;
@@ -9,8 +8,6 @@ import net.minecraft.item.MerchantOffer;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.SoundEvents;
-
-import javax.annotation.Nullable;
 
 public class WitchMerchantInventory extends MerchantInventory {
 

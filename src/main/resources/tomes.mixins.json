@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "tomes.refmap.json",
   "mixins": [
+    "EnchantedBookItemMixin",
     "EnchantmentContainerMixin",
     "EnchantmentHelperMixin"
   ],

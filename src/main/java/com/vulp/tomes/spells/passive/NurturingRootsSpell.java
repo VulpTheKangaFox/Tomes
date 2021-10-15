@@ -1,6 +1,5 @@
 package com.vulp.tomes.spells.passive;
 
-import com.vulp.tomes.Tomes;
 import com.vulp.tomes.init.TagInit;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;

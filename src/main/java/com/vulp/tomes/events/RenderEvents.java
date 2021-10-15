@@ -6,7 +6,6 @@ import com.vulp.tomes.items.TomeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,6 +31,5 @@ public class RenderEvents {
             event.setCanceled(true);
         }
     }
-
 
 }

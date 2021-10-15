@@ -5,10 +5,7 @@ import com.vulp.tomes.entities.projectile.WitheringStenchEntity;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.LlamaSpitEntity;
 import net.minecraft.util.Hand;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 public class WitheringStenchSpell extends ActiveSpell {

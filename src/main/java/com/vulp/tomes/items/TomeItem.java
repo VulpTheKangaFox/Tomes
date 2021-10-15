@@ -1,6 +1,5 @@
 package com.vulp.tomes.items;
 
-import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.enchantments.TomeEnchantment;
 import com.vulp.tomes.init.ItemInit;
 import com.vulp.tomes.network.TomesPacketHandler;
@@ -13,18 +12,17 @@ import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public class TomeItem extends HiddenDescriptorItem {
 

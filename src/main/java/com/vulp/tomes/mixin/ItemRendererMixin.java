@@ -1,7 +1,6 @@
 package com.vulp.tomes.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.vulp.tomes.Tomes;
 import com.vulp.tomes.items.TomeItem;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.BufferBuilder;

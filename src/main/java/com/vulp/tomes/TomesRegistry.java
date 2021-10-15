@@ -4,9 +4,7 @@ import com.vulp.tomes.client.renderer.entity.renderers.SpectralSteedRenderer;
 import com.vulp.tomes.client.renderer.entity.renderers.TamedSpiderRenderer;
 import com.vulp.tomes.client.renderer.entity.renderers.WildWolfRenderer;
 import com.vulp.tomes.client.renderer.entity.renderers.WitheringStenchRenderer;
-import com.vulp.tomes.effects.LeadenVeinsEffect;
-import com.vulp.tomes.effects.LightFootedEffect;
-import com.vulp.tomes.effects.MindBendEffect;
+import com.vulp.tomes.enchantments.EnchantmentTypes;
 import com.vulp.tomes.init.*;
 import com.vulp.tomes.items.DebugItem;
 import com.vulp.tomes.items.HiddenDescriptorItem;
@@ -20,9 +18,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.potion.Effect;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.RegistryEvent;
@@ -39,7 +34,7 @@ public class TomesRegistry {
         public ItemStack createIcon() {
             return new ItemStack(ItemInit.archaic_tome);
         }
-    };
+    }.setRelevantEnchantmentTypes(EnchantmentTypes.ARCHAIC_TOME, EnchantmentTypes.LIVING_TOME, EnchantmentTypes.CURSED_TOME);
 
     @SubscribeEvent
     public static void itemRegistryEvent(final RegistryEvent.Register<Item> event) {
@@ -90,6 +85,7 @@ public class TomesRegistry {
                 EnchantmentInit.dark_age.setRegistryName(location("dark_age"))
         );
 
+        EnchantmentInit.setupDescriptions();
         Tomes.LOGGER.info("Enchantments Registered!");
     }
 
@@ -108,9 +104,7 @@ public class TomesRegistry {
                 EntityInit.tamed_spider,
                 EntityInit.spectral_steed,
                 EntityInit.withering_stench
-                );
-
-        EntityInit.setupAttributes();
+        );
 
         Tomes.LOGGER.info("Entities Registered!");
     }
@@ -127,19 +121,18 @@ public class TomesRegistry {
     }
 
     @SubscribeEvent
-    public static void onParticleRegistry(final RegistryEvent.Register<ParticleType<?>> event)
-    {
+    public static void onParticleRegistry(final RegistryEvent.Register<ParticleType<?>> event) {
         event.getRegistry().registerAll
-                (
-                        ParticleInit.spirit_flame.setRegistryName(location("spirit_flame")),
-                        ParticleInit.withering_stench.setRegistryName(location("withering_stench")),
-                        ParticleInit.wind_deflect.setRegistryName(location("wind_deflect")),
-                        ParticleInit.web_net.setRegistryName(location("web_net")),
-                        ParticleInit.hex.setRegistryName(location("hex")),
-                        ParticleInit.wild_wolf_despawn.setRegistryName(location("wild_wolf_despawn")),
-                        ParticleInit.spectral_steed_despawn.setRegistryName(location("spectral_steed_despawn")),
-                        ParticleInit.living_wisp.setRegistryName(location("living_wisp"))
-                );
+            (
+                ParticleInit.spirit_flame.setRegistryName(location("spirit_flame")),
+                ParticleInit.withering_stench.setRegistryName(location("withering_stench")),
+                ParticleInit.wind_deflect.setRegistryName(location("wind_deflect")),
+                ParticleInit.web_net.setRegistryName(location("web_net")),
+                ParticleInit.hex.setRegistryName(location("hex")),
+                ParticleInit.wild_wolf_despawn.setRegistryName(location("wild_wolf_despawn")),
+                ParticleInit.spectral_steed_despawn.setRegistryName(location("spectral_steed_despawn")),
+                ParticleInit.living_wisp.setRegistryName(location("living_wisp"))
+            );
 
         Tomes.LOGGER.info("Particles Registered!");
     }
