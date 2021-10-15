@@ -38,7 +38,6 @@ public class WildAidSpell extends ActiveSpell{
                 WildWolfEntity entity = (WildWolfEntity) EntityInit.wild_wolf.spawn(((ServerPlayerEntity)playerIn).getServerWorld(), null, playerIn, pos, SpawnReason.MOB_SUMMONED, true, false);
                 if (entity != null) {
                     entity.setTamedBy(playerIn);
-                    entity.lifeTimer = 200;
                 }
                 return true;
             }

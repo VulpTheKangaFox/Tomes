@@ -22,7 +22,7 @@ public class WildWolfEntity extends WolfEntity {
 
     public WildWolfEntity(EntityType<? extends WolfEntity> type, World worldIn) {
         super(type, worldIn);
-        this.lifeTimer = 200;
+        this.lifeTimer = 2400;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class WildWolfEntity extends WolfEntity {
         if (compound.contains("LifeTime")) {
             this.lifeTimer = compound.getInt("LifeTime");
         } else {
-            this.lifeTimer = 200;
+            this.lifeTimer = 2400;
         }
         if(!world.isRemote) {
             this.readAngerNBT((ServerWorld) this.world, compound);
