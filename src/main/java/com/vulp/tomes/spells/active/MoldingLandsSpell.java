@@ -17,6 +17,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,8 +25,8 @@ import java.util.Random;
 
 public class MoldingLandsSpell extends ActiveSpell {
 
-    public MoldingLandsSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare) {
-        super(rarity, isActive, isRare);
+    public MoldingLandsSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare, ForgeConfigSpec.ConfigValue<Boolean> enabled) {
+        super(rarity, isActive, isRare, enabled);
     }
 
     @Override

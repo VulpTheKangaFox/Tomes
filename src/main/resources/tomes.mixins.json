@@ -10,7 +10,8 @@
   ],
   "client": [
     "EnchantmentScreenMixin",
-    "ItemRendererMixin"
+    "ItemRendererMixin",
+    "ItemStackMixin"
   ],
   "injectors": {
     "defaultRequire": 1

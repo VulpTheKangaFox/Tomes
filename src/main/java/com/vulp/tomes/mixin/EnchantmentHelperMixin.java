@@ -41,12 +41,18 @@ public abstract class EnchantmentHelperMixin {
                     if (!((TomeEnchantment)data.enchantment).isActive()) {
                         list.add(data);
                     }
+                    if (list.size() == list1.size()) {
+                        info.setReturnValue(list);
+                    }
                 }
                 if (level > 8 + randomIn.nextInt(4)) {
                     while (list.size() < 2) {
                         EnchantmentData data = WeightedRandom.getRandomItem(randomIn, list1);
                         if (!list.contains(data) && !((TomeEnchantment)data.enchantment).isActive()) {
                             list.add(data);
+                        }
+                        if (list.size() == list1.size()) {
+                            info.setReturnValue(list);
                         }
                     }
                 }
@@ -56,6 +62,9 @@ public abstract class EnchantmentHelperMixin {
                         if (((TomeEnchantment)data.enchantment).isActive()) {
                             list.add(data);
                         }
+                        if (list.size() == list1.size()) {
+                            info.setReturnValue(list);
+                        }
                     }
                 }
                 if (level >= 40 + randomIn.nextInt(10)) {
@@ -63,6 +72,9 @@ public abstract class EnchantmentHelperMixin {
                         EnchantmentData data = WeightedRandom.getRandomItem(randomIn, list1);
                         if (!((TomeEnchantment)data.enchantment).isActive() && !list.contains(data)) {
                             list.add(data);
+                        }
+                        if (list.size() == list1.size()) {
+                            info.setReturnValue(list);
                         }
                     }
                 }

@@ -1,8 +1,10 @@
 package com.vulp.tomes.mixin;
 
+import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.enchantments.EnchantmentTypes;
 import com.vulp.tomes.enchantments.TomeEnchantment;
 import com.vulp.tomes.init.EnchantmentInit;
+import com.vulp.tomes.items.TomeItem;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
@@ -21,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import javax.xml.soap.Text;
 import java.util.List;
 import java.util.Set;
 
@@ -31,31 +34,41 @@ public class EnchantedBookItemMixin {
     @Inject(at = @At("TAIL"), method = "addInformation")
     public void addInformation(ItemStack stack, World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn, CallbackInfo ci) {
         Set<Enchantment> enchSet = EnchantmentHelper.getEnchantments(stack).keySet();
-        if (enchSet.size() == 1) {
-            Enchantment enchant = (Enchantment) enchSet.toArray()[0];
-            if (enchant instanceof TomeEnchantment) {
-                TextFormatting formatting;
-                ITextComponent spell;
-                if (enchant.type == EnchantmentTypes.ARCHAIC_TOME) {
-                    formatting = TextFormatting.BLUE;
-                    spell = new TranslationTextComponent("enchantment.tomes.archaic_spell");
-                } else if (enchant.type == EnchantmentTypes.LIVING_TOME) {
-                    formatting = TextFormatting.DARK_GREEN;
-                    spell = new TranslationTextComponent("enchantment.tomes.living_spell");
-                } else if (enchant.type == EnchantmentTypes.CURSED_TOME) {
-                    formatting = TextFormatting.DARK_RED;
-                    spell = new TranslationTextComponent("enchantment.tomes.cursed_spell");
-                } else {
-                    formatting = TextFormatting.GRAY;
-                    spell = new StringTextComponent("");
+        enchSet.removeIf(enchantment -> !(enchantment instanceof TomeEnchantment));
+        if (enchSet.size() > 0) {
+            if (enchSet.size() == 1 && enchSet.stream().anyMatch(enchantment -> ((TomeEnchantment)enchantment).getSpellIndex().getSpell().isDisabled())) {
+                Enchantment[] enchantments = enchSet.toArray(new Enchantment[]{});
+                tooltip.add(new StringTextComponent(new TranslationTextComponent(enchantments[0].getName()).getString() + " - DISABLED").mergeStyle(TextFormatting.RED, TextFormatting.BOLD, TextFormatting.ITALIC));
+            } else if (Screen.hasShiftDown()) {
+                for (Enchantment enchant : enchSet) {
+                    if (enchant instanceof TomeEnchantment) {
+                        if (!((TomeEnchantment) enchant).getSpellIndex().getSpell().isDisabled()) {
+                            Pair<TextFormatting, TextFormatting> formatting;
+                            ITextComponent spell;
+                            if (enchant.type == EnchantmentTypes.ARCHAIC_TOME) {
+                                formatting = new Pair<>(TextFormatting.AQUA, TextFormatting.BLUE);
+                                spell = new TranslationTextComponent("enchantment.tomes.archaic_spell");
+                            } else if (enchant.type == EnchantmentTypes.LIVING_TOME) {
+                                formatting = new Pair<>(TextFormatting.GREEN, TextFormatting.DARK_GREEN);
+                                spell = new TranslationTextComponent("enchantment.tomes.living_spell");
+                            } else if (enchant.type == EnchantmentTypes.CURSED_TOME) {
+                                formatting = new Pair<>(TextFormatting.RED, TextFormatting.DARK_RED);
+                                spell = new TranslationTextComponent("enchantment.tomes.cursed_spell");
+                            } else {
+                                formatting = new Pair<>(TextFormatting.GRAY, TextFormatting.DARK_GRAY);
+                                spell = new StringTextComponent("");
+                            }
+                            TranslationTextComponent active = (((TomeEnchantment) enchant).isActive() ? new TranslationTextComponent("enchantment.tomes.active") : new TranslationTextComponent("enchantment.tomes.passive"));
+                            tooltip.add(new TranslationTextComponent(enchant.getName()).mergeStyle(formatting.getFirst(), TextFormatting.BOLD));
+                            tooltip.add(new StringTextComponent("[ " + spell.getString() + active.getString() + " ]").mergeStyle(formatting.getFirst(), TextFormatting.ITALIC));
+                            tooltip.add(EnchantmentInit.TOME_DESCRIPTIONS.get(enchant).mergeStyle(formatting.getSecond()));
+                        } else {
+                            tooltip.add(new StringTextComponent(new TranslationTextComponent(enchant.getName()).getString() + " - DISABLED").mergeStyle(TextFormatting.RED, TextFormatting.BOLD, TextFormatting.ITALIC));
+                        }
+                    }
                 }
-                TranslationTextComponent active = (((TomeEnchantment) enchant).isActive() ? new TranslationTextComponent("enchantment.tomes.active") : new TranslationTextComponent("enchantment.tomes.passive"));
-                    tooltip.add(new StringTextComponent(spell.getString() + active.getString()).mergeStyle(formatting, TextFormatting.BOLD));
-                    if (!Screen.hasShiftDown()) {
-                        tooltip.add(new TranslationTextComponent("item.tomes.hold_shift").mergeStyle(formatting, TextFormatting.ITALIC));
-                    } else {
-                        tooltip.add(EnchantmentInit.TOME_DESCRIPTIONS.get(enchant).mergeStyle(formatting));
-                }
+            } else {
+                tooltip.add(new TranslationTextComponent("item.tomes.hold_shift").mergeStyle(TextFormatting.DARK_GRAY, TextFormatting.ITALIC));
             }
         }
     }

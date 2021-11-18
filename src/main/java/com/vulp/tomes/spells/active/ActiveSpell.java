@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 import javax.annotation.Nullable;
 
@@ -13,8 +14,8 @@ public abstract class ActiveSpell extends Spell {
 
     private Entity target;
 
-    public ActiveSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare) {
-        super(rarity, isActive, isRare);
+    public ActiveSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare, ForgeConfigSpec.ConfigValue<Boolean> enabled) {
+        super(rarity, isActive, isRare, enabled);
     }
 
     public abstract int getSpellCost();

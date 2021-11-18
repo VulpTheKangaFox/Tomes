@@ -7,11 +7,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class WitheringStenchSpell extends ActiveSpell {
 
-    public WitheringStenchSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare) {
-        super(rarity, isActive, isRare);
+    public WitheringStenchSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare, ForgeConfigSpec.ConfigValue<Boolean> enabled) {
+        super(rarity, isActive, isRare, enabled);
     }
 
     @Override

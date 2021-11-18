@@ -1,7 +1,7 @@
 package com.vulp.tomes.inventory.container;
 
 import com.google.common.collect.Sets;
-import com.vulp.tomes.client.renderer.entity.WitchTrades;
+import com.vulp.tomes.entities.WitchTrades;
 import com.vulp.tomes.inventory.WitchMerchantInventory;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.entity.Entity;

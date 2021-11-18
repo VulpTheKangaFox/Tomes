@@ -15,11 +15,12 @@ import net.minecraft.util.math.RayTraceContext;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class GhostlySteedSpell extends ActiveSpell {
 
-    public GhostlySteedSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare) {
-        super(rarity, isActive, isRare);
+    public GhostlySteedSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare, ForgeConfigSpec.ConfigValue<Boolean> enabled) {
+        super(rarity, isActive, isRare, enabled);
     }
 
     @Override

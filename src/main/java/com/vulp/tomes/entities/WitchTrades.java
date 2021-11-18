@@ -1,6 +1,7 @@
-package com.vulp.tomes.client.renderer.entity;
+package com.vulp.tomes.entities;
 
 import com.google.common.collect.ImmutableMap;
+import com.vulp.tomes.enchantments.TomeEnchantment;
 import com.vulp.tomes.init.EnchantmentInit;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -13,7 +14,10 @@ import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.potion.Potions;
 
+import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.function.IntFunction;
+import java.util.stream.Stream;
 
 public class WitchTrades extends VillagerTrades {
 
@@ -48,7 +52,13 @@ public class WitchTrades extends VillagerTrades {
         }
 
         public MerchantOffer getOffer(Entity trader, Random rand) {
-            Enchantment enchantment = EnchantmentInit.TREASURE_TOME_ENCHANTS.get(rand.nextInt(EnchantmentInit.TREASURE_TOME_ENCHANTS.size()));
+            Stream<Enchantment> enchants = EnchantmentInit.TREASURE_TOME_ENCHANTS.stream().filter(ench -> !(((TomeEnchantment)ench).getSpellIndex().getSpell().isDisabled()));
+            Enchantment enchantment;
+            try {
+                enchantment = enchants.skip(rand.nextInt((int) enchants.count())).findFirst().get(); // Hope this works?
+            } catch (NoSuchElementException exception) {
+                return new MerchantOffer(ItemStack.EMPTY, ItemStack.EMPTY, 1, 0, 0);
+            }
             ItemStack itemstack = EnchantedBookItem.getEnchantedItemStack(new EnchantmentData(enchantment, 1));
             return new MerchantOffer(new ItemStack(Items.EMERALD, rand.nextInt(25) + 20), new ItemStack(Items.BOOK), itemstack, 1, this.xpValue, 0.2F);
         }

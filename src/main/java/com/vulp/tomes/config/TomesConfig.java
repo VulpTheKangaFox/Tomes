@@ -7,39 +7,88 @@ public final class TomesConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 
+    public static final ForgeConfigSpec.ConfigValue<Boolean> self_prop_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> self_prop_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> self_prop_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> force_of_wind_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> force_of_wind_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> force_of_wind_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> strike_from_above_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> strike_from_above_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> strike_from_above_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> everchanging_skies_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> everchanging_skies_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> everchanging_skies_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> dying_knowledge_enabled;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> linguist_enabled;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> airy_protection_enabled;
 
+    public static final ForgeConfigSpec.ConfigValue<Boolean> lifebringer_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> lifebringer_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> lifebringer_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> beast_tamer_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> beast_tamer_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> beast_tamer_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> wild_aid_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> wild_aid_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> wild_aid_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> molding_lands_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> molding_lands_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> molding_lands_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> nurturing_roots_enabled;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> advantageous_growth_enabled;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> forest_affinity_enabled;
 
+    public static final ForgeConfigSpec.ConfigValue<Boolean> mind_bender_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> mind_bender_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> mind_bender_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ghostly_steed_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> ghostly_steed_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> ghostly_steed_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> withering_stench_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> withering_stench_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> withering_stench_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> dark_age_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> dark_age_cost;
     public static final ForgeConfigSpec.ConfigValue<Integer> dark_age_cooldown;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> rotten_heart_enabled;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> nocturnal_enabled;
+    public static final ForgeConfigSpec.ConfigValue<Boolean> covens_rule_enabled;
 
     public static final ForgeConfigSpec.ConfigValue<Integer> archaic_heart_droprate;
     public static final ForgeConfigSpec.ConfigValue<Integer> beating_heart_droprate;
     public static final ForgeConfigSpec.ConfigValue<Integer> sweet_heart_droprate;
 
     static {
-        BUILDER.push("Costs and Cooldowns:").comment("Cost means amount of tome damage, and cooldown is in ticks.");
+        BUILDER.push("Enabled/Disabled Spells: (All are set to true by default)");
+
+        self_prop_enabled = BUILDER.define("Self Propulsion Enabled", true);
+        force_of_wind_enabled = BUILDER.define("Force of Wind Enabled", true);
+        strike_from_above_enabled = BUILDER.define("Strike From Above Enabled", true);
+        everchanging_skies_enabled = BUILDER.define("Everchanging Skies Enabled", true);
+        dying_knowledge_enabled = BUILDER.define("Dying Knowledge Enabled", true);
+        linguist_enabled = BUILDER.define("Linguist Enabled", true);
+        airy_protection_enabled = BUILDER.define("Airy Protection Enabled", true);
+
+        lifebringer_enabled = BUILDER.define("Lifebringer Enabled", true);
+        beast_tamer_enabled = BUILDER.define("Beast Tamer Enabled", true);
+        wild_aid_enabled = BUILDER.define("Wild Aid Enabled", true);
+        molding_lands_enabled = BUILDER.define("Molding Lands Enabled", true);
+        nurturing_roots_enabled = BUILDER.define("Nurturing Roots Enabled", true);
+        advantageous_growth_enabled = BUILDER.define("Advantageous Growth Enabled", true);
+        forest_affinity_enabled = BUILDER.define("Forest Affinity Enabled", true);
+
+        mind_bender_enabled = BUILDER.define("Mind Bender Enabled", true);
+        ghostly_steed_enabled = BUILDER.define("Ghostly Steed Enabled", true);
+        withering_stench_enabled = BUILDER.define("Withering Stench Enabled", true);
+        dark_age_enabled = BUILDER.define("Dark Age Enabled", true);
+        rotten_heart_enabled = BUILDER.define("Rotten Heart Enabled", true);
+        nocturnal_enabled = BUILDER.define("Nocturnal Enabled", true);
+        covens_rule_enabled = BUILDER.define("Coven's Rule Enabled", true);
+
+        BUILDER.pop();
+        BUILDER.push("Costs and Cooldowns: (Cooldowns are in ticks)");
+
         self_prop_cost = BUILDER.comment("DEFAULT = 8").define("Self Propulsion Cost", 8);
         self_prop_cooldown = BUILDER.comment("DEFAULT = 50").define("Self Propulsion Cooldown", 50);
         force_of_wind_cost = BUILDER.comment("DEFAULT = 10").define("Force of Wind Cost", 10);
@@ -66,11 +115,14 @@ public final class TomesConfig {
         withering_stench_cooldown = BUILDER.comment("DEFAULT = 35").define("Withering Stench Cooldown", 35);
         dark_age_cost = BUILDER.comment("DEFAULT = 70").define("Dark Age Cost", 70);
         dark_age_cooldown = BUILDER.comment("DEFAULT = 4000").define("Dark Age Cooldown", 4000);
+
         BUILDER.pop();
-        BUILDER.push("Droprates: (0 is never drop, 20 is always drop)").comment("The drop rate of the hearts. 0 is never, 20 is always.");
+        BUILDER.push("Droprates: (0 is never drop, 20 is always drop)");
+
         archaic_heart_droprate = BUILDER.comment("DEFAULT = 1").define("Archaic Heart Droprate", 1);
         beating_heart_droprate = BUILDER.comment("DEFAULT = 3").define("Beating Heart Droprate", 3);
         sweet_heart_droprate = BUILDER.comment("DEFAULT = 8").define("Sweet Heart Droprate", 8);
+
         BUILDER.pop();
         SPEC = BUILDER.build();
     }

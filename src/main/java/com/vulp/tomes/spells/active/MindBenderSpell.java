@@ -12,11 +12,15 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfigSpec;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class MindBenderSpell extends ActiveSpell {
 
-    public MindBenderSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare) {
-        super(rarity, isActive, isRare);
+    public MindBenderSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare, ForgeConfigSpec.ConfigValue<Boolean> enabled) {
+        super(rarity, isActive, isRare, enabled);
     }
 
     @Override

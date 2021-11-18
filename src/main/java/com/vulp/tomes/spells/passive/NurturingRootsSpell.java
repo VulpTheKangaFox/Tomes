@@ -9,6 +9,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.FoodStats;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class NurturingRootsSpell extends PassiveSpell {
 
@@ -16,8 +17,8 @@ public class NurturingRootsSpell extends PassiveSpell {
     private boolean toggle = true;
     private int grassTime = 0;
 
-    public NurturingRootsSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare) {
-        super(rarity, isActive, isRare);
+    public NurturingRootsSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare, ForgeConfigSpec.ConfigValue<Boolean> enabled) {
+        super(rarity, isActive, isRare, enabled);
     }
 
     @Override

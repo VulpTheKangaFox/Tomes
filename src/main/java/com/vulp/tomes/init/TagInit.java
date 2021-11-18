@@ -3,17 +3,20 @@ package com.vulp.tomes.init;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.Item;
+import net.minecraft.item.Items;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class TagInit {
 
     public static final Tags.IOptionalNamedTag<Block> GRASS = createOptionalBlockTag("forge", "grass", new HashSet<>(Arrays.asList(() -> Blocks.GRASS_BLOCK, () -> Blocks.MYCELIUM, () -> Blocks.PODZOL)));
+    public static final Tags.IOptionalNamedTag<Item> FEATHER = createOptionalItemTag("forge", "feathers", new HashSet<>(Collections.singletonList(() -> Items.FEATHER)));
 
     public static void init() {
     }

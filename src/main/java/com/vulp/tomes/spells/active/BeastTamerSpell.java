@@ -22,14 +22,15 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public class BeastTamerSpell extends ActiveSpell {
 
     private static final ImmutableSet<Class<? extends LivingEntity>> tameableMobs = ImmutableSet.of(WolfEntity.class, CatEntity.class, ParrotEntity.class, FoxEntity.class, HorseEntity.class, SkeletonHorseEntity.class, ZombieHorseEntity.class, DonkeyEntity.class, LlamaEntity.class, MuleEntity.class, SpiderEntity.class);
 
-    public BeastTamerSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare) {
-        super(rarity, isActive, isRare);
+    public BeastTamerSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare, ForgeConfigSpec.ConfigValue<Boolean> enabled) {
+        super(rarity, isActive, isRare, enabled);
     }
 
     @Override

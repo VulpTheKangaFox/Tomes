@@ -6,12 +6,12 @@ import net.minecraft.enchantment.Enchantment;
 
 public enum SpellIndex {
 
-    SELF_PROPULSION(SpellInit.self_propulsion, EnchantmentInit.self_propulsion), // Implemented.
+    SELF_PROPULSION(SpellInit.self_propulsion, EnchantmentInit.self_propulsion),
     FORCE_OF_WIND(SpellInit.force_of_wind, EnchantmentInit.force_of_wind),
     STRIKE_FROM_ABOVE(SpellInit.strike_from_above, EnchantmentInit.strike_from_above),
-    DYING_KNOWLEDGE(SpellInit.dying_knowledge, EnchantmentInit.dying_knowledge), // Implemented.
+    DYING_KNOWLEDGE(SpellInit.dying_knowledge, EnchantmentInit.dying_knowledge),
     LINGUIST(SpellInit.linguist, EnchantmentInit.linguist),
-    AIRY_PROTECTION(SpellInit.airy_protection, EnchantmentInit.airy_protection), // Implemented.
+    AIRY_PROTECTION(SpellInit.airy_protection, EnchantmentInit.airy_protection),
     EVERCHANGING_SKIES(SpellInit.everchanging_skies, EnchantmentInit.everchanging_skies),
 
     LIFEBRINGER(SpellInit.lifebringer, EnchantmentInit.lifebringer),

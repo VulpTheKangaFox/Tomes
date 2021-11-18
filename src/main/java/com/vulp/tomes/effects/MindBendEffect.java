@@ -5,6 +5,7 @@ import com.vulp.tomes.entities.ai.MindBendFollowGoal;
 import com.vulp.tomes.entities.ai.NullifyAttackableTargetGoal;
 import com.vulp.tomes.network.TomesPacketHandler;
 import com.vulp.tomes.network.messages.ServerMindBendMessage;
+import com.vulp.tomes.spells.active.MindBenderSpell;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;

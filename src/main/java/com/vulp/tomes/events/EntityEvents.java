@@ -3,6 +3,8 @@ package com.vulp.tomes.events;
 import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.Tomes;
 import com.vulp.tomes.config.TomesConfig;
+import com.vulp.tomes.entities.ai.MindBendFollowGoal;
+import com.vulp.tomes.entities.ai.NullifyAttackableTargetGoal;
 import com.vulp.tomes.init.EffectInit;
 import com.vulp.tomes.init.EnchantmentInit;
 import com.vulp.tomes.init.ItemInit;
@@ -14,14 +16,18 @@ import com.vulp.tomes.network.TomesPacketHandler;
 import com.vulp.tomes.network.messages.ServerCropBreakMessage;
 import com.vulp.tomes.network.messages.ServerMindBendMessage;
 import com.vulp.tomes.network.messages.ServerProjDeflectMessage;
+import com.vulp.tomes.spells.active.MindBenderSpell;
 import com.vulp.tomes.util.HealthHandler;
 import com.vulp.tomes.util.SpellEnchantUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropsBlock;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.ai.goal.Goal;
+import net.minecraft.entity.ai.goal.PrioritizedGoal;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.*;
@@ -46,6 +52,7 @@ import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -57,26 +64,32 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid=Tomes.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
 public class EntityEvents {
 
-    private static int mindbend_particle_timer = 7;
+    private static final HashMap<Entity, Integer> mindbendParticleHandlers = new HashMap<>();
     private static final List<Pair<LivingEntity, HealthHandler>> healthHandlers = new ArrayList<>();
+    private static int slowTickTimer = 10;
 
     @SubscribeEvent
     public static void onLivingSetAttackTarget(LivingSetAttackTargetEvent event) {
         Entity player = event.getTarget();
         Entity aggressor = event.getEntity();
         if (event.getTarget() instanceof PlayerEntity) {
-            if (event.getEntity() instanceof WitchEntity) {
-                if (SpellEnchantUtil.hasEnchant((PlayerEntity) player, EnchantmentInit.covens_rule)) {
-                    ((WitchEntity) aggressor).setAttackTarget(null);
+            if (TomesConfig.covens_rule_enabled.get()) {
+                if (event.getEntity() instanceof WitchEntity) {
+                    if (SpellEnchantUtil.hasEnchant((PlayerEntity) player, EnchantmentInit.covens_rule)) {
+                        ((WitchEntity) aggressor).setAttackTarget(null);
+                    }
                 }
             }
-            if (aggressor instanceof SpiderEntity || aggressor instanceof CreeperEntity || aggressor instanceof ZombieEntity || aggressor instanceof SkeletonEntity) {
-                if (SpellEnchantUtil.hasEnchant((PlayerEntity) player, EnchantmentInit.rotten_heart)) {
-                    ((MobEntity)aggressor).setAttackTarget(null);
+            if (TomesConfig.covens_rule_enabled.get()) {
+                if (aggressor instanceof SpiderEntity || aggressor instanceof CreeperEntity || aggressor instanceof ZombieEntity || aggressor instanceof SkeletonEntity) {
+                    if (SpellEnchantUtil.hasEnchant((PlayerEntity) player, EnchantmentInit.rotten_heart)) {
+                        ((MobEntity) aggressor).setAttackTarget(null);
+                    }
                 }
             }
         }
@@ -117,7 +130,7 @@ public class EntityEvents {
         ItemStack stack = event.getItemStack();
         Item item = stack.getItem();
         if (item instanceof TomeItem) {
-            if (entity instanceof AbstractHorseEntity) {
+            if (TomesConfig.beast_tamer_enabled.get() && entity instanceof AbstractHorseEntity) {
                 if (SpellEnchantUtil.hasEnchant(player, EnchantmentInit.beast_tamer)) {
                     Hand hand = Hand.OFF_HAND;
                     if (stack == player.getHeldItemMainhand()) {
@@ -126,7 +139,7 @@ public class EntityEvents {
                     item.itemInteractionForEntity(stack, player, (LivingEntity) entity, hand);
                     item.onItemRightClick(world, player, hand);
                 }
-            } else if (entity instanceof WitchEntity) {
+            } else if (TomesConfig.covens_rule_enabled.get() && entity instanceof WitchEntity && SpellEnchantUtil.hasEnchant(player, EnchantmentInit.covens_rule)) {
                 MerchantOffers offers = WitchMerchantContainer.getMerchantOffers(entity);
 
                 if (player.getActiveHand() == Hand.MAIN_HAND) {
@@ -146,8 +159,8 @@ public class EntityEvents {
                 }
             }
         }
-        if (item instanceof DebugItem && entity instanceof WitchEntity) {
-            ((DebugItem)item).debugWitchNBT(world, entity, stack);
+        if (item instanceof DebugItem) {
+            ((DebugItem)item).debugEntity(world, entity, stack);
         }
     }
 
@@ -157,7 +170,7 @@ public class EntityEvents {
         World world = player.world;
         BlockPos pos = event.getPos();
         BlockState state = world.getBlockState(pos);
-        if (SpellEnchantUtil.hasEnchant(player, EnchantmentInit.advantageous_growth) && state.getBlock() instanceof CropsBlock && ((CropsBlock) state.getBlock()).isMaxAge(state) && !player.isCreative()) {
+        if (TomesConfig.advantageous_growth_enabled.get() && SpellEnchantUtil.hasEnchant(player, EnchantmentInit.advantageous_growth) && state.getBlock() instanceof CropsBlock && ((CropsBlock) state.getBlock()).isMaxAge(state) && !player.isCreative()) {
             Block.spawnDrops(state, world, pos);
             TomesPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with((() -> (Chunk) world.getChunk(pos))), new ServerCropBreakMessage(pos.getX(), pos.getY(), pos.getZ()));
         }
@@ -165,30 +178,32 @@ public class EntityEvents {
 
     @SubscribeEvent
     public static void projHitEvent(ProjectileImpactEvent event) {
-        Entity proj = event.getEntity();
-        Vector3d vector3d1 = proj.getPositionVec();
-        Vector3d vector3d2 = vector3d1.add(proj.getMotion());
-        RayTraceResult result = event.getRayTraceResult();
-        EntityRayTraceResult raytrace = ProjectileHelper.rayTraceEntities(event.getEntity().world, proj, vector3d1, vector3d2, proj.getBoundingBox().expand(proj.getMotion()).grow(1.0D), i -> true);
-        if (result != null && raytrace != null && result.getType() == RayTraceResult.Type.ENTITY) {
-            Entity victim = raytrace.getEntity();
-            if (victim instanceof PlayerEntity && SpellEnchantUtil.hasEnchant((PlayerEntity) victim, EnchantmentInit.airy_protection) && proj instanceof ProjectileEntity && new Random().nextBoolean()) {
-                if (!proj.world.isRemote) {
-                    TomesPacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> victim), new ServerProjDeflectMessage(victim.getEntityId(), proj.getEntityId()));
-                    Vector3d vec = proj.getMotion();
-                    Vector3d vec2 = vec.inverse();
-                    proj.setMotion(vec2.getX() * 0.75, vec2.getY() * 0.75, vec2.getZ() * 0.75);
-                    proj.rotationPitch = MathHelper.wrapDegrees(proj.rotationPitch + 180);
-                    proj.rotationYaw = MathHelper.wrapDegrees(proj.rotationYaw + 180);
-                    if (proj instanceof DamagingProjectileEntity) {
-                        DamagingProjectileEntity damageProj = (DamagingProjectileEntity) proj;
-                        damageProj.accelerationX = -damageProj.accelerationX * 0.75;
-                        damageProj.accelerationY = -damageProj.accelerationY * 0.75;
-                        damageProj.accelerationZ = -damageProj.accelerationZ * 0.75;
+        if (TomesConfig.airy_protection_enabled.get()) {
+            Entity proj = event.getEntity();
+            Vector3d vector3d1 = proj.getPositionVec();
+            Vector3d vector3d2 = vector3d1.add(proj.getMotion());
+            RayTraceResult result = event.getRayTraceResult();
+            EntityRayTraceResult raytrace = ProjectileHelper.rayTraceEntities(event.getEntity().world, proj, vector3d1, vector3d2, proj.getBoundingBox().expand(proj.getMotion()).grow(1.0D), i -> true);
+            if (result != null && raytrace != null && result.getType() == RayTraceResult.Type.ENTITY) {
+                Entity victim = raytrace.getEntity();
+                if (victim instanceof PlayerEntity && SpellEnchantUtil.hasEnchant((PlayerEntity) victim, EnchantmentInit.airy_protection) && proj instanceof ProjectileEntity && new Random().nextBoolean()) {
+                    if (!proj.world.isRemote) {
+                        TomesPacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> victim), new ServerProjDeflectMessage(victim.getEntityId(), proj.getEntityId()));
+                        Vector3d vec = proj.getMotion();
+                        Vector3d vec2 = vec.inverse();
+                        proj.setMotion(vec2.getX() * 0.75, vec2.getY() * 0.75, vec2.getZ() * 0.75);
+                        proj.rotationPitch = MathHelper.wrapDegrees(proj.rotationPitch + 180);
+                        proj.rotationYaw = MathHelper.wrapDegrees(proj.rotationYaw + 180);
+                        if (proj instanceof DamagingProjectileEntity) {
+                            DamagingProjectileEntity damageProj = (DamagingProjectileEntity) proj;
+                            damageProj.accelerationX = -damageProj.accelerationX * 0.75;
+                            damageProj.accelerationY = -damageProj.accelerationY * 0.75;
+                            damageProj.accelerationZ = -damageProj.accelerationZ * 0.75;
+                        }
+                        ((ProjectileEntity) proj).setShooter(victim);
+                        proj.velocityChanged = true;
+                        event.setCanceled(true);
                     }
-                    ((ProjectileEntity) proj).setShooter(victim);
-                    proj.velocityChanged = true;
-                    event.setCanceled(true);
                 }
             }
         }
@@ -233,28 +248,101 @@ public class EntityEvents {
     @SubscribeEvent
     public static void livingTickEvent(LivingEvent.LivingUpdateEvent event) {
         LivingEntity entity = (LivingEntity) event.getEntity();
-        if (entity != null) {
-            if (entity.world.isRemote) {
-                if (entity.getPersistentData().getBoolean("HexParticle")) {
-                    if (mindbend_particle_timer <= 0) {
-                        entity.world.addParticle(ParticleInit.hex, entity.getPosX(), entity.getPosY() + entity.getHeight() + 0.5F, entity.getPosZ(), entity.getEntityId(), 0.0D, 0.0D);
-                        mindbend_particle_timer = 7;
-                    } else {
-                        mindbend_particle_timer--;
+        if (entity != null && entity.getPersistentData().contains("HexParticle")) {
+            CompoundNBT nbt = entity.getPersistentData();
+            if (entity.world.isRemote && nbt.getBoolean("HexParticle")) {
+                mindbendParticleHandlers.putIfAbsent(entity, 7);
+            } else {
+                if (slowTickTimer == 0) {
+                    if (entity instanceof MobEntity && nbt.hasUniqueId("PlayerFollowingUUID") && entity.isPotionActive(EffectInit.mind_bend)) {
+                        MobEntity mobEntity = (MobEntity) entity;
+                        if (mobEntity.goalSelector.goals.stream().noneMatch(pGoal -> pGoal.getGoal() instanceof MindBendFollowGoal)) {
+                            mobEntity.goalSelector.addGoal(1, new MindBendFollowGoal(mobEntity, 1.0F, 5.0F, 2.0F));
+                            mobEntity.targetSelector.addGoal(0, new NullifyAttackableTargetGoal(mobEntity, false));
+                        }
                     }
                 }
-            } else {
-                TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerMindBendMessage(entity.getEntityId(), entity.getPersistentData().getBoolean("HexParticle")));
+                TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerMindBendMessage(entity.getEntityId(), nbt.getBoolean("HexParticle")));
             }
         }
     }
 
     @SubscribeEvent
+    public static void livingDeathEvent(LivingDeathEvent event) {
+            /*if (entity.getPersistentData().getBoolean("HexParticle")) {
+                mindbendParticleHandlers.forEach((id, timer) -> {
+                    Entity tickingEntity = world.getEntityByID(id);
+                });
+                if (mindbend_particle_timer <= 0) {
+                    world.addParticle(ParticleInit.hex, entity.getPosX(), entity.getPosY() + entity.getHeight() + 0.5F, entity.getPosZ(), entity.getEntityId(), 0.0D, 0.0D);
+                    mindbend_particle_timer = 7;
+                } else {
+                    mindbend_particle_timer--;
+                }
+            }
+        } else {
+            TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerMindBendMessage(entity.getEntityId(), entity.getPersistentData().getBoolean("HexParticle")));
+        }*/
+    }
+
+
+    @SubscribeEvent
+    public static void entityLeaveWorldEvent(EntityLeaveWorldEvent event) {
+        mindbendParticleHandlers.clear();
+    }
+
+    @SubscribeEvent
     public static void serverTickEvent(TickEvent.ServerTickEvent event) {
+        // Ticks the health handlers regarding the leaden veins effect.
         if (!healthHandlers.isEmpty()) {
             healthHandlers.removeIf(pair -> pair.getFirst() == null || pair.getSecond() == null || pair.getSecond().readyToRemove());
             healthHandlers.forEach(pair -> pair.getSecond().tick());
         }
+        /*// Reinitializes AI for the mind bend effect if it is missing.
+        List<LivingEntity> removalList = new ArrayList<>(Collections.emptyList());
+        if (!MindBenderSpell.mindBendMap.isEmpty()) {
+            MindBenderSpell.mindBendMap.forEach((entity, player) -> {
+                if (entity instanceof MobEntity && !entity.removed) {
+                    for (Goal goal : ((MobEntity) entity).goalSelector.goals.stream().map(PrioritizedGoal::getGoal).collect(Collectors.toList())) {
+                        if (goal instanceof MindBendFollowGoal) {
+                            return;
+                        }
+                    }
+                    ((MobEntity) entity).goalSelector.addGoal(1, new MindBendFollowGoal((MobEntity) entity, 1.0F, 5.0F, 2.0F));
+                    ((MobEntity) entity).targetSelector.addGoal(0, new NullifyAttackableTargetGoal((MobEntity) entity, false));
+                    entity.getPersistentData().putUniqueId("PlayerFollowingUUID", player.getUniqueID());
+                } else {
+                    removalList.add(entity);
+                }
+            });
+        }
+        removalList.forEach(MindBenderSpell.mindBendMap::remove);*/
+        if (slowTickTimer < 1) {
+            slowTickTimer = 20;
+        } else {
+            slowTickTimer--;
+        }
+    }
+
+    @SubscribeEvent
+    public static void clientTickEvent(TickEvent.ClientTickEvent event) {
+        List<Entity> removalList = new ArrayList<>(Collections.emptyList());
+        if (!mindbendParticleHandlers.isEmpty()) {
+            mindbendParticleHandlers.keySet().removeIf(entity -> entity == null || entity.removed);
+            mindbendParticleHandlers.forEach((entity, timer) -> {
+                if (!entity.getPersistentData().getBoolean("HexParticle") || entity.removed) {
+                    removalList.add(entity);
+                } else {
+                    if (timer <= 0) {
+                        entity.world.addParticle(ParticleInit.hex, entity.getPosX(), entity.getPosY() + entity.getHeight() + 0.5F, entity.getPosZ(), entity.getEntityId(), 0.0D, 0.0D);
+                        mindbendParticleHandlers.replace(entity, 7);
+                    } else {
+                        mindbendParticleHandlers.replace(entity, timer - 1);
+                    }
+                }
+            });
+        }
+        removalList.forEach(mindbendParticleHandlers::remove);
     }
 
     @SubscribeEvent
@@ -273,7 +361,7 @@ public class EntityEvents {
 
     @SubscribeEvent
     public static void expEvent(PlayerXpEvent.XpChange event) {
-        if (SpellEnchantUtil.hasEnchant(event.getPlayer(), EnchantmentInit.dying_knowledge)) {
+        if (TomesConfig.dying_knowledge_enabled.get() && SpellEnchantUtil.hasEnchant(event.getPlayer(), EnchantmentInit.dying_knowledge)) {
             event.setAmount((int) ((float) event.getAmount() * 1.5F));
         }
     }

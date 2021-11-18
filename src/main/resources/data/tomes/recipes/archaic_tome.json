@@ -17,7 +17,7 @@
             "item": "minecraft:book"
         },
         "F": {
-            "item": "minecraft:feather"
+            "tag": "forge:feathers"
         },
         "C": {
             "item": "minecraft:clock"

@@ -4,13 +4,14 @@ import com.vulp.tomes.spells.Spell;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public abstract class PassiveSpell extends Spell {
 
     private int ticker = 0;
 
-    public PassiveSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare) {
-        super(rarity, isActive, isRare);
+    public PassiveSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare, ForgeConfigSpec.ConfigValue<Boolean> enabled) {
+        super(rarity, isActive, isRare, enabled);
     }
 
     public void tickEvent(World world, Entity entity) {

@@ -3,6 +3,7 @@ package com.vulp.tomes.mixin;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.datafixers.util.Pair;
+import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.enchantments.EnchantClueHolder;
 import com.vulp.tomes.init.EnchantmentInit;
 import com.vulp.tomes.items.TomeItem;
@@ -38,7 +39,7 @@ public abstract class EnchantmentScreenMixin extends ContainerScreen<Enchantment
 
     private boolean hasTome() {
         PlayerInventory inventory = this.playerInventory;
-        return inventory != null && Arrays.stream(new ItemStack[]{inventory.getCurrentItem(), inventory.offHandInventory.get(0)}).anyMatch(item -> item.getItem() instanceof TomeItem && EnchantmentHelper.getEnchantments(item).containsKey(EnchantmentInit.linguist));
+        return inventory != null && TomesConfig.linguist_enabled.get() && Arrays.stream(new ItemStack[]{inventory.getCurrentItem(), inventory.offHandInventory.get(0)}).anyMatch(item -> item.getItem() instanceof TomeItem && EnchantmentHelper.getEnchantments(item).containsKey(EnchantmentInit.linguist));
     }
 
     /**

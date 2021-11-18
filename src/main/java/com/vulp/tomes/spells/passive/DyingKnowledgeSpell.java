@@ -3,11 +3,12 @@ package com.vulp.tomes.spells.passive;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeConfigSpec;
 
 public class DyingKnowledgeSpell extends PassiveSpell {
 
-    public DyingKnowledgeSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare) {
-        super(rarity, isActive, isRare);
+    public DyingKnowledgeSpell(Enchantment.Rarity rarity, boolean isActive, boolean isRare, ForgeConfigSpec.ConfigValue<Boolean> enabled) {
+        super(rarity, isActive, isRare, enabled);
     }
 
     @Override

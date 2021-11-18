@@ -56,7 +56,17 @@ public class TomeEnchantment extends Enchantment {
 
     @Override
     public boolean canApply(ItemStack stack) {
-        return super.canApply(stack);
+        return super.canApply(stack) && !this.spellIndex.getSpell().isDisabled();
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack) {
+        return super.canApplyAtEnchantingTable(stack) && !this.spellIndex.getSpell().isDisabled();
+    }
+
+    @Override
+    public boolean canGenerateInLoot() {
+        return super.canGenerateInLoot() && !this.spellIndex.getSpell().isDisabled();
     }
 
     @Override
