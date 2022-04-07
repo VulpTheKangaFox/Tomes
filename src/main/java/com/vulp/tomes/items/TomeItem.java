@@ -1,6 +1,7 @@
 package com.vulp.tomes.items;
 
 import com.mojang.datafixers.util.Pair;
+import com.vulp.tomes.Tomes;
 import com.vulp.tomes.enchantments.EnchantmentTypes;
 import com.vulp.tomes.enchantments.TomeEnchantment;
 import com.vulp.tomes.init.EnchantmentInit;
@@ -9,6 +10,8 @@ import com.vulp.tomes.network.TomesPacketHandler;
 import com.vulp.tomes.network.messages.ServerActiveSpellMessage;
 import com.vulp.tomes.spells.SpellIndex;
 import com.vulp.tomes.spells.active.ActiveSpell;
+import com.vulp.tomes.spells.passive.CovensRuleSpell;
+import com.vulp.tomes.spells.passive.PassiveSpell;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
@@ -16,6 +19,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.EnchantmentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.monster.WitchEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -58,7 +62,7 @@ public class TomeItem extends HiddenDescriptorItem {
 
     @Override
     public boolean getIsRepairable(ItemStack toRepair, ItemStack repair) {
-        return (toRepair.getItem() == ItemInit.ancient_heart && repair.getItem() == ItemInit.archaic_tome) || (toRepair.getItem() == ItemInit.beating_heart && repair.getItem() == ItemInit.living_tome) || (toRepair.getItem() == ItemInit.sweet_heart && repair.getItem() == ItemInit.cursed_tome) || super.getIsRepairable(toRepair, repair);
+        return (toRepair.getItem() == ItemInit.archaic_tome && repair.getItem() == ItemInit.ancient_heart) || (toRepair.getItem() == ItemInit.living_tome && repair.getItem() == ItemInit.beating_heart) || (toRepair.getItem() == ItemInit.cursed_tome && repair.getItem() == ItemInit.sweet_heart) || super.getIsRepairable(toRepair, repair);
     }
 
     @Nullable
@@ -173,6 +177,13 @@ public class TomeItem extends HiddenDescriptorItem {
         if (activeSpellIndex != null && !onCooldown(stack[0])) {
             ActiveSpell spell = (ActiveSpell) activeSpellIndex.getSpell();
             if (!worldIn.isRemote && spell != null && canCast(stack[0])) {
+                SpellIndex[] index = getPassiveSpells(stack[0]);
+                if (index != null && Arrays.stream(index).anyMatch(s -> s.getSpell() instanceof CovensRuleSpell)) {
+                    if (spell.getTarget() instanceof WitchEntity) {
+                        spell.setTarget(null);
+                        return ActionResult.resultFail(stack[0]);
+                    }
+                }
                 boolean flag = false;
                 if (castActiveSpell(worldIn, stack[0], playerIn, handIn)) {
                     stack[0].damageItem(spell.getSpellCost(), playerIn, playerEntity -> stack[0] = new ItemStack(stack[0].getItem()));
