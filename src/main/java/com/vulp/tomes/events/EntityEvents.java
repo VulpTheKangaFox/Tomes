@@ -180,29 +180,36 @@ public class EntityEvents {
     public static void projHitEvent(ProjectileImpactEvent event) {
         if (TomesConfig.airy_protection_enabled.get()) {
             Entity proj = event.getEntity();
-            Vector3d vector3d1 = proj.getPositionVec();
-            Vector3d vector3d2 = vector3d1.add(proj.getMotion());
-            RayTraceResult result = event.getRayTraceResult();
-            EntityRayTraceResult raytrace = ProjectileHelper.rayTraceEntities(event.getEntity().world, proj, vector3d1, vector3d2, proj.getBoundingBox().expand(proj.getMotion()).grow(1.0D), i -> true);
-            if (result != null && raytrace != null && result.getType() == RayTraceResult.Type.ENTITY) {
-                Entity victim = raytrace.getEntity();
-                if (victim instanceof PlayerEntity && SpellEnchantUtil.hasEnchant((PlayerEntity) victim, EnchantmentInit.airy_protection) && proj instanceof ProjectileEntity && new Random().nextBoolean()) {
-                    if (!proj.world.isRemote) {
-                        TomesPacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> victim), new ServerProjDeflectMessage(victim.getEntityId(), proj.getEntityId()));
-                        Vector3d vec = proj.getMotion();
-                        Vector3d vec2 = vec.inverse();
-                        proj.setMotion(vec2.getX() * 0.75, vec2.getY() * 0.75, vec2.getZ() * 0.75);
-                        proj.rotationPitch = MathHelper.wrapDegrees(proj.rotationPitch + 180);
-                        proj.rotationYaw = MathHelper.wrapDegrees(proj.rotationYaw + 180);
-                        if (proj instanceof DamagingProjectileEntity) {
-                            DamagingProjectileEntity damageProj = (DamagingProjectileEntity) proj;
-                            damageProj.accelerationX = -damageProj.accelerationX * 0.75;
-                            damageProj.accelerationY = -damageProj.accelerationY * 0.75;
-                            damageProj.accelerationZ = -damageProj.accelerationZ * 0.75;
+            if (proj != null) {
+                Vector3d vector3d1 = proj.getPositionVec();
+                Vector3d vector3d2 = vector3d1.add(proj.getMotion());
+                RayTraceResult result = event.getRayTraceResult();
+                EntityRayTraceResult raytrace = ProjectileHelper.rayTraceEntities(event.getEntity().world, proj, vector3d1, vector3d2, proj.getBoundingBox().expand(proj.getMotion()).grow(1.0D), i -> true);
+                if (result != null && raytrace != null && result.getType() == RayTraceResult.Type.ENTITY) {
+                    Entity victim = raytrace.getEntity();
+                    if (victim instanceof PlayerEntity && SpellEnchantUtil.hasEnchant((PlayerEntity) victim, EnchantmentInit.airy_protection) && proj instanceof ProjectileEntity && new Random().nextBoolean()) {
+                        if (!proj.world.isRemote) {
+                            TomesPacketHandler.instance.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> victim), new ServerProjDeflectMessage(victim.getEntityId(), proj.getEntityId()));
+                            Vector3d vec = proj.getMotion();
+                            Vector3d vec2 = vec.inverse();
+                            try {
+                                proj.setMotion(vec2.getX() * 0.75, vec2.getY() * 0.75, vec2.getZ() * 0.75);
+                            } catch (NoSuchMethodError error) {
+                                Tomes.LOGGER.debug("Caught an error typically caused by using multiple projectile deflection methods.");
+                                return;
+                            }
+                            proj.rotationPitch = MathHelper.wrapDegrees(proj.rotationPitch + 180);
+                            proj.rotationYaw = MathHelper.wrapDegrees(proj.rotationYaw + 180);
+                            if (proj instanceof DamagingProjectileEntity) {
+                                DamagingProjectileEntity damageProj = (DamagingProjectileEntity) proj;
+                                damageProj.accelerationX = -damageProj.accelerationX * 0.75;
+                                damageProj.accelerationY = -damageProj.accelerationY * 0.75;
+                                damageProj.accelerationZ = -damageProj.accelerationZ * 0.75;
+                            }
+                            ((ProjectileEntity) proj).setShooter(victim);
+                            proj.velocityChanged = true;
+                            event.setCanceled(true);
                         }
-                        ((ProjectileEntity) proj).setShooter(victim);
-                        proj.velocityChanged = true;
-                        event.setCanceled(true);
                     }
                 }
             }
