@@ -50,7 +50,9 @@ public class BeastTamerSpell extends ActiveSpell {
                         ((TameableEntity) target).setTamedBy(playerIn);
                     } else if (target instanceof FoxEntity) {
                         ((FoxEntity) target).addTrustedUUID(playerIn.getUniqueID());
-                        tameEffect(target);
+                        if (worldIn.isRemote) {
+                            tameEffect(target);
+                        }
                     } else if (target instanceof AbstractHorseEntity && !((AbstractHorseEntity) target).isTame()) {
                         ((AbstractHorseEntity) target).setTamedBy(playerIn);
                     } else if (target instanceof SpiderEntity) {
