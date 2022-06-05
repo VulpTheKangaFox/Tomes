@@ -66,7 +66,7 @@ public class TomeEnchantment extends Enchantment {
 
     @Override
     public boolean canGenerateInLoot() {
-        return super.canGenerateInLoot() && !this.spellIndex.getSpell().isDisabled();
+        return super.canGenerateInLoot() && !this.spellIndex.getSpell().isDisabled() && !this.isRare;
     }
 
     @Override

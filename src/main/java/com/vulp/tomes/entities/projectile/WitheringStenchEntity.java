@@ -1,5 +1,6 @@
 package com.vulp.tomes.entities.projectile;
 
+import com.vulp.tomes.init.EffectInit;
 import com.vulp.tomes.init.EntityInit;
 import com.vulp.tomes.init.ParticleInit;
 import com.vulp.tomes.network.TomesPacketHandler;
@@ -88,6 +89,7 @@ public class WitheringStenchEntity extends ProjectileEntity {
         Entity target = result.getEntity();
         if (entity instanceof LivingEntity && target instanceof LivingEntity) {
             ((LivingEntity) target).addPotionEffect(new EffectInstance(Effects.WITHER, 200));
+            ((LivingEntity) target).addPotionEffect(new EffectInstance(EffectInit.leaden_veins, 200));
         }
     }
 

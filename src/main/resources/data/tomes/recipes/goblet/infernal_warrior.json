@@ -1,0 +1,40 @@
+{
+    "type": "tomes:goblet_crafting",
+    "ingredients": [
+		{
+		  "item": "tomes:ancient_heart"
+		},
+		{
+		  "item": "minecraft:scute"
+		},
+		{
+		  "item": "minecraft:blaze_powder"
+		}
+    ],
+	"effect_results": [
+		{
+		  "effect": "minecraft:resistance",
+		  "level": 2,
+		  "duration": 12000,
+		  "particle": true
+		},
+		{
+		  "effect": "minecraft:fire_resistance",
+		  "level": 1,
+		  "duration": 12000,
+		  "particle": true
+		},
+		{
+		  "effect": "minecraft:strength",
+		  "level": 2,
+		  "duration": 12000,
+		  "particle": true
+		},
+		{
+		  "effect": "tomes:fire_fist",
+		  "level": 1,
+		  "duration": 12000,
+		  "particle": true
+		}
+	]
+}

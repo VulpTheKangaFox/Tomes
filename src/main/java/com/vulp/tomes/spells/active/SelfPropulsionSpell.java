@@ -38,7 +38,7 @@ public class SelfPropulsionSpell extends ActiveSpell {
                 }
             }
             playerIn.addVelocity(playerIn.getLookVec().x * 1.4, playerIn.getLookVec().y * 1.4, playerIn.getLookVec().z * 1.4);
-            playerIn.addPotionEffect(new EffectInstance(EffectInit.light_footed, 65, 0, false, false));
+            playerIn.addPotionEffect(new EffectInstance(EffectInit.light_footed, 80, 0, false, false));
         return true;
     }
 

@@ -32,11 +32,19 @@ public class MindBenderSpell extends ActiveSpell {
     public boolean onCast(World worldIn, PlayerEntity playerIn, Hand handIn) {
         LivingEntity target = (LivingEntity) this.getTarget();
         if (target instanceof MobEntity) {
-            if (target.getHealth() <= 20 && !target.isPotionActive(EffectInit.mind_bend)) {
-                target.getPersistentData().putUniqueId("PlayerFollowingUUID", playerIn.getUniqueID());
-                ((MobEntity) target).goalSelector.addGoal(1, new MindBendFollowGoal((MobEntity) target, 1.0F, 5.0F, 2.0F));
-                ((MobEntity) target).targetSelector.addGoal(0, new NullifyAttackableTargetGoal((MobEntity) target, false));
-                target.addPotionEffect(new EffectInstance(EffectInit.mind_bend, 2400, 0, false, false));
+            if (!worldIn.isRemote()) {
+                boolean effect = target.isPotionActive(EffectInit.mind_bend);
+                if (target.getMaxHealth() <= 20 && !effect) {
+                    target.getPersistentData().putUniqueId("PlayerFollowingUUID", playerIn.getUniqueID());
+                    ((MobEntity) target).goalSelector.addGoal(1, new MindBendFollowGoal((MobEntity) target, 1.0F, 5.0F, 2.0F));
+                    ((MobEntity) target).targetSelector.addGoal(0, new NullifyAttackableTargetGoal((MobEntity) target, false));
+                    target.addPotionEffect(new EffectInstance(EffectInit.mind_bend, 2400, 0, false, false));
+                    return true;
+                } else if (effect) {
+                    target.removePotionEffect(EffectInit.mind_bend);
+                    return true;
+                }
+            } else {
                 return true;
             }
         }

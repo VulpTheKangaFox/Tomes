@@ -1,41 +1,62 @@
 package com.vulp.tomes.events;
 
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.MatrixApplyingVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexBuilderUtils;
 import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.Tomes;
+import com.vulp.tomes.blocks.tile.GobletOfHeartsTileEntity;
+import com.vulp.tomes.client.renderer.RenderTypes;
+import com.vulp.tomes.client.renderer.tile.GobletOfHeartsRenderer;
 import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.enchantments.EnchantClueHolder;
 import com.vulp.tomes.init.EnchantmentInit;
 import com.vulp.tomes.init.ItemInit;
+import com.vulp.tomes.init.TileInit;
 import com.vulp.tomes.items.TomeItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.inventory.ContainerScreen;
+import net.minecraft.client.renderer.*;
+import net.minecraft.client.renderer.culling.ClippingHelper;
+import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.EnchantmentContainer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.util.text.*;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.client.event.RenderTooltipEvent;
+import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @Mod.EventBusSubscriber(modid= Tomes.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE, value=Dist.CLIENT)
 public class RenderEvents {
 
     private static boolean HOOK_TOGGLE = false;
+    private static ActiveRenderInfo RENDER_INFO;
+    private static float LAST_CAMERA_YAW;
+    private static float LAST_CAMERA_PITCH;
+    private static float LAST_CAMERA_ROLL;
 
     @SubscribeEvent
     public static void onRenderHandEvent(RenderHandEvent event) {
@@ -54,6 +75,11 @@ public class RenderEvents {
             minecraft.getFirstPersonRenderer().renderItemInFirstPerson(minecraft.player, event.getPartialTicks(), event.getInterpolatedPitch(), event.getHand(), event.getSwingProgress(), newStack, event.getEquipProgress(), event.getMatrixStack(), event.getBuffers(), event.getLight());
             event.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent
+    public static void onClientTick(TickEvent.ClientTickEvent event) {
+        GobletOfHeartsRenderer.tick();
     }
 
     @SubscribeEvent
@@ -144,6 +170,62 @@ public class RenderEvents {
         }
 
         return iformattabletextcomponent;
+    }
+
+    @SubscribeEvent
+    public static void onRenderWorldLast(RenderWorldLastEvent event) {
+        if (!Minecraft.isFabulousGraphicsEnabled()) {
+            MatrixStack matrixStack = event.getMatrixStack();
+            matrixStack.push();
+            WorldRenderer worldRenderer = event.getContext();
+            RENDER_INFO.setAnglesInternal(LAST_CAMERA_YAW, LAST_CAMERA_PITCH);
+            Vector3d vector3d = RENDER_INFO.getProjectedView();
+            double d0 = vector3d.getX();
+            double d1 = vector3d.getY();
+            double d2 = vector3d.getZ();
+            Matrix4f matrix4f = matrixStack.getLast().getMatrix();
+            //gameRenderer.resetProjectionMatrix(matrix4f);
+            ClippingHelper clippinghelper;
+            if (worldRenderer.debugFixedClippingHelper != null) {
+                clippinghelper = worldRenderer.debugFixedClippingHelper;
+                clippinghelper.setCameraPosition(worldRenderer.debugTerrainFrustumPosition.x, worldRenderer.debugTerrainFrustumPosition.y, worldRenderer.debugTerrainFrustumPosition.z);
+            } else {
+                clippinghelper = new ClippingHelper(matrix4f, event.getProjectionMatrix());
+                clippinghelper.setCameraPosition(d0, d1, d2);
+            }
+            RenderSystem.pushMatrix();
+            RenderSystem.depthMask(false);
+            IRenderTypeBuffer.Impl irendertypebuffer1 = Minecraft.getInstance().worldRenderer.renderTypeTextures.getBufferSource();
+            for (WorldRenderer.LocalRenderInformationContainer worldrenderer$localrenderinformationcontainer : worldRenderer.renderInfos) {
+                List<TileEntity> list = worldrenderer$localrenderinformationcontainer.renderChunk.getCompiledChunk().getTileEntities();
+                if (!list.isEmpty()) {
+                    for (TileEntity tileEntity : list) {
+                        if (!(tileEntity instanceof GobletOfHeartsTileEntity) || !clippinghelper.isBoundingBoxInFrustum(tileEntity.getRenderBoundingBox())) {
+                            continue;
+                        }
+                        if (((GobletOfHeartsTileEntity) tileEntity).canCraft()) {
+                            BlockPos blockPos = tileEntity.getPos();
+                            matrixStack.push();
+                            matrixStack.translate((double) blockPos.getX() - d0, (double) blockPos.getY() - d1, (double) blockPos.getZ() - d2);
+                            GobletOfHeartsRenderer.renderReadyGlow(event.getMatrixStack(), irendertypebuffer1.getBuffer(RenderTypes.getLightFlare()));
+                            matrixStack.pop();
+                        }
+                    }
+                }
+            }
+            matrixStack.pop();
+            RenderSystem.popMatrix();
+            irendertypebuffer1.finish();
+            RenderSystem.depthMask(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onCameraSetup(EntityViewRenderEvent.CameraSetup event) {
+        RENDER_INFO = event.getInfo();
+        LAST_CAMERA_YAW = event.getYaw();
+        LAST_CAMERA_PITCH = event.getPitch();
+        LAST_CAMERA_ROLL = event.getRoll();
     }
 
 }

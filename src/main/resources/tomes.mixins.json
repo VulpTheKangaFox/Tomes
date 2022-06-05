@@ -4,13 +4,17 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "tomes.refmap.json",
   "mixins": [
+    "EffectMixin",
     "EnchantedBookItemMixin",
     "EnchantmentContainerMixin",
-    "EnchantmentHelperMixin"
+    "EnchantmentHelperMixin",
+    "PlayerEntityMixin"
   ],
   "client": [
+    "ClientPlayerEntityMixin",
     "ItemRendererMixin",
-    "ItemStackMixin"
+    "ItemStackMixin",
+    "ModelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

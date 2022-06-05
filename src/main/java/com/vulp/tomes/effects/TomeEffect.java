@@ -2,6 +2,7 @@ package com.vulp.tomes.effects;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.potion.Effect;
+import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.EffectType;
 
 public abstract class TomeEffect extends Effect {

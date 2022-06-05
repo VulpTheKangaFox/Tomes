@@ -3,6 +3,7 @@ package com.vulp.tomes.events;
 import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.Tomes;
 import com.vulp.tomes.config.TomesConfig;
+import com.vulp.tomes.effects.MultiJumpEffect;
 import com.vulp.tomes.entities.ai.MindBendFollowGoal;
 import com.vulp.tomes.entities.ai.NullifyAttackableTargetGoal;
 import com.vulp.tomes.init.EffectInit;
@@ -16,18 +17,15 @@ import com.vulp.tomes.network.TomesPacketHandler;
 import com.vulp.tomes.network.messages.ServerCropBreakMessage;
 import com.vulp.tomes.network.messages.ServerMindBendMessage;
 import com.vulp.tomes.network.messages.ServerProjDeflectMessage;
-import com.vulp.tomes.spells.active.MindBenderSpell;
 import com.vulp.tomes.util.HealthHandler;
 import com.vulp.tomes.util.SpellEnchantUtil;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CropsBlock;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.ai.goal.Goal;
-import net.minecraft.entity.ai.goal.PrioritizedGoal;
+import net.minecraft.entity.Pose;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.monster.*;
@@ -42,6 +40,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.MerchantOffers;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -55,6 +55,8 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
+import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerXpEvent;
 import net.minecraftforge.event.world.BlockEvent;
@@ -64,14 +66,15 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Mod.EventBusSubscriber(modid=Tomes.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
 public class EntityEvents {
 
-    private static final HashMap<Entity, Integer> mindbendParticleHandlers = new HashMap<>();
-    private static final List<Pair<LivingEntity, HealthHandler>> healthHandlers = new ArrayList<>();
-    private static int slowTickTimer = 10;
+    private static final HashMap<LivingEntity, Integer> mindbend_particle_handlers = new HashMap<>();
+    public static final HashMap<LivingEntity, Integer> poison_resistance_toggle = new HashMap<>();
+    public static final HashMap<LivingEntity, Integer> hunger_resistance_toggle = new HashMap<>();
+    private static final List<Pair<LivingEntity, HealthHandler>> health_handlers = new ArrayList<>();
+    private static int slow_tick_timer = 10;
 
     @SubscribeEvent
     public static void onLivingSetAttackTarget(LivingSetAttackTargetEvent event) {
@@ -100,15 +103,15 @@ public class EntityEvents {
         Entity entity = event.getEntity();
         Random rand = new Random();
         if (entity instanceof WitchEntity) {
-            if (rand.nextInt(19) < TomesConfig.sweet_heart_droprate.get()) {
+            if (rand.nextInt(99) < TomesConfig.sweet_heart_droprate.get()) {
                 event.getDrops().add(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY() + entity.getYOffset(), entity.getPosZ(), new ItemStack(ItemInit.sweet_heart)));
             }
         } else if (entity instanceof VillagerEntity || entity instanceof AbstractIllagerEntity) {
-            if (rand.nextInt(19) < TomesConfig.beating_heart_droprate.get()) {
+            if (rand.nextInt(99) < TomesConfig.beating_heart_droprate.get()) {
                 event.getDrops().add(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY() + entity.getYOffset(), entity.getPosZ(), new ItemStack(ItemInit.beating_heart)));
             }
         } else if (entity instanceof ZombieEntity) {
-            if (rand.nextInt(19) < TomesConfig.archaic_heart_droprate.get()) {
+            if (rand.nextInt(99) < TomesConfig.archaic_heart_droprate.get()) {
                 event.getDrops().add(new ItemEntity(entity.world, entity.getPosX(), entity.getPosY() + entity.getYOffset(), entity.getPosZ(), new ItemStack(ItemInit.ancient_heart)));
             }
         }
@@ -119,6 +122,14 @@ public class EntityEvents {
         Entity entity = event.getEntity();
         if (entity instanceof WitchEntity && entity.getPersistentData().contains("Offers")) {
             event.setResult(Event.Result.DENY);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPotionExpiry(PotionEvent.PotionExpiryEvent event) {
+        if (event.getPotionEffect() != null && event.getPotionEffect().getPotion() == EffectInit.antidotal) {
+            EntityEvents.poison_resistance_toggle.remove(event.getEntityLiving());
+            EntityEvents.hunger_resistance_toggle.remove(event.getEntityLiving());
         }
     }
 
@@ -177,6 +188,14 @@ public class EntityEvents {
     }
 
     @SubscribeEvent
+    public static void entityDamagedEvent(LivingDamageEvent event) {
+        Entity attacker = event.getSource().getTrueSource();
+        if (attacker instanceof LivingEntity && ((LivingEntity) attacker).isPotionActive(EffectInit.fire_fist)) {
+            event.getEntityLiving().setFire(20);
+        }
+    }
+
+    @SubscribeEvent
     public static void projHitEvent(ProjectileImpactEvent event) {
         if (TomesConfig.airy_protection_enabled.get()) {
             Entity proj = event.getEntity();
@@ -217,6 +236,15 @@ public class EntityEvents {
     }
 
     @SubscribeEvent
+    public static void onFinishItemUseEvent(LivingEntityUseItemEvent.Finish event) {
+        Item item = event.getItem().getItem();
+        LivingEntity entity = event.getEntityLiving();
+        if (item.isFood() && entity instanceof PlayerEntity && item == ItemInit.ancient_heart) {
+            ((PlayerEntity) entity).giveExperiencePoints(20);
+        }
+    }
+
+    @SubscribeEvent
     public static void onLivingHealed(LivingHealEvent event) {
         LivingEntity entity = event.getEntityLiving();
         if (entity.isPotionActive(EffectInit.leaden_veins)) {
@@ -228,7 +256,7 @@ public class EntityEvents {
                 event.setAmount(amount - 1.0F);
             } else {
                 boolean flag = false;
-                Optional<Pair<LivingEntity, HealthHandler>> optional = healthHandlers.stream().filter(pair -> pair.getFirst() == entity).findFirst();
+                Optional<Pair<LivingEntity, HealthHandler>> optional = health_handlers.stream().filter(pair -> pair.getFirst() == entity).findFirst();
                 if (optional.isPresent()) {
                     HealthHandler handler = optional.get().getSecond();
                     if (handler != null) {
@@ -245,7 +273,7 @@ public class EntityEvents {
                     flag = true;
                 }
                 if (flag) {
-                    healthHandlers.add(new Pair<>(entity, new HealthHandler(entity)));
+                    health_handlers.add(new Pair<>(entity, new HealthHandler(entity)));
                     event.setAmount(0.0F);
                 }
             }
@@ -258,9 +286,9 @@ public class EntityEvents {
         if (entity != null && entity.getPersistentData().contains("HexParticle")) {
             CompoundNBT nbt = entity.getPersistentData();
             if (entity.world.isRemote && nbt.getBoolean("HexParticle")) {
-                mindbendParticleHandlers.putIfAbsent(entity, 7);
+                mindbend_particle_handlers.putIfAbsent(entity, 7);
             } else {
-                if (slowTickTimer == 0) {
+                if (slow_tick_timer == 0) {
                     if (entity instanceof MobEntity && nbt.hasUniqueId("PlayerFollowingUUID") && entity.isPotionActive(EffectInit.mind_bend)) {
                         MobEntity mobEntity = (MobEntity) entity;
                         if (mobEntity.goalSelector.goals.stream().noneMatch(pGoal -> pGoal.getGoal() instanceof MindBendFollowGoal)) {
@@ -270,6 +298,19 @@ public class EntityEvents {
                     }
                 }
                 TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerMindBendMessage(entity.getEntityId(), nbt.getBoolean("HexParticle")));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void playerTickEvent(TickEvent.PlayerTickEvent event) {
+        if (event.player.isPotionActive(EffectInit.starry_form)) {
+            if (event.phase == TickEvent.Phase.START) {
+                event.player.setOnGround(false);
+                event.player.abilities.isFlying = true;
+                event.player.abilities.disableDamage = true;
+            } else {
+                event.player.setPose(Pose.SWIMMING);
             }
         }
     }
@@ -295,15 +336,15 @@ public class EntityEvents {
 
     @SubscribeEvent
     public static void entityLeaveWorldEvent(EntityLeaveWorldEvent event) {
-        mindbendParticleHandlers.clear();
+        mindbend_particle_handlers.clear();
     }
 
     @SubscribeEvent
     public static void serverTickEvent(TickEvent.ServerTickEvent event) {
         // Ticks the health handlers regarding the leaden veins effect.
-        if (!healthHandlers.isEmpty()) {
-            healthHandlers.removeIf(pair -> pair.getFirst() == null || pair.getSecond() == null || pair.getSecond().readyToRemove());
-            healthHandlers.forEach(pair -> pair.getSecond().tick());
+        if (!health_handlers.isEmpty()) {
+            health_handlers.removeIf(pair -> pair.getFirst() == null || pair.getSecond() == null || pair.getSecond().readyToRemove());
+            health_handlers.forEach(pair -> pair.getSecond().tick());
         }
         /*// Reinitializes AI for the mind bend effect if it is missing.
         List<LivingEntity> removalList = new ArrayList<>(Collections.emptyList());
@@ -324,45 +365,67 @@ public class EntityEvents {
             });
         }
         removalList.forEach(MindBenderSpell.mindBendMap::remove);*/
-        if (slowTickTimer < 1) {
-            slowTickTimer = 20;
+        if (slow_tick_timer < 1) {
+            slow_tick_timer = 20;
         } else {
-            slowTickTimer--;
+            slow_tick_timer--;
         }
     }
 
     @SubscribeEvent
     public static void clientTickEvent(TickEvent.ClientTickEvent event) {
-        List<Entity> removalList = new ArrayList<>(Collections.emptyList());
-        if (!mindbendParticleHandlers.isEmpty()) {
-            mindbendParticleHandlers.keySet().removeIf(entity -> entity == null || entity.removed);
-            mindbendParticleHandlers.forEach((entity, timer) -> {
+        List<LivingEntity> removalList = new ArrayList<>(Collections.emptyList());
+        if (!mindbend_particle_handlers.isEmpty()) {
+            mindbend_particle_handlers.keySet().removeIf(entity -> entity == null || entity.removed);
+            mindbend_particle_handlers.forEach((entity, timer) -> {
                 if (!entity.getPersistentData().getBoolean("HexParticle") || entity.removed) {
                     removalList.add(entity);
                 } else {
                     if (timer <= 0) {
                         entity.world.addParticle(ParticleInit.hex, entity.getPosX(), entity.getPosY() + entity.getHeight() + 0.5F, entity.getPosZ(), entity.getEntityId(), 0.0D, 0.0D);
-                        mindbendParticleHandlers.replace(entity, 7);
+                        mindbend_particle_handlers.replace(entity, 7);
                     } else {
-                        mindbendParticleHandlers.replace(entity, timer - 1);
+                        mindbend_particle_handlers.replace(entity, timer - 1);
                     }
                 }
             });
         }
-        removalList.forEach(mindbendParticleHandlers::remove);
+        removalList.forEach(mindbend_particle_handlers::remove);
     }
 
     @SubscribeEvent
     public static void livingFallEvent(LivingFallEvent event) {
-        Entity entity = event.getEntity();
-        if (entity instanceof PlayerEntity && ((PlayerEntity) entity).isPotionActive(EffectInit.light_footed)) {
-            event.setDamageMultiplier(0);
-            Random rand = new Random();
-            World world = entity.world;
-            if (world.isRemote)
-            for (int i = 0; i < 10; i++) {
-                world.addParticle(ParticleTypes.POOF, entity.getPosX(), entity.getPosY() + 0.05, entity.getPosZ(), (rand.nextFloat() - rand.nextFloat()) * 0.15, (rand.nextFloat() - rand.nextFloat()) * 0.05, (rand.nextFloat() - rand.nextFloat()) * 0.15);
+        LivingEntity entity = event.getEntityLiving();
+        if (entity instanceof PlayerEntity) {
+            EffectInstance effectinstance1 = entity.getActivePotionEffect(EffectInit.multi_jump);
+            EffectInstance effectinstance2 = entity.getActivePotionEffect(Effects.JUMP_BOOST);
+            float f1 = effectinstance1 == null ? 0.0F : (float)(effectinstance1.getAmplifier() + 1);
+            float f2 = effectinstance2 == null ? 0.0F : (float)(effectinstance2.getAmplifier() + 1);
+            int fallMod = (int) (event.getDistance() - f2 - 3.0F);
+            float oldMultiplier = event.getDamageMultiplier();
+            int oldFallDamage = MathHelper.ceil(fallMod * oldMultiplier);
+            int newFallDamage = MathHelper.ceil((fallMod - f1) * oldMultiplier);
+            float multiplier = (float) newFallDamage / oldFallDamage;
+            event.setDamageMultiplier(oldMultiplier * multiplier);
+            if (entity.isPotionActive(EffectInit.light_footed)) {
+                Random rand = new Random();
+                World world = entity.world;
+                event.setDamageMultiplier(0);
+                if (world.isRemote() && newFallDamage > 0)
+                for (int i = 0; i < 10; i++) {
+                    world.addParticle(ParticleTypes.POOF, entity.getPosX(), entity.getPosY() + 0.05, entity.getPosZ(), (rand.nextFloat() - rand.nextFloat()) * 0.15, (rand.nextFloat() - rand.nextFloat()) * 0.05, (rand.nextFloat() - rand.nextFloat()) * 0.15);
+                }
             }
+            if (entity.isPotionActive(EffectInit.multi_jump)) {
+                MultiJumpEffect.unjumpEntity((PlayerEntity) entity);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void playerFallEvent(PlayerFlyableFallEvent event) {
+        if (event.getPlayer().isPotionActive(EffectInit.multi_jump)) {
+            MultiJumpEffect.unjumpEntity(event.getPlayer());
         }
     }
 

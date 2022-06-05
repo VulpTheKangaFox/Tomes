@@ -6,6 +6,7 @@ import net.minecraft.enchantment.Enchantment;
 
 public enum SpellIndex {
 
+    // Spells from here-on should be added in order otherwise some issues with id back and forthing will occur.
     SELF_PROPULSION(SpellInit.self_propulsion, EnchantmentInit.self_propulsion),
     FORCE_OF_WIND(SpellInit.force_of_wind, EnchantmentInit.force_of_wind),
     STRIKE_FROM_ABOVE(SpellInit.strike_from_above, EnchantmentInit.strike_from_above),
@@ -28,7 +29,14 @@ public enum SpellIndex {
     ROTTEN_HEART(SpellInit.rotten_heart, EnchantmentInit.rotten_heart),
     NOCTURNAL(SpellInit.nocturnal, EnchantmentInit.nocturnal),
     COVENS_RULE(SpellInit.covens_rule, EnchantmentInit.covens_rule),
-    DARK_AGE(SpellInit.dark_age, EnchantmentInit.dark_age);
+    DARK_AGE(SpellInit.dark_age, EnchantmentInit.dark_age),
+
+    ASTRAL_TRAVEL(SpellInit.astral_travel, EnchantmentInit.astral_travel),
+    CLOUDSTEP(SpellInit.cloudstep, EnchantmentInit.cloudstep),
+    METAMORPHOSIS(SpellInit.cloudstep, EnchantmentInit.cloudstep),
+    FIGHT_OR_FLIGHT(SpellInit.cloudstep, EnchantmentInit.cloudstep),
+    DEATHLY_ICHOR(SpellInit.cloudstep, EnchantmentInit.cloudstep),
+    BORROWED_TIME(SpellInit.cloudstep, EnchantmentInit.cloudstep);
 
     private final Spell spell;
     private final Enchantment enchantment;

@@ -4,6 +4,8 @@ import net.minecraft.item.Item;
 
 public class ItemInit {
 
+    public static Item goblet_of_hearts;
+
     public static Item archaic_tome;
     public static Item living_tome;
     public static Item cursed_tome;

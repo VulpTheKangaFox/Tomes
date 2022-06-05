@@ -13,7 +13,7 @@ public class LightFootedEffect extends TomeEffect {
 
     @Override
     void potionTick(LivingEntity entity, int amplifier) {
-        if (entity.isOnGround()) {
+        if (entity.isOnGround() && amplifier == 0) {
             if (this.timer <= 0) {
                 this.timer = 5;
                 entity.removePotionEffect(this);

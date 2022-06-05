@@ -176,24 +176,26 @@ public class TomeItem extends HiddenDescriptorItem {
         SpellIndex activeSpellIndex = getActiveSpell(stack[0]);
         if (activeSpellIndex != null && !onCooldown(stack[0])) {
             ActiveSpell spell = (ActiveSpell) activeSpellIndex.getSpell();
-            if (!worldIn.isRemote && spell != null && canCast(stack[0])) {
-                SpellIndex[] index = getPassiveSpells(stack[0]);
-                if (index != null && Arrays.stream(index).anyMatch(s -> s.getSpell() instanceof CovensRuleSpell)) {
-                    if (spell.getTarget() instanceof WitchEntity) {
-                        spell.setTarget(null);
-                        return ActionResult.resultFail(stack[0]);
+            if (spell != null) {
+                if (!worldIn.isRemote && canCast(stack[0])) {
+                    SpellIndex[] index = getPassiveSpells(stack[0]);
+                    if (index != null && Arrays.stream(index).anyMatch(s -> s.getSpell() instanceof CovensRuleSpell)) {
+                        if (spell.getTarget() instanceof WitchEntity) {
+                            return ActionResult.resultFail(stack[0]);
+                        }
+                    }
+                    boolean flag = false;
+                    if (castActiveSpell(worldIn, stack[0], playerIn, handIn)) {
+                        stack[0].damageItem(spell.getSpellCost(), playerIn, playerEntity -> stack[0] = new ItemStack(stack[0].getItem()));
+                        setCooldown(stack[0], spell.getCooldown());
+                        flag = true;
+                    }
+                    TomesPacketHandler.instance.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) playerIn), new ServerActiveSpellMessage(stack[0], handIn == Hand.MAIN_HAND));
+                    if (flag) {
+                        return ActionResult.resultSuccess(stack[0]);
                     }
                 }
-                boolean flag = false;
-                if (castActiveSpell(worldIn, stack[0], playerIn, handIn)) {
-                    stack[0].damageItem(spell.getSpellCost(), playerIn, playerEntity -> stack[0] = new ItemStack(stack[0].getItem()));
-                    setCooldown(stack[0], spell.getCooldown());
-                    flag = true;
-                }
-                TomesPacketHandler.instance.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) playerIn), new ServerActiveSpellMessage(stack[0], handIn == Hand.MAIN_HAND));
-                if (flag) {
-                    return ActionResult.resultSuccess(stack[0]);
-                }
+                spell.setTarget(null);
             }
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);

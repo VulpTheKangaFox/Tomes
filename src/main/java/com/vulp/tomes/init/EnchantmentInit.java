@@ -20,9 +20,11 @@ public class EnchantmentInit {
     public static Enchantment self_propulsion = createTomeEnchant(SpellIndex.SELF_PROPULSION, EnchantmentTypes.ARCHAIC_TOME);
     public static Enchantment force_of_wind = createTomeEnchant(SpellIndex.FORCE_OF_WIND, EnchantmentTypes.ARCHAIC_TOME);
     public static Enchantment strike_from_above = createTomeEnchant(SpellIndex.STRIKE_FROM_ABOVE, EnchantmentTypes.ARCHAIC_TOME);
+    public static Enchantment astral_travel = createTomeEnchant(SpellIndex.ASTRAL_TRAVEL, EnchantmentTypes.ARCHAIC_TOME);
     public static Enchantment everchanging_skies = createTomeEnchant(SpellIndex.EVERCHANGING_SKIES, EnchantmentTypes.ARCHAIC_TOME);
     public static Enchantment dying_knowledge = createTomeEnchant(SpellIndex.DYING_KNOWLEDGE, EnchantmentTypes.ARCHAIC_TOME);
     public static Enchantment linguist = createTomeEnchant(SpellIndex.LINGUIST, EnchantmentTypes.ARCHAIC_TOME);
+    public static Enchantment cloudstep = createTomeEnchant(SpellIndex.CLOUDSTEP, EnchantmentTypes.ARCHAIC_TOME);
     public static Enchantment airy_protection = createTomeEnchant(SpellIndex.AIRY_PROTECTION, EnchantmentTypes.ARCHAIC_TOME);
 
     public static Enchantment lifebringer = createTomeEnchant(SpellIndex.LIFEBRINGER, EnchantmentTypes.LIVING_TOME);

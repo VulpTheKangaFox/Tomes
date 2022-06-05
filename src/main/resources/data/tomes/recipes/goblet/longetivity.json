@@ -1,0 +1,19 @@
+{
+    "type": "tomes:goblet_crafting",
+    "ingredients": [
+		{
+		  "item": "tomes:beating_heart"
+		},
+		{
+		  "item": "minecraft:golden_apple"
+		}
+    ],
+	"effect_results": [
+		{
+		  "effect": "minecraft:absorption",
+		  "level": 3,
+		  "duration": 6000,
+		  "particle": true
+		}
+	]
+}

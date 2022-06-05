@@ -1,0 +1,45 @@
+{
+    "type": "tomes:goblet_crafting",
+    "ingredients": [
+		{
+		  "item": "minecraft:iron_ingot"
+		},
+		{
+		  "item": "minecraft:coal"
+		},
+		{
+		  "item": "minecraft:spruce_stairs"
+		},
+		{
+		  "item": "minecraft:ladder"
+		}
+    ],
+    "item_results": [
+		{
+		  "item": "minecraft:diamond",
+		  "count": 1
+		},
+		{
+		  "item": "minecraft:emerald",
+		  "count": 1
+		},
+		{
+		  "item": "minecraft:gold_ingot",
+		  "count": 1
+		}
+	],
+	"effect_results": [
+		{
+		  "effect": "minecraft:blindness",
+		  "level": 1,
+		  "duration": 40,
+		  "particle": true
+		}
+	],
+	"entity_results": [
+		{
+		  "entity": "minecraft:pig",
+		  "count": 4
+		}
+	]
+}

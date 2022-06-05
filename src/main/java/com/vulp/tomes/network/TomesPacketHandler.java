@@ -20,6 +20,7 @@ public class TomesPacketHandler {
                 .clientAcceptedVersions(PROTOCOL_VERSION::equals)
                 .serverAcceptedVersions(PROTOCOL_VERSION::equals)
                 .simpleChannel();
+        // Server -> Client
         register(ServerActiveSpellMessage.class, new ServerActiveSpellMessage());
         register(ServerTameAnimalMessage.class, new ServerTameAnimalMessage());
         register(ServerEnchantmentClueMessage.class, new ServerEnchantmentClueMessage());
@@ -31,6 +32,11 @@ public class TomesPacketHandler {
         register(ServerSyncPersistentDataMessage.class, new ServerSyncPersistentDataMessage());
         register(ServerSummonDespawnMessage.class, new ServerSummonDespawnMessage());
         register(ServerCropBreakMessage.class, new ServerCropBreakMessage());
+        register(ServerSimpleParticlePassthroughMessage.class, new ServerSimpleParticlePassthroughMessage());
+        register(ServerStarryFormMessage.class, new ServerStarryFormMessage());
+
+        // Client -> Server
+        register(ClientJumpPressedMessage.class, new ClientJumpPressedMessage());
     }
 
     private static <T> void register(Class<T> clazz, IMessage<T> message)
