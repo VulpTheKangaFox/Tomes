@@ -33,6 +33,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid= Tomes.MODID, bus=Mod.EventBusSubscriber.Bus.FORGE)
 public class ServerEvents {
@@ -40,8 +41,7 @@ public class ServerEvents {
     @SubscribeEvent
     public static void onEntityJoinWorld(EntityJoinWorldEvent event) {
         if (event.getEntity() instanceof ServerPlayerEntity) {
-            TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerStarryFormMessage(StarryFormEffect.getTracker().toArray(new LivingEntity[]{})));
-            StarryFormEffect.markDirty((LivingEntity)event.getEntity());
+            TomesPacketHandler.instance.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) event.getEntity()), new ServerStarryFormMessage(StarryFormEffect.getTracker().toArray(new LivingEntity[]{})));
         }
     }
 
