@@ -8,13 +8,15 @@
     "EnchantedBookItemMixin",
     "EnchantmentContainerMixin",
     "EnchantmentHelperMixin",
+    "LivingEntityMixin",
     "PlayerEntityMixin"
   ],
   "client": [
     "ClientPlayerEntityMixin",
     "ItemRendererMixin",
     "ItemStackMixin",
-    "ModelMixin"
+    "ModelMixin",
+    "WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

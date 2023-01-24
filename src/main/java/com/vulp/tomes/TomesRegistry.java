@@ -2,14 +2,16 @@ package com.vulp.tomes;
 
 import com.vulp.tomes.blocks.GobletOfHeartsBlock;
 import com.vulp.tomes.blocks.tile.GobletOfHeartsTileEntity;
+import com.vulp.tomes.capabilities.IStarryFormReturn;
+import com.vulp.tomes.capabilities.StarryFormReturn;
+import com.vulp.tomes.capabilities.StarryFormStorage;
+import com.vulp.tomes.client.renderer.entity.layers.WingedLayer;
 import com.vulp.tomes.client.renderer.entity.layers.StarryFormLayer;
-import com.vulp.tomes.client.renderer.entity.renderers.SpectralSteedRenderer;
-import com.vulp.tomes.client.renderer.entity.renderers.TamedSpiderRenderer;
-import com.vulp.tomes.client.renderer.entity.renderers.WildWolfRenderer;
-import com.vulp.tomes.client.renderer.entity.renderers.WitheringStenchRenderer;
+import com.vulp.tomes.client.renderer.entity.renderers.*;
 import com.vulp.tomes.client.renderer.tile.GobletOfHeartsRenderer;
 import com.vulp.tomes.enchantments.EnchantmentTypes;
 import com.vulp.tomes.init.*;
+import com.vulp.tomes.items.AmuletOfCogency;
 import com.vulp.tomes.items.DebugItem;
 import com.vulp.tomes.items.HiddenDescriptorItem;
 import com.vulp.tomes.items.TomeItem;
@@ -22,17 +24,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderTypeLookup;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.particles.ParticleType;
 import net.minecraft.potion.Effect;
@@ -41,15 +38,20 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.InterModComms;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotTypeMessage;
+import top.theillusivec4.curios.api.SlotTypePreset;
 
-import java.util.Collection;
-
+// TODO: Sort out textures + localization! Also JEI support for the goblet.
 @Mod.EventBusSubscriber(bus=Mod.EventBusSubscriber.Bus.MOD)
 public class TomesRegistry {
 
@@ -64,6 +66,8 @@ public class TomesRegistry {
     public static void itemRegistryEvent(final RegistryEvent.Register<Item> event) {
         event.getRegistry().registerAll(
                 ItemInit.goblet_of_hearts = new BlockItem(BlockInit.goblet_of_hearts, new Item.Properties().group(TOMES_TAB)).setRegistryName(location("goblet_of_hearts")),
+
+                ItemInit.amulet_of_cogency = new AmuletOfCogency(new Item.Properties().group(TOMES_TAB).rarity(Rarity.EPIC)).setRegistryName(location("amulet_of_cogency")),
 
                 ItemInit.archaic_tome = new TomeItem(new Item.Properties().group(TOMES_TAB).maxDamage(1000)).setRegistryName(location("archaic_tome")),
                 ItemInit.living_tome = new TomeItem(new Item.Properties().group(TOMES_TAB).maxDamage(1000)).setRegistryName(location("living_tome")),
@@ -117,17 +121,21 @@ public class TomesRegistry {
                 EnchantmentInit.lifebringer.setRegistryName(location("lifebringer")),
                 EnchantmentInit.beast_tamer.setRegistryName(location("beast_tamer")),
                 EnchantmentInit.wild_aid.setRegistryName(location("wild_aid")),
+                EnchantmentInit.metamorphosis.setRegistryName(location("metamorphosis")),
                 EnchantmentInit.nurturing_roots.setRegistryName(location("nurturing_roots")),
                 EnchantmentInit.advantageous_growth.setRegistryName(location("advantageous_growth")),
                 EnchantmentInit.forest_affinity.setRegistryName(location("forest_affinity")),
+                EnchantmentInit.fight_or_flight.setRegistryName(location("fight_or_flight")),
                 EnchantmentInit.molding_lands.setRegistryName(location("molding_lands")),
 
                 EnchantmentInit.mind_bender.setRegistryName(location("mind_bender")),
                 EnchantmentInit.ghostly_steed.setRegistryName(location("ghostly_steed")),
                 EnchantmentInit.withering_stench.setRegistryName(location("withering_stench")),
+                EnchantmentInit.deathly_ichor.setRegistryName(location("deathly_ichor")),
                 EnchantmentInit.covens_rule.setRegistryName(location("covens_rule")),
                 EnchantmentInit.rotten_heart.setRegistryName(location("rotten_heart")),
                 EnchantmentInit.nocturnal.setRegistryName(location("nocturnal")),
+                EnchantmentInit.borrowed_time.setRegistryName(location("borrowed_time")),
                 EnchantmentInit.dark_age.setRegistryName(location("dark_age"))
         );
 
@@ -157,7 +165,10 @@ public class TomesRegistry {
                 EntityInit.wild_wolf,
                 EntityInit.tamed_spider,
                 EntityInit.spectral_steed,
-                EntityInit.withering_stench
+                EntityInit.withering_stench,
+                EntityInit.deathly_ichor,
+                EntityInit.wither_ball,
+                EntityInit.witch_of_cogency
         );
 
         Tomes.LOGGER.info("Entities Registered!");
@@ -172,27 +183,36 @@ public class TomesRegistry {
                 EffectInit.fire_fist.setRegistryName(location("fire_fist")),
                 EffectInit.antidotal.setRegistryName(location("antidotal")),
                 EffectInit.multi_jump.setRegistryName(location("multi_jump")),
-                EffectInit.starry_form.setRegistryName(location("starry_form"))
+                EffectInit.starry_form.setRegistryName(location("starry_form")),
+                EffectInit.winged.setRegistryName(location("winged")),
+                EffectInit.adrenal_recharge.setRegistryName(location("adrenal_recharge")),
+                EffectInit.tenacity_recharge.setRegistryName(location("tenacity_recharge"))
                 );
 
-        Tomes.LOGGER.info("Enchantments Registered!");
+        Tomes.LOGGER.info("Effects Registered!");
     }
 
     @SubscribeEvent
     public static void onParticleRegistry(final RegistryEvent.Register<ParticleType<?>> event) {
         event.getRegistry().registerAll
             (
-                ParticleInit.spirit_flame.setRegistryName(location("spirit_flame")),
-                ParticleInit.withering_stench.setRegistryName(location("withering_stench")),
-                ParticleInit.wind_deflect.setRegistryName(location("wind_deflect")),
-                ParticleInit.web_net.setRegistryName(location("web_net")),
-                ParticleInit.hex.setRegistryName(location("hex")),
-                ParticleInit.wild_wolf_despawn.setRegistryName(location("wild_wolf_despawn")),
-                ParticleInit.spectral_steed_despawn.setRegistryName(location("spectral_steed_despawn")),
-                ParticleInit.living_wisp.setRegistryName(location("living_wisp"))
+                    ParticleInit.spirit_flame.setRegistryName(location("spirit_flame")),
+                    ParticleInit.withering_stench.setRegistryName(location("withering_stench")),
+                    ParticleInit.deathly_ichor.setRegistryName(location("deathly_ichor")),
+                    ParticleInit.wind_deflect.setRegistryName(location("wind_deflect")),
+                    ParticleInit.web_net.setRegistryName(location("web_net")),
+                    ParticleInit.hex.setRegistryName(location("hex")),
+                    ParticleInit.wild_wolf_despawn.setRegistryName(location("wild_wolf_despawn")),
+                    ParticleInit.spectral_steed_despawn.setRegistryName(location("spectral_steed_despawn")),
+                    ParticleInit.living_wisp.setRegistryName(location("living_wisp")),
+                    ParticleInit.goblet_particle.setRegistryName(location("goblet_particle"))
             );
 
         Tomes.LOGGER.info("Particles Registered!");
+    }
+
+    public static void registerCapabilities() {
+        CapabilityManager.INSTANCE.register(IStarryFormReturn.class, new StarryFormStorage(), StarryFormReturn::new);
     }
 
     @SubscribeEvent
@@ -204,13 +224,9 @@ public class TomesRegistry {
         Tomes.LOGGER.info("Textures Stitched!");
     }
 
+    @SuppressWarnings("rawtypes")
     @OnlyIn(Dist.CLIENT)
     public static void registerRenderers(FMLClientSetupEvent event) {
-        // These are here for a dev build so that I can grab my account details for server testing. Commented out so they're here in case I need them again.
-        // UNDER NO CIRCUMSTANCES SHOULD A BUILD PUBLICLY COME OUT WITH THESE UNCOMMENTED! IF IT DOES, LET ME KNOW ASAP!
-        /*System.out.println("ACCESS_TOKEN "+ Minecraft.getInstance().getSession().getToken());
-        System.out.println("(session)UUID "+ Minecraft.getInstance().getSession().getSessionID());
-        System.out.println("(player)UUID "+ Minecraft.getInstance().getSession().getPlayerID());*/
         event.enqueueWork(() -> {
             RenderTypeLookup.setRenderLayer(BlockInit.goblet_of_hearts, RenderType.getCutout());
                 });
@@ -221,17 +237,26 @@ public class TomesRegistry {
         RenderingRegistry.registerEntityRenderingHandler(EntityInit.tamed_spider, new TamedSpiderRenderer.RenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityInit.spectral_steed, new SpectralSteedRenderer.RenderFactory());
         RenderingRegistry.registerEntityRenderingHandler(EntityInit.withering_stench, new WitheringStenchRenderer.RenderFactory());
+        RenderingRegistry.registerEntityRenderingHandler(EntityInit.deathly_ichor, new DeathlyIchorRenderer.RenderFactory());
+        RenderingRegistry.registerEntityRenderingHandler(EntityInit.wither_ball, new WitherBallRenderer.RenderFactory());
+        RenderingRegistry.registerEntityRenderingHandler(EntityInit.witch_of_cogency, new WitchOfCogencyRenderer.RenderFactory());
 
         for (EntityRenderer<?> renderer : Minecraft.getInstance().getRenderManager().renderers.values()) {
             if (renderer instanceof LivingRenderer) {
-                // Unchecked because for some reason it hates using completely correct parameters.
                 ((LivingRenderer<?, ?>) renderer).addLayer(new StarryFormLayer((LivingRenderer<?, ?>) renderer));
+                ((LivingRenderer<?, ?>) renderer).addLayer(new WingedLayer((LivingRenderer<?, ?>) renderer));
             }
         }
-
         for (PlayerRenderer renderer : Minecraft.getInstance().getRenderManager().getSkinMap().values()) {
             renderer.addLayer(new StarryFormLayer<>(renderer));
+            renderer.addLayer(new WingedLayer<>(renderer));
         }
+    }
+
+    @SubscribeEvent
+    public static void enqueue(InterModEnqueueEvent evt) {
+        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
+                () -> SlotTypePreset.NECKLACE.getMessageBuilder().build());
     }
 
     public static ResourceLocation location(String name) {

@@ -1,17 +1,18 @@
 package com.vulp.tomes.effects;
 
-import com.vulp.tomes.init.ParticleInit;
+import com.vulp.tomes.capabilities.IStarryFormReturn;
+import com.vulp.tomes.capabilities.StarryFormReturnHolder;
+import com.vulp.tomes.capabilities.StarryFormReturnProvider;
 import com.vulp.tomes.network.TomesPacketHandler;
 import com.vulp.tomes.network.messages.ServerStarryFormMessage;
-import net.minecraft.block.Blocks;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifierManager;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.particles.BlockParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.potion.EffectType;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 import java.util.*;
@@ -25,6 +26,10 @@ public class StarryFormEffect extends TomeEffect {
 
     @Override
     public void applyAttributesModifiersToEntity(LivingEntity entityLivingBaseIn, AttributeModifierManager attributeMapIn, int amplifier) {
+        if (entityLivingBaseIn instanceof PlayerEntity) {
+            Optional<IStarryFormReturn> returnPoint = entityLivingBaseIn.getCapability(StarryFormReturnProvider.CAPABILITY, null).resolve();
+            returnPoint.ifPresent(iStarryFormReturn -> iStarryFormReturn.setHolder(new StarryFormReturnHolder(entityLivingBaseIn.getPosition(), entityLivingBaseIn.getEntityWorld().getDimensionKey())));
+        }
         TRACKER.add(entityLivingBaseIn);
         TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerStarryFormMessage(TRACKER.toArray(new LivingEntity[]{})));
         super.applyAttributesModifiersToEntity(entityLivingBaseIn, attributeMapIn, amplifier);
@@ -34,8 +39,27 @@ public class StarryFormEffect extends TomeEffect {
     public void removeAttributesModifiersFromEntity(LivingEntity entityLivingBaseIn, AttributeModifierManager attributeMapIn, int amplifier) {
         if (entityLivingBaseIn instanceof PlayerEntity) {
             ((PlayerEntity) entityLivingBaseIn).abilities.isFlying = ((PlayerEntity) entityLivingBaseIn).isCreative();
-            ((PlayerEntity) entityLivingBaseIn).abilities.disableDamage = ((PlayerEntity) entityLivingBaseIn).isCreative() || entityLivingBaseIn.isSpectator();
             ((PlayerEntity) entityLivingBaseIn).sendPlayerAbilities();
+            float f1 = entityLivingBaseIn.getSize(entityLivingBaseIn.getPose()).width * 0.8F;
+            AxisAlignedBB axisalignedbb = AxisAlignedBB.withSizeAtOrigin(f1, 0.1F, f1).offset(entityLivingBaseIn.getPosX(), entityLivingBaseIn.getPosYEye(), entityLivingBaseIn.getPosZ());
+            World world = entityLivingBaseIn.getEntityWorld();
+            if (entityLivingBaseIn.getEntityWorld().func_241457_a_(entityLivingBaseIn, axisalignedbb, (state, pos) -> state.isSuffocating(world, pos)).findAny().isPresent()) { // Resets the player if stuck in block.
+                Optional<IStarryFormReturn> returnPoint = entityLivingBaseIn.getCapability(StarryFormReturnProvider.CAPABILITY, null).resolve();
+                if (returnPoint.isPresent() && returnPoint.get().hasHolder()) {
+                    StarryFormReturnHolder data = returnPoint.get().getHolder();
+                    if (data != null) {
+                        ServerWorld resetDim = ((ServerWorld)world).getServer().getWorld(data.getStartDim());
+                        BlockPos resetPos = data.getStartPos();
+                        if (resetDim != null && resetPos != null) {
+                            if (data.getStartDim() != world.getDimensionKey()) {
+                                entityLivingBaseIn.changeDimension(resetDim); // Just in case the player changes dimension and gets lost in a block before changing back. Simple precaution.
+                            }
+                            entityLivingBaseIn.setPositionAndUpdate(resetPos.getX(), resetPos.getY(), resetPos.getZ());
+                        }
+
+                    }
+                }
+            }
         }
         TRACKER.remove(entityLivingBaseIn);
         TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerStarryFormMessage(TRACKER.toArray(new LivingEntity[]{})));

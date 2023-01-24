@@ -23,14 +23,12 @@ public class WitheringStenchSpell extends ActiveSpell {
     @Override
     public boolean onCast(World worldIn, PlayerEntity playerIn, Hand handIn) {
         if (!worldIn.isRemote) {
-            for (int i = 0; i < 7; i++) {
-                WitheringStenchEntity proj = new WitheringStenchEntity(worldIn, playerIn);
-                double d0 = playerIn.getLookVec().getX();
-                double d1 = playerIn.getLookVec().getY();
-                double d2 = playerIn.getLookVec().getZ();
-                proj.shoot(d0, d1, d2, 1.0F, 20.0F);
-                worldIn.addEntity(proj);
-            }
+            WitheringStenchEntity proj = new WitheringStenchEntity(worldIn, playerIn);
+            double d0 = playerIn.getLookVec().getX();
+            double d1 = playerIn.getLookVec().getY();
+            double d2 = playerIn.getLookVec().getZ();
+            proj.shoot(d0, d1, d2, 0.6F, 20.0F);
+            worldIn.addEntity(proj);
         }
         return true;
     }

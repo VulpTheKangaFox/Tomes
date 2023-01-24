@@ -3,6 +3,7 @@ package com.vulp.tomes.client.renderer.entity.renderers;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.vulp.tomes.Tomes;
+import com.vulp.tomes.TomesRegistry;
 import com.vulp.tomes.client.renderer.entity.models.TamedSpiderModel;
 import com.vulp.tomes.entities.TamedSpiderEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -21,8 +22,8 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 @OnlyIn(Dist.CLIENT)
 public class TamedSpiderRenderer<T extends TamedSpiderEntity> extends MobRenderer<T, TamedSpiderModel<T>> {
 
-    private static final ResourceLocation TAMED_SPIDER_TEXTURE = new ResourceLocation(Tomes.MODID, "textures/entity/tamed_spider.png");
-    private static final RenderType RENDER_TYPE = RenderType.getEyes(new ResourceLocation(Tomes.MODID, "textures/entity/tamed_spider_eyes.png"));
+    private static final ResourceLocation TAMED_SPIDER_TEXTURE = TomesRegistry.location("textures/entity/tamed_spider.png");
+    private static final RenderType RENDER_TYPE = RenderType.getEyes(TomesRegistry.location("textures/entity/tamed_spider_eyes.png"));
 
     public TamedSpiderRenderer(EntityRendererManager renderManagerIn) {
         super(renderManagerIn, new TamedSpiderModel<>(), 0.8F);

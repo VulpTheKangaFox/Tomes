@@ -14,21 +14,20 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
-
-version = '1.6'
+version = '2.0'
 group = 'com.vulp.tomes' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'tomes'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(8) // Mojang ships Java 8 to end users, so your mod should target Java 8.
+compileJava {
+    [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+}
 
 mixin {
     add sourceSets.main, "tomes.refmap.json"
 }
 
 repositories {
-    maven {
-        url "https://www.cursemaven.com"
-    }
     maven {
         name = "Progwml6 maven"
         url = "https://dvs1.progwml6.com/files/maven/"
@@ -88,7 +87,7 @@ minecraft {
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
 
-            args '--mod', 'tomes', '--all', '--output', file('src/generated/resources/')
+            args '--mod', 'tomes', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
                 tomes {
@@ -99,12 +98,14 @@ minecraft {
     }
 }
 
-sourceSets.main.resources { srcDir 'src/main/resources' }
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
     compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.6.8")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.6.8:api")
     compile 'org.spongepowered:mixin:0.8.2'
     annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 
@@ -131,6 +132,11 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
 }

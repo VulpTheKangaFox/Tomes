@@ -4,12 +4,10 @@ import com.mojang.datafixers.util.Pair;
 import com.vulp.tomes.Tomes;
 import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.effects.MultiJumpEffect;
+import com.vulp.tomes.entities.WitchOfCogencyEntity;
 import com.vulp.tomes.entities.ai.MindBendFollowGoal;
 import com.vulp.tomes.entities.ai.NullifyAttackableTargetGoal;
-import com.vulp.tomes.init.EffectInit;
-import com.vulp.tomes.init.EnchantmentInit;
-import com.vulp.tomes.init.ItemInit;
-import com.vulp.tomes.init.ParticleInit;
+import com.vulp.tomes.init.*;
 import com.vulp.tomes.inventory.container.WitchMerchantContainer;
 import com.vulp.tomes.items.DebugItem;
 import com.vulp.tomes.items.TomeItem;
@@ -32,12 +30,14 @@ import net.minecraft.entity.monster.*;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.DamagingProjectileEntity;
+import net.minecraft.entity.projectile.PotionEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ProjectileHelper;
 import net.minecraft.inventory.container.SimpleNamedContainerProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MerchantOffers;
+import net.minecraft.item.MilkBucketItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
 import net.minecraft.potion.EffectInstance;
@@ -55,10 +55,7 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerFlyableFallEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerXpEvent;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -134,6 +131,21 @@ public class EntityEvents {
     }
 
     @SubscribeEvent
+    public static void onPotionRemoved(PotionEvent.PotionRemoveEvent event) {
+        EffectInstance instance = event.getPotionEffect();
+        if (instance != null && (instance.getPotion() == EffectInit.adrenal_recharge || instance.getPotion() == EffectInit.tenacity_recharge)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onPlayerInteract(PlayerInteractEvent event) {
+        if (event.isCancelable() && event.getPlayer().isPotionActive(EffectInit.starry_form)) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public static void onRightClickEntity(PlayerInteractEvent.EntityInteract event) {
         PlayerEntity player = event.getPlayer();
         Entity entity = event.getTarget();
@@ -193,6 +205,35 @@ public class EntityEvents {
         if (attacker instanceof LivingEntity && ((LivingEntity) attacker).isPotionActive(EffectInit.fire_fist)) {
             event.getEntityLiving().setFire(20);
         }
+        LivingEntity victim = event.getEntityLiving();
+        /*if (victim instanceof VexEntity) {
+            if (attacker instanceof WitchOfCogencyEntity) {
+                if (((VexEntity) victim).getOwner() == attacker) {
+                    event.setCanceled(true);
+                }
+            }
+        }
+        if (attacker instanceof WitchOfCogencyEntity && victim instanceof VexEntity && ((VexEntity) victim).getOwner() == attacker) {
+            event.setCanceled(true);
+        }*/
+        if (SpellEnchantUtil.hasEnchant(victim, EnchantmentInit.fight_or_flight)) {
+            if ((victim.getHealth() - event.getAmount()) / victim.getMaxHealth() <= 0.3F && !victim.isPotionActive(EffectInit.adrenal_recharge)) {
+                victim.addPotionEffect(new EffectInstance(Effects.SPEED, 400, 1));
+                victim.addPotionEffect(new EffectInstance(Effects.STRENGTH, 400, 1));
+                victim.addPotionEffect(new EffectInstance(Effects.ABSORPTION, 400, 0));
+                victim.setAbsorptionAmount(4.0F);
+                victim.addPotionEffect(new EffectInstance(EffectInit.adrenal_recharge, TomesConfig.fight_or_flight_cooldown.get(), 0, true, false));
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void entityAttackedEvent(LivingAttackEvent event) {
+        Entity attacker = event.getSource().getTrueSource();
+        LivingEntity victim = event.getEntityLiving();
+        if (attacker instanceof WitchOfCogencyEntity && victim instanceof VexEntity && ((VexEntity) victim).getOwner() == attacker) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
@@ -214,7 +255,7 @@ public class EntityEvents {
                             try {
                                 proj.setMotion(vec2.getX() * 0.75, vec2.getY() * 0.75, vec2.getZ() * 0.75);
                             } catch (NoSuchMethodError error) {
-                                Tomes.LOGGER.debug("Caught an error typically caused by using multiple projectile deflection methods.");
+                                Tomes.LOGGER.debug("Caught an error typically caused by using multiple projectile deflection methods."); // I actually have no idea if this works.
                                 return;
                             }
                             proj.rotationPitch = MathHelper.wrapDegrees(proj.rotationPitch + 180);
@@ -281,6 +322,17 @@ public class EntityEvents {
     }
 
     @SubscribeEvent
+    public static void onLivingDeath(LivingDeathEvent event) {
+        LivingEntity entity = event.getEntityLiving();
+        if (SpellEnchantUtil.hasEnchant(entity, EnchantmentInit.borrowed_time) && !entity.isPotionActive(EffectInit.tenacity_recharge)) {
+            entity.setHealth(entity.getMaxHealth());
+            entity.addPotionEffect(new EffectInstance(Effects.WITHER, 200, 2));
+            entity.addPotionEffect(new EffectInstance(EffectInit.tenacity_recharge, TomesConfig.borrowed_time_cooldown.get(), 2));
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
     public static void livingTickEvent(LivingEvent.LivingUpdateEvent event) {
         LivingEntity entity = (LivingEntity) event.getEntity();
         if (entity != null && entity.getPersistentData().contains("HexParticle")) {
@@ -308,31 +360,11 @@ public class EntityEvents {
             if (event.phase == TickEvent.Phase.START) {
                 event.player.setOnGround(false);
                 event.player.abilities.isFlying = true;
-                event.player.abilities.disableDamage = true;
             } else {
                 event.player.setPose(Pose.SWIMMING);
             }
         }
     }
-
-    @SubscribeEvent
-    public static void livingDeathEvent(LivingDeathEvent event) {
-            /*if (entity.getPersistentData().getBoolean("HexParticle")) {
-                mindbendParticleHandlers.forEach((id, timer) -> {
-                    Entity tickingEntity = world.getEntityByID(id);
-                });
-                if (mindbend_particle_timer <= 0) {
-                    world.addParticle(ParticleInit.hex, entity.getPosX(), entity.getPosY() + entity.getHeight() + 0.5F, entity.getPosZ(), entity.getEntityId(), 0.0D, 0.0D);
-                    mindbend_particle_timer = 7;
-                } else {
-                    mindbend_particle_timer--;
-                }
-            }
-        } else {
-            TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerMindBendMessage(entity.getEntityId(), entity.getPersistentData().getBoolean("HexParticle")));
-        }*/
-    }
-
 
     @SubscribeEvent
     public static void entityLeaveWorldEvent(EntityLeaveWorldEvent event) {

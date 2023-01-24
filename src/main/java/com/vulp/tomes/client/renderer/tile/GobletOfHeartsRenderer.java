@@ -28,6 +28,7 @@ import net.minecraft.tileentity.BeaconTileEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix3f;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -79,7 +80,6 @@ public class GobletOfHeartsRenderer extends TileEntityRenderer<GobletOfHeartsTil
         for (int i = 0; i < angles.length; i++) {
             angles[i] = totalAngle += anglePer;
         }
-
         double time = partialTicks + ticker;
         for (int i = 0; i < inv.size(); i++) {
             matrixStackIn.push();
@@ -94,6 +94,13 @@ public class GobletOfHeartsRenderer extends TileEntityRenderer<GobletOfHeartsTil
                 mc.getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.GROUND, combinedLightIn, combinedOverlayIn, matrixStackIn, bufferIn);
             }
             matrixStackIn.pop();
+        }
+        if (Minecraft.isFabulousGraphicsEnabled()) {
+            if (goblet.canCraft()) {
+                matrixStackIn.push();
+                GobletOfHeartsRenderer.renderReadyGlow(matrixStackIn, bufferIn.getBuffer(RenderTypes.getLightFlare()));
+                matrixStackIn.pop();
+            }
         }
         matrixStackIn.pop();
     }

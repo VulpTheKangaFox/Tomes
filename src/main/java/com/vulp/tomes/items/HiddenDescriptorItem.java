@@ -23,22 +23,29 @@ public class HiddenDescriptorItem extends Item {
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (worldIn == null) return;
-        IFormattableTextComponent textComponent = null;
+        IFormattableTextComponent textComponent1 = null;
+        IFormattableTextComponent textComponent2 = null;
         Item item = stack.getItem();
 
         if (item == ItemInit.ancient_heart) {
-            textComponent = new TranslationTextComponent("item.tomes.ancient_heart_desc").mergeStyle(TextFormatting.GOLD);
+            textComponent1 = new TranslationTextComponent("item.tomes.ancient_heart_desc1").mergeStyle(TextFormatting.GOLD);
+            textComponent2 = new TranslationTextComponent("item.tomes.ancient_heart_desc2").mergeStyle(TextFormatting.YELLOW, TextFormatting.ITALIC);
         } else if (item == ItemInit.beating_heart) {
-            textComponent = new TranslationTextComponent("item.tomes.beating_heart_desc").mergeStyle(TextFormatting.DARK_GREEN);
+            textComponent1 = new TranslationTextComponent("item.tomes.beating_heart_desc1").mergeStyle(TextFormatting.DARK_GREEN);
+            textComponent2 = new TranslationTextComponent("item.tomes.beating_heart_desc2").mergeStyle(TextFormatting.GREEN, TextFormatting.ITALIC);
         } else if (item == ItemInit.sweet_heart) {
-            textComponent = new TranslationTextComponent("item.tomes.sweet_heart_desc").mergeStyle(TextFormatting.DARK_RED);
+            textComponent1 = new TranslationTextComponent("item.tomes.sweet_heart_desc1").mergeStyle(TextFormatting.DARK_RED);
+            textComponent2 = new TranslationTextComponent("item.tomes.sweet_heart_desc2").mergeStyle(TextFormatting.RED, TextFormatting.ITALIC);
         }
 
-        if (textComponent != null) {
+        if (textComponent1 != null) {
             if (!Screen.hasShiftDown()) {
                 tooltip.add(new TranslationTextComponent("item.tomes.hold_shift").mergeStyle(TextFormatting.GRAY, TextFormatting.ITALIC));
             } else {
-                tooltip.add(textComponent);
+                tooltip.add(textComponent1);
+                if (textComponent2 != null) {
+                    tooltip.add(textComponent2);
+                }
             }
         } else {
             super.addInformation(stack, worldIn, tooltip, flagIn);

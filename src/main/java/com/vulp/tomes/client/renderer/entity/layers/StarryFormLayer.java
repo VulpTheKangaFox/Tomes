@@ -3,6 +3,8 @@ package com.vulp.tomes.client.renderer.entity.layers;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.vulp.tomes.Tomes;
+import com.vulp.tomes.TomesRegistry;
 import com.vulp.tomes.client.renderer.RenderTypes;
 import com.vulp.tomes.effects.StarryFormEffect;
 import com.vulp.tomes.init.EffectInit;
@@ -13,13 +15,18 @@ import net.minecraft.client.renderer.RenderState;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
+import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
+import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.entity.model.SegmentedModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.particles.RedstoneParticleData;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -30,6 +37,7 @@ import java.util.stream.IntStream;
 @OnlyIn(Dist.CLIENT)
 public class StarryFormLayer<T extends LivingEntity, M extends EntityModel<T>> extends LayerRenderer<T, M> {
 
+    private static final ResourceLocation EYES = TomesRegistry.location("textures/entity/starry_form_eyes.png");
     private final M MODEL;
     private static final List<RenderType> RENDER_TYPES = IntStream.range(0, 16).mapToObj((i) -> RenderType.getEndPortal(i + 1)).collect(ImmutableList.toImmutableList());
     private static final Random rand = new Random();
@@ -54,6 +62,10 @@ public class StarryFormLayer<T extends LivingEntity, M extends EntityModel<T>> e
                 float f1 = (rand.nextFloat() * 0.5F + 0.4F) * j;
                 float f2 = (rand.nextFloat() * 0.5F + 0.5F) * j;
                 MODEL.render(matrixStackIn, ivertexbuilder, 15728640, OverlayTexture.NO_OVERLAY, f, f1, f2, 1.0F);
+            }
+            if (this.MODEL instanceof BipedModel) {
+                IVertexBuilder ivertexbuilder1 = bufferIn.getBuffer(RenderType.getEyes(EYES));
+                ((BipedModel<?>) this.MODEL).bipedHeadwear.render(matrixStackIn, ivertexbuilder1, 15728640, OverlayTexture.NO_OVERLAY);
             }
         }
     }

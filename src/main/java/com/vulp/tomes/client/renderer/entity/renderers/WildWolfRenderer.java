@@ -3,6 +3,7 @@ package com.vulp.tomes.client.renderer.entity.renderers;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.vulp.tomes.Tomes;
+import com.vulp.tomes.TomesRegistry;
 import com.vulp.tomes.entities.WildWolfEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -24,11 +25,9 @@ import javax.annotation.Nullable;
 @OnlyIn(Dist.CLIENT)
 public class WildWolfRenderer extends WolfRenderer {
 
-    // TODO: Maybe an eye layer for glowy magic eyes?
-
-    private static final ResourceLocation WILD_WOLF_TEXTURE = new ResourceLocation(Tomes.MODID, "textures/entity/wild_wolf.png");
-    private static final ResourceLocation WILD_WOLF_FADE_TEXTURE = new ResourceLocation(Tomes.MODID, "textures/entity/wild_wolf_fade.png");
-    private static final RenderType RENDER_TYPE = RenderType.getEyes(new ResourceLocation(Tomes.MODID, "textures/entity/wild_wolf_eyes.png"));
+    private static final ResourceLocation WILD_WOLF_TEXTURE = TomesRegistry.location("textures/entity/wild_wolf.png");
+    private static final ResourceLocation WILD_WOLF_FADE_TEXTURE = TomesRegistry.location("textures/entity/wild_wolf_fade.png");
+    private static final RenderType RENDER_TYPE = RenderType.getEyes(TomesRegistry.location("textures/entity/wild_wolf_eyes.png"));
 
     public WildWolfRenderer(EntityRendererManager renderManagerIn) {
         super(renderManagerIn);

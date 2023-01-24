@@ -1,0 +1,26 @@
+{
+    "type": "tomes:goblet_crafting",
+    "ingredients": [
+		{
+		  "item": "tomes:sweet_heart"
+		},
+		{
+		  "item": "tomes:ancient_heart"
+		},
+		{
+		  "item": "tomes:beating_heart"
+		},
+		{
+		  "item": "minecraft:totem_of_undying"
+		},
+		{
+		  "item": "minecraft:wither_skeleton_skull"
+		}
+    ],
+	"entity_results": [
+		{
+		  "entity": "tomes:witch_of_cogency",
+		  "count": 1
+		}
+	]
+}

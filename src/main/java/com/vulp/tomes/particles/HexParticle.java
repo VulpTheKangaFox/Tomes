@@ -21,7 +21,6 @@ public class HexParticle extends YawLockedParticle {
     private final double varY;
     private final double varZ;
 
-    // Once you have the particle permanence idea working, switch over to that method?
     protected HexParticle(ClientWorld world, double x, double y, double z, int entityID, IAnimatedSprite spriteWithAge) {
         super(world, x, y, z);
         Random rand = new Random();

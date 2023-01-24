@@ -19,4 +19,6 @@ public class ItemInit {
     public static Item living_tome_open;
     public static Item cursed_tome_open;
 
+    public static Item amulet_of_cogency;
+
 }

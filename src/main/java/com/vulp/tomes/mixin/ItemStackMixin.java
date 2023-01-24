@@ -73,7 +73,7 @@ public abstract class ItemStackMixin {
 
     @Shadow public abstract int getDamage();
 
-    // NOTE: This entire mixin is set up to solve the simple issue of the enchants showing up BEFORE the item description, which I didn't want.
+    // This entire mixin is set up to solve the simple issue of the enchants showing up BEFORE the item description, which I didn't want.
     @Inject(at = @At(value = "HEAD"), method = "getTooltip", cancellable = true)
     void getTooltip(PlayerEntity playerIn, ITooltipFlag advanced, CallbackInfoReturnable<List<ITextComponent>> cir) {
         Item item = this.getItem();

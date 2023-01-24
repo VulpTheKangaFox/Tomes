@@ -36,6 +36,7 @@ import net.minecraft.inventory.container.EnchantmentContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.particles.RedstoneParticleData;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3d;
@@ -85,30 +86,58 @@ public class RenderEvents {
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         GobletOfHeartsRenderer.tick();
-        Set<LivingEntity> starryFormTracker = StarryFormEffect.getTracker();
-        if (starryFormTracker != null && starryFormTracker.size() > 0) {
-            World world = Minecraft.getInstance().world;
-            int r = rand.nextInt(5);
-            float[] color;
-            if (r == 0) {
-                color = new float[]{0.102F, 0.133F, 0.231F};
-            } else if (r == 1) {
-                color = new float[]{0.106F, 0.216F, 0.196F};
-            } else if (r == 2) {
-                color = new float[]{0.173F, 0.149F, 0.231F};
-            } else {
-                color = new float[]{0.004F, 0.031F, 0.066F};
-            }
-            // TODO: THIS KEEPS RETURNING NULLPOINTEREXCEPTION!
-            for (LivingEntity entity : starryFormTracker) {
-                if (entity != null && world != null) {
-                    for (int i = 0; i < 2; ++i) {
-                        // TODO: Custom particle.
-                        world.addParticle(new RedstoneParticleData(color[0], color[1], color[2], 1.0F), entity.getPosXRandom(1.0D), entity.getPosYRandom(), entity.getPosZRandom(1.0D), 1.0D, 0.0D, 0.0D);
+        Minecraft mc = Minecraft.getInstance();
+        if (!mc.isGamePaused()) {
+            Set<LivingEntity> starryFormTracker = StarryFormEffect.getTracker();
+            if (starryFormTracker != null && starryFormTracker.size() > 0) {
+                World world = mc.world;
+                int r = rand.nextInt(5);
+                float[] color;
+                if (r == 0) {
+                    color = new float[]{0.102F, 0.133F, 0.231F};
+                } else if (r == 1) {
+                    color = new float[]{0.106F, 0.216F, 0.196F};
+                } else if (r == 2) {
+                    color = new float[]{0.173F, 0.149F, 0.231F};
+                } else {
+                    color = new float[]{0.004F, 0.031F, 0.066F};
+                }
+                for (LivingEntity entity : starryFormTracker) {
+                    if (entity != null && world != null) {
+                        for (int i = 0; i < 2; ++i) {
+                            world.addParticle(new RedstoneParticleData(color[0], color[1], color[2], 1.0F), entity.getPosXRandom(1.0D), entity.getPosYRandom(), entity.getPosZRandom(1.0D), 1.0D, 0.0D, 0.0D);
+                        }
                     }
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void onFogColorEvent(EntityViewRenderEvent.FogColors event) {
+            if (starryFormInBlock()) {
+                event.setRed(18.0F / 255.0F);
+                event.setGreen(13.0F / 255.0F);
+                event.setBlue(26.0F / 255.0F);
+            }
+    }
+
+    @SubscribeEvent
+    public static void onFogDensityEvent(EntityViewRenderEvent.FogDensity event) {
+        if (starryFormInBlock()) {
+            event.setDensity(0.02F);
+            event.setCanceled(true);
+        }
+    }
+
+    public static boolean starryFormInBlock() {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.world != null && mc.player != null && StarryFormEffect.hasEntity(mc.player)) {
+            float f1 = mc.player.getSize(mc.player.getPose()).width * 0.8F;
+            AxisAlignedBB axisalignedbb = AxisAlignedBB.withSizeAtOrigin(f1, 0.1F, f1).offset(mc.player.getPosX(), mc.player.getPosYEye(), mc.player.getPosZ());
+            return mc.player.getEntityWorld().func_241457_a_(mc.player, axisalignedbb, (state, pos) -> state.isSuffocating(mc.world, pos)).findAny().isPresent();
+        }
+        return false;
     }
 
     @SubscribeEvent

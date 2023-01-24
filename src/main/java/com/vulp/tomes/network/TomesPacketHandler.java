@@ -25,6 +25,7 @@ public class TomesPacketHandler {
         register(ServerTameAnimalMessage.class, new ServerTameAnimalMessage());
         register(ServerEnchantmentClueMessage.class, new ServerEnchantmentClueMessage());
         register(ServerWitheringStenchParticleMessage.class, new ServerWitheringStenchParticleMessage());
+        register(ServerDeathlyIchorParticleMessage.class, new ServerDeathlyIchorParticleMessage());
         register(ServerOpenHorseInventoryMessage.class, new ServerOpenHorseInventoryMessage());
         register(ServerProjDeflectMessage.class, new ServerProjDeflectMessage());
         register(ServerSpiderFallMessage.class, new ServerSpiderFallMessage());
@@ -34,6 +35,8 @@ public class TomesPacketHandler {
         register(ServerCropBreakMessage.class, new ServerCropBreakMessage());
         register(ServerSimpleParticlePassthroughMessage.class, new ServerSimpleParticlePassthroughMessage());
         register(ServerStarryFormMessage.class, new ServerStarryFormMessage());
+        register(ServerGobletCraftMessage.class, new ServerGobletCraftMessage());
+        register(ServerWitchOfCogencyCastMessage.class, new ServerWitchOfCogencyCastMessage());
 
         // Client -> Server
         register(ClientJumpPressedMessage.class, new ClientJumpPressedMessage());

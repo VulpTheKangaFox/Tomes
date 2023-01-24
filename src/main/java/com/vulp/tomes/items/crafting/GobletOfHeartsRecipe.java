@@ -3,6 +3,7 @@ package com.vulp.tomes.items.crafting;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.sun.java.accessibility.util.java.awt.TextComponentTranslator;
 import com.vulp.tomes.init.RecipeInit;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnReason;
@@ -20,6 +21,8 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -30,22 +33,27 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+// NOTE: In future I potentially plan to add item/entity nbt manipulation through the recipe json, but it's certainly not important.
 public class GobletOfHeartsRecipe implements IRecipe<IInventory> {
 
     protected final ResourceLocation id;
     protected final Ingredient[] ingredients;
-    protected final ItemStack[] itemResults;
-    protected final EffectInstance[] effectResults;
-    protected final EntityType<?>[] entityResults;
-    protected final Integer[] entityCounts;
+    @Nullable protected final ItemStack[] itemResults;
+    @Nullable protected final EffectInstance[] effectResults;
+    @Nullable protected final EntityType<?>[] entityResults;
+    @Nullable protected final Integer[] entityCounts;
+    @Nullable protected final ITextComponent name;
+    @Nullable protected final ITextComponent description;
 
-    public GobletOfHeartsRecipe(ResourceLocation id, Ingredient[] ingredients, @Nullable ItemStack[] itemResults, @Nullable EffectInstance[] effectResults, @Nullable EntityType<?>[] entityResults, @Nullable Integer[] entityCounts) {
+    public GobletOfHeartsRecipe(ResourceLocation id, Ingredient[] ingredients, @Nullable ItemStack[] itemResults, @Nullable EffectInstance[] effectResults, @Nullable EntityType<?>[] entityResults, @Nullable Integer[] entityCounts, @Nullable ITextComponent name, @Nullable ITextComponent description) {
         this.id = id;
         this.ingredients = ingredients;
         this.itemResults = itemResults;
         this.effectResults = effectResults;
         this.entityResults = entityResults;
         this.entityCounts = entityCounts;
+        this.name = name;
+        this.description = description;
     }
 
     public void trigger(World world, BlockPos pos, PlayerEntity player) {
@@ -125,6 +133,32 @@ public class GobletOfHeartsRecipe implements IRecipe<IInventory> {
         return ItemStack.EMPTY;
     }
 
+    public EffectInstance[] getEffectResults() {
+        return this.effectResults;
+    }
+
+    public EntityType<?>[] getEntityResults() {
+        return this.entityResults;
+    }
+
+    public Integer[] getEntityCounts() {
+        return this.entityCounts;
+    }
+
+    public ItemStack[] getItemResults() {
+        return this.itemResults;
+    }
+
+    @Nullable
+    public ITextComponent getName() {
+        return this.name;
+    }
+
+    @Nullable
+    public ITextComponent getDescription() {
+        return this.description;
+    }
+
     @Override
     public ResourceLocation getId() {
         return this.id;
@@ -140,6 +174,16 @@ public class GobletOfHeartsRecipe implements IRecipe<IInventory> {
         return RecipeInit.goblet_crafting;
     }
 
+    @Override
+    public ItemStack getIcon() {
+        return IRecipe.super.getIcon();
+    }
+
+    @Override
+    public boolean isDynamic() {
+        return true;
+    }
+
     public static class GobletOfHeartsRecipeSerializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<GobletOfHeartsRecipe> {
 
         @Override
@@ -153,8 +197,8 @@ public class GobletOfHeartsRecipe implements IRecipe<IInventory> {
                     ingredients.add(ingredient);
                 }
             }
-            if (ingredients.size() > 8) {
-                throw new JsonSyntaxException("Too many ingredients: 8 is the maximum");
+            if (ingredients.size() > 5) {
+                throw new JsonSyntaxException("Too many ingredients: 5 is the maximum");
             }
             boolean hasResult = false;
             // Get item results:
@@ -202,7 +246,20 @@ public class GobletOfHeartsRecipe implements IRecipe<IInventory> {
             if (!hasResult) {
                 throw new JsonSyntaxException("Recipe must contain a result of some kind");
             }
-            return new GobletOfHeartsRecipe(recipeId, ingredients.toArray(new Ingredient[0]), itemStacks.isEmpty() ? null : itemStacks.toArray(new ItemStack[0]), effects.isEmpty() ? null : effects.toArray(new EffectInstance[0]), entities.isEmpty() ? null : entities.toArray(new EntityType<?>[0]), entityCounts.isEmpty() ? null : entityCounts.toArray(new Integer[0]));
+            // Optional JEI recipe support:
+            JsonArray JEIArray = getOptionalJsonArray(json, "jei");
+            ResourceLocation iconLocation = null;
+            ITextComponent nameComponent = null;
+            ITextComponent descriptionComponent = null;
+            if (JEIArray != null) {
+                JEIArray.getAsJsonObject();
+                for(int i = 0; i < entityResultArray.size(); ++i) {
+                    JsonObject object = entityResultArray.get(i).getAsJsonObject();
+                    nameComponent = new TranslationTextComponent(JSONUtils.getString(object, "title_string"));
+                    descriptionComponent = new TranslationTextComponent(JSONUtils.getString(object, "description_string"));
+                }
+            }
+            return new GobletOfHeartsRecipe(recipeId, ingredients.toArray(new Ingredient[0]), itemStacks.isEmpty() ? null : itemStacks.toArray(new ItemStack[0]), effects.isEmpty() ? null : effects.toArray(new EffectInstance[0]), entities.isEmpty() ? null : entities.toArray(new EntityType<?>[0]), entityCounts.isEmpty() ? null : entityCounts.toArray(new Integer[0]), nameComponent, descriptionComponent);
         }
 
         @Nullable
@@ -214,6 +271,9 @@ public class GobletOfHeartsRecipe implements IRecipe<IInventory> {
             EffectInstance[] effects = null;
             EntityType<?>[] entities = null;
             Integer[] entityCounts = null;
+            ResourceLocation icon = null;
+            ITextComponent name = null;
+            ITextComponent description = null;
             for (int i = 0; i < length; i++) {
                 ingredients[i] = Ingredient.read(buffer);
             }
@@ -244,7 +304,15 @@ public class GobletOfHeartsRecipe implements IRecipe<IInventory> {
                     entityCounts[i] = buffer.readInt();
                 }
             }
-            return new GobletOfHeartsRecipe(recipeId, ingredients, items, effects, entities, entityCounts);
+            // JEI results:
+            if (buffer.readBoolean()) {
+                name = buffer.readTextComponent();
+            }
+            if (buffer.readBoolean()) {
+                description = buffer.readTextComponent();
+            }
+
+            return new GobletOfHeartsRecipe(recipeId, ingredients, items, effects, entities, entityCounts, name, description);
         }
 
         @Override
@@ -287,6 +355,18 @@ public class GobletOfHeartsRecipe implements IRecipe<IInventory> {
                 }
             }
             buffer.writeBoolean(entities);
+            boolean name = false;
+            if (recipe.name != null) {
+                name = true;
+                buffer.writeTextComponent(recipe.name);
+            }
+            buffer.writeBoolean(name);
+            boolean description = false;
+            if (recipe.description != null) {
+                description = true;
+                buffer.writeTextComponent(recipe.description);
+            }
+            buffer.writeBoolean(description);
         }
 
         @Nullable

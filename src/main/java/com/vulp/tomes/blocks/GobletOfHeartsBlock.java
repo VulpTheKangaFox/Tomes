@@ -1,6 +1,9 @@
 package com.vulp.tomes.blocks;
 
 import com.vulp.tomes.blocks.tile.GobletOfHeartsTileEntity;
+import com.vulp.tomes.network.TomesPacketHandler;
+import com.vulp.tomes.network.messages.ServerGobletCraftMessage;
+import com.vulp.tomes.network.messages.ServerProjDeflectMessage;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
@@ -8,6 +11,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.shapes.ISelectionContext;
@@ -15,8 +20,11 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.fml.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.util.function.Supplier;
 
 public class GobletOfHeartsBlock extends ContainerBlock {
 
@@ -29,18 +37,19 @@ public class GobletOfHeartsBlock extends ContainerBlock {
     public ActionResultType onBlockActivated(BlockState state, World worldIn, BlockPos pos, PlayerEntity player, Hand handIn, BlockRayTraceResult hit) {
         TileEntity tileentity = worldIn.getTileEntity(pos);
         if (tileentity instanceof GobletOfHeartsTileEntity) {
-            GobletOfHeartsTileEntity campfiretileentity = (GobletOfHeartsTileEntity)tileentity;
+            GobletOfHeartsTileEntity gobletTileEntity = (GobletOfHeartsTileEntity)tileentity;
             ItemStack itemstack = player.getHeldItem(handIn);
             if (!worldIn.isRemote) {
-                if (campfiretileentity.checkCanCraft() && !player.isSneaking()) {
-                    campfiretileentity.craftRecipe(player);
+                if (gobletTileEntity.checkCanCraft() && !player.isSneaking()) {
+                    gobletTileEntity.craftRecipe(player);
+                    TomesPacketHandler.instance.send(PacketDistributor.TRACKING_CHUNK.with(() -> (Chunk) worldIn.getChunk(pos)), new ServerGobletCraftMessage(pos));
                     return ActionResultType.SUCCESS;
                 } else {
-                    if (itemstack.isEmpty() && campfiretileentity.removeLastItem()) {
-                        campfiretileentity.checkCanCraft();
+                    if (itemstack.isEmpty() && gobletTileEntity.removeLastItem()) {
+                        gobletTileEntity.checkCanCraft();
                         return ActionResultType.SUCCESS;
-                    } else if (campfiretileentity.addItem(player.abilities.isCreativeMode ? itemstack.copy() : itemstack)) {
-                        campfiretileentity.checkCanCraft();
+                    } else if (gobletTileEntity.addItem(player.abilities.isCreativeMode ? itemstack.copy() : itemstack)) {
+                        gobletTileEntity.checkCanCraft();
                         return ActionResultType.SUCCESS;
                     }
                 }

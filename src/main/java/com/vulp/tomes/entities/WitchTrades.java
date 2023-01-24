@@ -19,7 +19,7 @@ import java.util.Random;
 import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
-public class WitchTrades extends VillagerTrades {
+public class WitchTrades {
 
     public static final Int2ObjectMap<VillagerTrades.ITrade[]> WITCH_TRADES = gatAsIntMap(ImmutableMap.of(
             1,

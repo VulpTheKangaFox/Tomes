@@ -45,24 +45,4 @@ public class ServerEvents {
         }
     }
 
-    // Potentially replace with an 'on entity load' check on the serverside.
-    /*@SubscribeEvent
-    public static void onLoadWorld(WorldEvent.Load event) {
-        IWorld world = event.getWorld();
-        if (world instanceof ServerWorld) {
-            Set<LivingEntity> tracker = StarryFormEffect.getTracker();
-            ((ServerWorld) world).getProfiler().func_230035_c_("getLoadedEntities");
-            Int2ObjectMap<ChunkManager.EntityTracker> entities = ((ServerChunkProvider)world.getChunkProvider()).chunkManager.entities;
-            entities.forEach((integer, entityTracker) -> {
-                Entity entity = entityTracker.entity;
-                if (entity instanceof LivingEntity && ((LivingEntity) entity).isPotionActive(EffectInit.starry_form)) {
-                    tracker.add((LivingEntity) entity);
-                }
-            });
-            if (tracker.size() > 0) {
-                TomesPacketHandler.instance.send(PacketDistributor.ALL.noArg(), new ServerStarryFormMessage(tracker.toArray(new LivingEntity[]{})));
-            }
-        }
-    }*/
-
 }

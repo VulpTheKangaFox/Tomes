@@ -30,17 +30,21 @@ public class EnchantmentInit {
     public static Enchantment lifebringer = createTomeEnchant(SpellIndex.LIFEBRINGER, EnchantmentTypes.LIVING_TOME);
     public static Enchantment beast_tamer = createTomeEnchant(SpellIndex.BEAST_TAMER, EnchantmentTypes.LIVING_TOME);
     public static Enchantment wild_aid = createTomeEnchant(SpellIndex.WILD_AID, EnchantmentTypes.LIVING_TOME);
+    public static Enchantment metamorphosis = createTomeEnchant(SpellIndex.METAMORPHOSIS, EnchantmentTypes.LIVING_TOME);
     public static Enchantment molding_lands = createTomeEnchant(SpellIndex.WINGS_OF_NIGHT, EnchantmentTypes.LIVING_TOME);
     public static Enchantment nurturing_roots = createTomeEnchant(SpellIndex.NURTURING_ROOTS, EnchantmentTypes.LIVING_TOME);
     public static Enchantment advantageous_growth = createTomeEnchant(SpellIndex.ADVANTAGEOUS_GROWTH, EnchantmentTypes.LIVING_TOME);
+    public static Enchantment fight_or_flight = createTomeEnchant(SpellIndex.FIGHT_OR_FLIGHT, EnchantmentTypes.LIVING_TOME);
     public static Enchantment forest_affinity = createTomeEnchant(SpellIndex.FOREST_AFFINITY, EnchantmentTypes.LIVING_TOME);
 
     public static Enchantment mind_bender = createTomeEnchant(SpellIndex.MIND_BENDER, EnchantmentTypes.CURSED_TOME);
     public static Enchantment ghostly_steed = createTomeEnchant(SpellIndex.GHOSTLY_STEED, EnchantmentTypes.CURSED_TOME);
     public static Enchantment withering_stench = createTomeEnchant(SpellIndex.WITHERING_STENCH, EnchantmentTypes.CURSED_TOME);
+    public static Enchantment deathly_ichor = createTomeEnchant(SpellIndex.DEATHLY_ICHOR, EnchantmentTypes.CURSED_TOME);
     public static Enchantment dark_age = createTomeEnchant(SpellIndex.DARK_AGE, EnchantmentTypes.CURSED_TOME);
     public static Enchantment rotten_heart = createTomeEnchant(SpellIndex.ROTTEN_HEART, EnchantmentTypes.CURSED_TOME);
     public static Enchantment nocturnal = createTomeEnchant(SpellIndex.NOCTURNAL, EnchantmentTypes.CURSED_TOME);
+    public static Enchantment borrowed_time = createTomeEnchant(SpellIndex.BORROWED_TIME, EnchantmentTypes.CURSED_TOME);
     public static Enchantment covens_rule = createTomeEnchant(SpellIndex.COVENS_RULE, EnchantmentTypes.CURSED_TOME);
 
     protected static TomeEnchantment createTomeEnchant(SpellIndex index, EnchantmentType type) {

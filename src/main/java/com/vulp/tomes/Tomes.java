@@ -38,6 +38,7 @@ public class Tomes {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         TomesPacketHandler.init();
+        TomesRegistry.registerCapabilities();
         LOGGER.info("Common setup event complete!");
     }
 

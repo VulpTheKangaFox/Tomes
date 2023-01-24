@@ -89,14 +89,6 @@ public class WitchMerchantContainer extends MerchantContainer {
     }
 
     @Override
-    public void playMerchantYesSound() {
-        if (!this.witch.world.isRemote) {
-            Entity entity = this.witch;
-            entity.world.playSound(entity.getPosX(), entity.getPosY(), entity.getPosZ(), SoundEvents.ENTITY_WITCH_AMBIENT, SoundCategory.NEUTRAL, 1.0F, 1.0F, false);
-        }
-    }
-
-    @Override
     public void onContainerClosed(PlayerEntity playerIn) {
         PlayerInventory playerinventory = playerIn.inventory;
         if (!playerinventory.getItemStack().isEmpty()) {
@@ -193,7 +185,6 @@ public class WitchMerchantContainer extends MerchantContainer {
         return offers;
     }
 
-    // TODO: THIS!
     public static void populateTradeData(WitchEntity witch, MerchantOffers offers) {
         Int2ObjectMap<VillagerTrades.ITrade[]> int2objectmap = WitchTrades.WITCH_TRADES;
         if (!int2objectmap.isEmpty()) {

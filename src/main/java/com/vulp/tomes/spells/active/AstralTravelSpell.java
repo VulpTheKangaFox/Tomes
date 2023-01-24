@@ -27,7 +27,7 @@ public class AstralTravelSpell extends ActiveSpell {
     @Override
     public boolean onCast(World worldIn, PlayerEntity playerIn, Hand handIn) {
         if (!playerIn.isPotionActive(EffectInit.starry_form)) {
-            playerIn.addPotionEffect(new EffectInstance(EffectInit.starry_form, 120, 0, true, false));
+            playerIn.addPotionEffect(new EffectInstance(EffectInit.starry_form, 120, 0, false, false, true));
             return true;
         }
         return false;

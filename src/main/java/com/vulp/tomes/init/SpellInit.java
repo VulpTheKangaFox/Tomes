@@ -25,21 +25,21 @@ public class SpellInit {
     public static Spell lifebringer = new LifebringerSpell(Enchantment.Rarity.RARE, true, false, TomesConfig.lifebringer_enabled);
     public static Spell beast_tamer = new BeastTamerSpell(Enchantment.Rarity.RARE, true, false, TomesConfig.beast_tamer_enabled);
     public static Spell wild_aid = new WildAidSpell(Enchantment.Rarity.RARE, true, false, TomesConfig.wild_aid_enabled);
-    public static Spell metamorphosis;
+    public static Spell metamorphosis = new MetamorphosisSpell(Enchantment.Rarity.RARE, true, false, TomesConfig.metamorphosis_enabled);
     public static Spell nurturing_roots = new NurturingRootsSpell(Enchantment.Rarity.UNCOMMON, false, false, TomesConfig.nurturing_roots_enabled);
     public static Spell advantageous_growth = new AdvantageousGrowthSpell(Enchantment.Rarity.UNCOMMON, false, false, TomesConfig.advantageous_growth_enabled);
     public static Spell forest_affinity = new ForestAffinitySpell(Enchantment.Rarity.UNCOMMON, false, false, TomesConfig.forest_affinity_enabled);
-    public static Spell fight_or_flight;
+    public static Spell fight_or_flight = new FightOrFlightSpell(Enchantment.Rarity.UNCOMMON, false, false, TomesConfig.fight_or_flight_enabled);
     public static Spell molding_lands = new MoldingLandsSpell(Enchantment.Rarity.VERY_RARE, true, true, TomesConfig.molding_lands_enabled);
 
     public static Spell mind_bender = new MindBenderSpell(Enchantment.Rarity.RARE, true, false, TomesConfig.mind_bender_enabled);
     public static Spell ghostly_steed = new GhostlySteedSpell(Enchantment.Rarity.RARE, true, false, TomesConfig.ghostly_steed_enabled);
     public static Spell withering_stench = new WitheringStenchSpell(Enchantment.Rarity.RARE, true, false, TomesConfig.withering_stench_enabled);
-    public static Spell deathly_ichor;
+    public static Spell deathly_ichor = new DeathlyIchorSpell(Enchantment.Rarity.RARE, true, false, TomesConfig.deathly_ichor_enabled);
     public static Spell rotten_heart = new RottenHeartSpell(Enchantment.Rarity.UNCOMMON, false, false, TomesConfig.rotten_heart_enabled);
     public static Spell nocturnal = new NocturnalSpell(Enchantment.Rarity.UNCOMMON, false, false, TomesConfig.nocturnal_enabled);
     public static Spell covens_rule = new CovensRuleSpell(Enchantment.Rarity.UNCOMMON, false, false, TomesConfig.covens_rule_enabled);
-    public static Spell borrowed_time;
+    public static Spell borrowed_time = new BorrowedTimeSpell(Enchantment.Rarity.UNCOMMON, false, false, TomesConfig.borrowed_time_enabled);
     public static Spell dark_age = new DarkAgeSpell(Enchantment.Rarity.VERY_RARE, true, true, TomesConfig.dark_age_enabled);
 
 }

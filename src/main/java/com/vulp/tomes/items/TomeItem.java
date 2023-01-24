@@ -1,7 +1,6 @@
 package com.vulp.tomes.items;
 
 import com.mojang.datafixers.util.Pair;
-import com.vulp.tomes.Tomes;
 import com.vulp.tomes.enchantments.EnchantmentTypes;
 import com.vulp.tomes.enchantments.TomeEnchantment;
 import com.vulp.tomes.init.EnchantmentInit;
@@ -11,7 +10,6 @@ import com.vulp.tomes.network.messages.ServerActiveSpellMessage;
 import com.vulp.tomes.spells.SpellIndex;
 import com.vulp.tomes.spells.active.ActiveSpell;
 import com.vulp.tomes.spells.passive.CovensRuleSpell;
-import com.vulp.tomes.spells.passive.PassiveSpell;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.enchantment.Enchantment;
@@ -22,6 +20,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.WitchEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ActionResult;
@@ -33,14 +32,18 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 public class TomeItem extends HiddenDescriptorItem {
+
+    private static final Predicate<ItemStack> AMULET_PREDICATE = stack -> stack.getItem() == ItemInit.amulet_of_cogency;
 
     public TomeItem(Properties properties) {
         super(properties);
@@ -187,7 +190,7 @@ public class TomeItem extends HiddenDescriptorItem {
                     boolean flag = false;
                     if (castActiveSpell(worldIn, stack[0], playerIn, handIn)) {
                         stack[0].damageItem(spell.getSpellCost(), playerIn, playerEntity -> stack[0] = new ItemStack(stack[0].getItem()));
-                        setCooldown(stack[0], spell.getCooldown());
+                        setCooldown(stack[0], spell.getCooldown() / (hasAmulet(playerIn) ? 2 : 1));
                         flag = true;
                     }
                     TomesPacketHandler.instance.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) playerIn), new ServerActiveSpellMessage(stack[0], handIn == Hand.MAIN_HAND));
@@ -199,6 +202,10 @@ public class TomeItem extends HiddenDescriptorItem {
             }
         }
         return super.onItemRightClick(worldIn, playerIn, handIn);
+    }
+
+    private static boolean hasAmulet(PlayerEntity player) {
+        return CuriosApi.getCuriosHelper().findEquippedCurio(AMULET_PREDICATE, player).isPresent() || player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() == ItemInit.amulet_of_cogency;
     }
 
     public static void clientCastActiveSpell(World worldIn, PlayerEntity playerIn, ItemStack[] stack, Hand handIn) {

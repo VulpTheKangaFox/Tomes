@@ -3,6 +3,7 @@ package com.vulp.tomes.client.renderer.entity.renderers;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.vulp.tomes.Tomes;
+import com.vulp.tomes.TomesRegistry;
 import com.vulp.tomes.entities.projectile.WitheringStenchEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -15,10 +16,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 
-// TODO: Model is made of a cluster of cubes that look like a spray, but they're tight. Make a new model and loosen them.
 public class WitheringStenchRenderer<T extends WitheringStenchEntity> extends EntityRenderer<T> {
 
-    private static final ResourceLocation WITHERING_STENCH_TEXTURE = new ResourceLocation(Tomes.MODID, "textures/entity/withering_stench.png");
+    private static final ResourceLocation WITHERING_STENCH_TEXTURE = TomesRegistry.location("textures/entity/withering_stench.png");
     private final LlamaSpitModel<T> model = new LlamaSpitModel<>();
 
     public WitheringStenchRenderer(EntityRendererManager renderManagerIn) {

@@ -31,7 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class GobletOfHeartsTileEntity extends TileEntity implements IClearable {
 
-    private final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> inventory = NonNullList.withSize(5, ItemStack.EMPTY);
     private GobletOfHeartsRecipe recipe;
     private boolean ready = false;
 

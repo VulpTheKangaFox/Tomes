@@ -4,6 +4,9 @@ import com.vulp.tomes.init.EnchantmentInit;
 import com.vulp.tomes.init.SpellInit;
 import net.minecraft.enchantment.Enchantment;
 
+import java.util.Collections;
+import java.util.List;
+
 public enum SpellIndex {
 
     // Spells from here-on should be added in order otherwise some issues with id back and forthing will occur.
@@ -33,10 +36,10 @@ public enum SpellIndex {
 
     ASTRAL_TRAVEL(SpellInit.astral_travel, EnchantmentInit.astral_travel),
     CLOUDSTEP(SpellInit.cloudstep, EnchantmentInit.cloudstep),
-    METAMORPHOSIS(SpellInit.cloudstep, EnchantmentInit.cloudstep),
-    FIGHT_OR_FLIGHT(SpellInit.cloudstep, EnchantmentInit.cloudstep),
-    DEATHLY_ICHOR(SpellInit.cloudstep, EnchantmentInit.cloudstep),
-    BORROWED_TIME(SpellInit.cloudstep, EnchantmentInit.cloudstep);
+    METAMORPHOSIS(SpellInit.metamorphosis, EnchantmentInit.metamorphosis),
+    FIGHT_OR_FLIGHT(SpellInit.fight_or_flight, EnchantmentInit.fight_or_flight),
+    DEATHLY_ICHOR(SpellInit.deathly_ichor, EnchantmentInit.deathly_ichor),
+    BORROWED_TIME(SpellInit.borrowed_time, EnchantmentInit.borrowed_time);
 
     private final Spell spell;
     private final Enchantment enchantment;

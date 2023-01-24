@@ -63,7 +63,7 @@ public class WitheringStenchEntity extends ProjectileEntity {
             this.setPosition(d0, d1, d2);
         }
         if (this.world.isRemote) {
-            this.world.addParticle(ParticleInit.withering_stench, this.getPosition().getX(), this.getPosition().getY(), this.getPosZ(), 0.0D, 0.0D, 0.0D);
+            this.world.addParticle(ParticleInit.withering_stench, this.getPosX() , this.getPosY(), this.getPosZ(), 0.0D, 0.0D, 0.0D);
         }
         if (this.lifespan > 0) {
             this.lifespan--;

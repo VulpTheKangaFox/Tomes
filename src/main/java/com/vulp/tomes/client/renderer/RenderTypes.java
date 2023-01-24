@@ -26,6 +26,11 @@ public class RenderTypes extends RenderType {
         return makeType("light_flare", DefaultVertexFormats.POSITION_COLOR, 7, 256, false, true, RenderType.State.getBuilder().writeMask(COLOR_DEPTH_WRITE).transparency(RenderState.TRANSLUCENT_TRANSPARENCY).cull(CULL_DISABLED).shadeModel(SHADE_ENABLED).build(false));
     }
 
+    public static RenderType getEnergyStreaks(ResourceLocation locationIn, float uv) {
+        //return makeType("energy_streaks", DefaultVertexFormats.ENTITY, 7, 256, false, true, RenderType.State.getBuilder().texture(new RenderState.TextureState(locationIn, false, false)).texturing(new RenderState.OffsetTexturingState(uv, uv)).fog(BLACK_FOG).diffuseLighting(DIFFUSE_LIGHTING_ENABLED).alpha(DEFAULT_ALPHA).cull(CULL_DISABLED).lightmap(LIGHTMAP_ENABLED).overlay(OVERLAY_ENABLED).build(false));
+        return makeType("energy_streaks", DefaultVertexFormats.ENTITY, 7, 256, false, true, RenderType.State.getBuilder().texture(new RenderState.TextureState(locationIn, false, false)).texturing(new RenderState.OffsetTexturingState(uv, uv)).writeMask(COLOR_DEPTH_WRITE).diffuseLighting(DIFFUSE_LIGHTING_ENABLED).fog(BLACK_FOG).alpha(DEFAULT_ALPHA).transparency(ADDITIVE_TRANSPARENCY).cull(CULL_DISABLED).lightmap(LIGHTMAP_ENABLED).overlay(OVERLAY_ENABLED).build(false));
+    }
+
     public static RenderType getFlat() {
         return makeType("flat", DefaultVertexFormats.POSITION_COLOR, 7, 256, false, true, RenderType.State.getBuilder().build(true));
     }

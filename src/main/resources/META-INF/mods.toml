@@ -4,7 +4,7 @@ license="GNU GENERAL PUBLIC LICENSE V3"
 issueTrackerURL="https://github.com/VulpTheHorseDog/Tomes/issues/"
 [[mods]]
 modId="tomes"
-version="1.6"
+version="2.0"
 displayName="Tomes"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/tomes/"
 # logoFile="examplemod.png"
@@ -16,7 +16,7 @@ A tome-based magic mod where you can enchant the tomes for different active and 
 [[dependencies.tomes]]
     modId="forge"
     mandatory=true
-    versionRange="[36,)"
+    versionRange="[36.1,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.tomes]]

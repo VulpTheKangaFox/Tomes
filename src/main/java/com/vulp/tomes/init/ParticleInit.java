@@ -60,24 +60,28 @@ public class ParticleInit {
 
     public static final BasicParticleType spirit_flame = new BasicParticleType(false);
     public static final BasicParticleType withering_stench = new BasicParticleType(false);
+    public static final BasicParticleType deathly_ichor = new BasicParticleType(true);
     public static final BasicParticleType wind_deflect = new BasicParticleType(true);
     public static final BasicParticleType web_net = new BasicParticleType(true);
     public static final BasicParticleType hex = new BasicParticleType(true);
     public static final BasicParticleType wild_wolf_despawn = new BasicParticleType(false);
     public static final BasicParticleType spectral_steed_despawn = new BasicParticleType(false);
     public static final BasicParticleType living_wisp = new BasicParticleType(false);
+    public static final BasicParticleType goblet_particle = new BasicParticleType(false);
 
     @OnlyIn(Dist.CLIENT)
     public static void registerFactories() {
         ParticleManager particles = Minecraft.getInstance().particles;
         particles.registerFactory(spirit_flame, SpiritFlameParticle.Factory::new);
         particles.registerFactory(withering_stench, WitheringStenchParticle.Factory::new);
+        particles.registerFactory(deathly_ichor, DeathlyIchorParticle.Factory::new);
         particles.registerFactory(wind_deflect, WindDeflectParticle.Factory::new);
         particles.registerFactory(web_net, WebNetParticle.Factory::new);
         particles.registerFactory(hex, HexParticle.Factory::new);
         particles.registerFactory(wild_wolf_despawn, GlowDustParticle.WildWolfFactory::new);
         particles.registerFactory(spectral_steed_despawn, GlowDustParticle.SpectralSteedFactory::new);
         particles.registerFactory(living_wisp, LivingWispParticle.Factory::new);
+        particles.registerFactory(goblet_particle, GobletParticle.Factory::new);
     }
 
 }

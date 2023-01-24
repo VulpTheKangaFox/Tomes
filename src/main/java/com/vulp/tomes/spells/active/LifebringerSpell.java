@@ -3,6 +3,7 @@ package com.vulp.tomes.spells.active;
 import com.vulp.tomes.config.TomesConfig;
 import com.vulp.tomes.init.ParticleInit;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.CropsBlock;
 import net.minecraft.block.IGrowable;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
@@ -44,14 +45,20 @@ public class LifebringerSpell extends ActiveSpell {
                         BlockPos pos = playerPos.add(x - 3, y - 3, z - 3);
                         BlockState state = worldIn.getBlockState(pos);
                         if (state.getBlock() instanceof IGrowable) {
-                            ((IGrowable) state.getBlock()).grow((ServerWorld) worldIn, worldIn.rand, pos, state);
+                            if (!playerIn.isSneaking()) {
+                                if (state.getBlock() instanceof CropsBlock) {
+                                    ((IGrowable) state.getBlock()).grow((ServerWorld) worldIn, worldIn.rand, pos, state);
+                                }
+                            } else {
+                                ((IGrowable) state.getBlock()).grow((ServerWorld) worldIn, worldIn.rand, pos, state);
+                            }
                         }
                     }
                 }
             }
             List<AnimalEntity> list = worldIn.getEntitiesWithinAABB(AnimalEntity.class, new AxisAlignedBB(playerPos.add(-3, -3, -3), playerPos.add(3, 3, 3)), (animalEntity -> !animalEntity.isChild()));
             for (AnimalEntity animal : list) {
-                if (animal.canFallInLove()) {
+                if (animal.canFallInLove() && animal.getGrowingAge() <= 0) {
                     animal.setInLove(playerIn);
                 }
             }

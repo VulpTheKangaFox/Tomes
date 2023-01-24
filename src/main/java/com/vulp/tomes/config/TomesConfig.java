@@ -46,6 +46,7 @@ public final class TomesConfig {
     public static final ForgeConfigSpec.ConfigValue<Boolean> advantageous_growth_enabled;
     public static final ForgeConfigSpec.ConfigValue<Boolean> forest_affinity_enabled;
     public static final ForgeConfigSpec.ConfigValue<Boolean> fight_or_flight_enabled;
+    public static final ForgeConfigSpec.ConfigValue<Integer> fight_or_flight_cooldown;
 
     public static final ForgeConfigSpec.ConfigValue<Boolean> mind_bender_enabled;
     public static final ForgeConfigSpec.ConfigValue<Integer> mind_bender_cost;
@@ -66,6 +67,7 @@ public final class TomesConfig {
     public static final ForgeConfigSpec.ConfigValue<Boolean> nocturnal_enabled;
     public static final ForgeConfigSpec.ConfigValue<Boolean> covens_rule_enabled;
     public static final ForgeConfigSpec.ConfigValue<Boolean> borrowed_time_enabled;
+    public static final ForgeConfigSpec.ConfigValue<Integer> borrowed_time_cooldown;
 
     public static final ForgeConfigSpec.ConfigValue<Integer> archaic_heart_droprate;
     public static final ForgeConfigSpec.ConfigValue<Integer> beating_heart_droprate;
@@ -93,6 +95,7 @@ public final class TomesConfig {
         advantageous_growth_enabled = BUILDER.define("Advantageous Growth Enabled", true);
         forest_affinity_enabled = BUILDER.define("Forest Affinity Enabled", true);
         fight_or_flight_enabled = BUILDER.define("Fight or Flight Enabled", true);
+        fight_or_flight_cooldown = BUILDER.define("Fight or Flight Cooldown", 2400);
 
         mind_bender_enabled = BUILDER.define("Mind Bender Enabled", true);
         ghostly_steed_enabled = BUILDER.define("Ghostly Steed Enabled", true);
@@ -103,6 +106,7 @@ public final class TomesConfig {
         nocturnal_enabled = BUILDER.define("Nocturnal Enabled", true);
         covens_rule_enabled = BUILDER.define("Coven's Rule Enabled", true);
         borrowed_time_enabled = BUILDER.define("Borrowed Time Enabled", true);
+        borrowed_time_cooldown = BUILDER.define("Borrowed Time Cooldown", 6000);
 
         BUILDER.pop();
         BUILDER.push("Costs and Cooldowns: (Cooldowns are in ticks)");
@@ -125,7 +129,7 @@ public final class TomesConfig {
         wild_aid_cost = BUILDER.comment("DEFAULT = 20").define("Wild Aid Cost", 20);
         wild_aid_cooldown = BUILDER.comment("DEFAULT = 80").define("Wild Aid Cooldown", 80);
         metamorphosis_cost = BUILDER.comment("DEFAULT = 80").define("Metamorphosis Cost", 80);
-        metamorphosis_cooldown = BUILDER.comment("DEFAULT = 2000").define("Metamorphosis Cooldown", 2000);
+        metamorphosis_cooldown = BUILDER.comment("DEFAULT = 2000").define("Metamorphosis Cooldown", 2800);
         molding_lands_cost = BUILDER.comment("DEFAULT = 55").define("Molding Lands Cost", 55);
         molding_lands_cooldown = BUILDER.comment("DEFAULT = 35").define("Molding Lands Cooldown", 35);
 
