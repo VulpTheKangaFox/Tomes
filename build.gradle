@@ -14,7 +14,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 apply plugin: 'org.spongepowered.mixin'
-version = '2.0'
+version = '2.0.1'
 group = 'com.vulp.tomes' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'tomes'
 

@@ -42,7 +42,6 @@ public class DarkAgeSpell extends ActiveSpell {
         return true;
     }
 
-    // TODO: Allow smooth visual on client-side.
     @Override
     public void tick(World world, Entity entity) {
         if (TIME != -1L) {

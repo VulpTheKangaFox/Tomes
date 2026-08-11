@@ -31,6 +31,7 @@ import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.network.PacketDistributor;
 import top.theillusivec4.curios.api.CuriosApi;
 
@@ -205,7 +206,9 @@ public class TomeItem extends HiddenDescriptorItem {
     }
 
     private static boolean hasAmulet(PlayerEntity player) {
-        return CuriosApi.getCuriosHelper().findEquippedCurio(AMULET_PREDICATE, player).isPresent() || player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() == ItemInit.amulet_of_cogency;
+        if (ModList.get().isLoaded("curios")) {
+            return CuriosApi.getCuriosHelper().findEquippedCurio(AMULET_PREDICATE, player).isPresent();
+        } else return player.getItemStackFromSlot(EquipmentSlotType.CHEST).getItem() == ItemInit.amulet_of_cogency;
     }
 
     public static void clientCastActiveSpell(World worldIn, PlayerEntity playerIn, ItemStack[] stack, Hand handIn) {

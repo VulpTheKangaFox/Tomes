@@ -34,7 +34,6 @@ public class LifebringerSpell extends ActiveSpell {
         return TomesConfig.lifebringer_cost.get();
     }
 
-    // TODO: Hearts show up even when animal is on cooldown!
     @Override
     public boolean onCast(World worldIn, PlayerEntity playerIn, Hand handIn) {
         BlockPos playerPos = playerIn.getPosition();

@@ -37,8 +37,7 @@ public abstract class EnchantmentContainerMixin {
     @Shadow @Final public int[] enchantLevels;
 
     @Shadow public int[] enchantClue;
-
-    @Inject(method = "lambda$onCraftMatrixChanged$0", at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/container/EnchantmentContainer;detectAndSendChanges()V", shift = At.Shift.BY, by = -2))
+    @Inject(method = {"lambda$onCraftMatrixChanged$0", "net/minecraft/inventory/container/EnchantmentContainer.func_217002_a(Lnet/minecraft/item/ItemStack;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)V"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/inventory/container/EnchantmentContainer;detectAndSendChanges()V"))
     public void onCraftMatrixChangedLambda(ItemStack itemstack, World world, BlockPos pos, CallbackInfo ci) {
         EnchantClueHolder holder = new EnchantClueHolder();
         for (int buttonTracker = 0; buttonTracker < 3; ++buttonTracker) {

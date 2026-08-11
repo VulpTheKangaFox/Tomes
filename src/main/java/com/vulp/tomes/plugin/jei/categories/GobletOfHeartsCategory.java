@@ -36,8 +36,6 @@ import net.minecraft.util.text.*;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO: This is a mess. Worst case scenario: supply an icon and a ritual name or something. Allow room for a description too.
-// TODO: Also you have to make the new ingredient types actually registered.
 public class GobletOfHeartsCategory implements IRecipeCategory<GobletOfHeartsWrapper> {
 
     private static final ResourceLocation UID = TomesRegistry.location("goblet_crafting");
@@ -365,7 +363,6 @@ public class GobletOfHeartsCategory implements IRecipeCategory<GobletOfHeartsWra
         return isScrollable(new Object()) ? this.scrollbar[0] : this.scrollbar[1];
     }
 
-    // TODO: Reset to 0 if the bar is locked (less items/entities/effects than would fit in screen)
     public double getScrollValue() {
         return this.scrollValue;
     }
@@ -383,7 +380,6 @@ public class GobletOfHeartsCategory implements IRecipeCategory<GobletOfHeartsWra
         return TomesJEI.GUI;
     }
 
-    // TODO: Gotta handle mouse stuff better somehow. Scrolling would be nice to track too.
     @Override
     public boolean handleClick(GobletOfHeartsRecipe recipe, double mouseX, double mouseY, int mouseButton) {
         if (mouseX > 122 && mouseY > 1 && mouseX < 135 && mouseY < 72 && mouseButton == 0) {
